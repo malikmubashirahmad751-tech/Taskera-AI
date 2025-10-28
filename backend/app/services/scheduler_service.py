@@ -5,9 +5,10 @@ from typing import Literal, Optional
 # Third-Party Library Imports
 from dotenv import load_dotenv
 from supabase import create_client, Client
-from langchain.tools import tool
+from langchain_core.tools import tool
 from app.core.logger import logger
 import dateparser
+# Import all functions from the scheduler
 from app.services.scheduler import add_new_task, run_research_task, correct_run_date, remove_task
 
 
@@ -23,13 +24,17 @@ try:
     supabase: Client = create_client(supabase_url, supabase_key)
 except Exception as e:
     logger.error(f"Error creating Supabase client: {e}")
-
     raise
 
 def create_event(name: str, description: str, run_date: str):
-    """Create event in Supabase and schedule it locally."""
+    """
+    Create event in Supabase AND schedule it locally.
+    This is the single function for creating events.
+    """
     try:
+        # Use fromisoformat for speed, as we will pass a clean ISO string
         run_dt = datetime.fromisoformat(run_date)
+        
         response = supabase.table("events").insert({
             "name": name,
             "description": description,
@@ -39,12 +44,14 @@ def create_event(name: str, description: str, run_date: str):
         
         new_event = response.data[0]
         event_id = str(new_event['id']) 
+        
+        # Now, schedule the job using the ID from Supabase
         add_new_task(
             func=run_research_task, 
             job_id=event_id, 
             trigger="date", 
             run_date=run_dt, 
-            args=[name]
+            args=[name] # The arg is the event name
         )
         logger.info(f"Event '{name}' (ID: {event_id}) created and scheduled for {run_dt}")
         return new_event
@@ -63,17 +70,22 @@ def list_events():
 
 
 def update_event(event_id: str, name=None, description=None, run_date=None):
-    """Update event details."""
+    """Update event details in Supabase and reschedule the job."""
     try:
         update_data = {}
         if name: update_data["name"] = name
         if description: update_data["description"] = description
+        
+        # Default to current name if not provided
+        current_name = name or supabase.table("events").select("name").eq("id", event_id).single().execute().data['name']
+
         if run_date: 
             run_dt = datetime.fromisoformat(run_date)
             update_data["run_date"] = run_dt.isoformat()
  
+            # Reschedule the job
             remove_task(event_id)
-            add_new_task(run_research_task, job_id=event_id, trigger="date", run_date=run_dt, args=[name or "Scheduled Task"])
+            add_new_task(run_research_task, job_id=event_id, trigger="date", run_date=run_dt, args=[current_name])
 
         result = supabase.table("events").update(update_data).eq("id", event_id).execute()
         logger.info(f"Event {event_id} updated.")
@@ -88,6 +100,7 @@ def delete_event(event_id: str):
     try:
         result = supabase.table("events").delete().eq("id", event_id).execute()
 
+        # Also remove the job from the local scheduler
         remove_task(job_id=event_id)
         logger.info(f"Event {event_id} deleted from Supabase and scheduler.")
         return result.data
@@ -96,37 +109,35 @@ def delete_event(event_id: str):
         return {"error": str(e)}
 
 
-
+# Moved Action literal to the top level for type hinting
 Action = Literal["create", "list", "update", "delete"]
 
 @tool
-def manage_calendar_events(params: dict):
+def manage_calendar_events(
+    action: Action,
+    name: Optional[str] = "Unnamed Event",
+    date_expression: Optional[str] = None,
+    description: Optional[str] = None,
+    job_id: Optional[str] = None
+):
     """
     Manage calendar events (create, delete, etc.) for meetings or reminders.
 
-    Expected keys for 'create' action:
-        - action: 'create'
-        - name: event name/title
-        - date_expression: natural or ISO-style date/time string (e.g., 'tomorrow at 3pm', 'next week', '2025-11-05 09:00:00')
-        - description: optional
-        - job_id: optional custom ID
+    Args:
+        action: The action to perform: 'create', 'delete', 'update', or 'list'.
+        name: (Optional) The event name/title. Defaults to 'Unnamed Event'.
+        date_expression: (Optional) Required for 'create'. Natural or ISO-style date/time (e.g., 'tomorrow at 3pm').
+        description: (Optional) A description for the event. (Used in 'create')
+        job_id: (Optional) A specific ID for the event. Required for 'delete' or 'update'.
     """
-    action = params.get("action")
-    name = params.get("name", "Unnamed Event")
-    date_expression = params.get("date_expression")
-    job_id = params.get("job_id") or f"job_{name.replace(' ', '_').lower()}_{datetime.now().strftime('%f')}"
-
-    if not action:
-        logger.error("❌ No action specified for manage_calendar_events.")
-        return {"error": "Missing 'action' parameter."}
-
+    
     if action == "create":
         if not date_expression:
             logger.error("❌ Missing 'date_expression' for event creation.")
             return {"error": "Missing 'date_expression' to schedule the event."}
 
         try:
-        
+            # 1. Parse the date expression from the user
             run_date = dateparser.parse(
                 date_expression,
                 settings={
@@ -140,29 +151,21 @@ def manage_calendar_events(params: dict):
             if not run_date:
                 raise ValueError(f"Could not parse date expression: '{date_expression}'")
 
-            now = datetime.now()
+            # 2. Correct the date to ensure it's in the future
+            run_date = correct_run_date(run_date) # Use the imported function
 
-          
-            if run_date < now:
-                logger.warning(f"⚠ Date parsed in the past ({run_date}), correcting to next occurrence.")
-                run_date = run_date.replace(year=now.year)
-                if run_date < now:
-                    run_date = run_date.replace(year=now.year + 1)
-
-        
-            if run_date < now:
-                run_date = now + timedelta(days=1)
-                run_date = run_date.replace(hour=10, minute=0, second=0, microsecond=0)
-
-     
-            add_new_task(
-                func=run_research_task,
-                trigger="date",
-                run_date=run_date,
-                args=[name],
-                job_id=job_id
+            # 3. Call `create_event` which saves to Supabase AND schedules the task
+            new_event_or_error = create_event(
+                name=name,
+                description=description or f"Event for {name}",
+                run_date=run_date.isoformat() # Pass the corrected, ISO-formatted date
             )
 
+            # 4. Check for errors from the create_event function
+            if "error" in new_event_or_error:
+                raise Exception(new_event_or_error["error"])
+            
+            # 5. Return a success message
             readable_date = run_date.strftime("%B %d, %Y at %I:%M %p")
             logger.info(f" Created event '{name}' for {readable_date}")
 
@@ -170,7 +173,7 @@ def manage_calendar_events(params: dict):
                 "status": "success",
                 "message": f"The event '{name}' has been scheduled for {readable_date}.",
                 "run_date": run_date.isoformat(),
-                "job_id": job_id
+                "job_id": new_event_or_error.get('id', 'unknown_id')
             }
 
         except Exception as e:
@@ -178,23 +181,50 @@ def manage_calendar_events(params: dict):
             return {"error": f"Failed to parse and schedule event: {str(e)}"}
 
     elif action == "delete":
-        from app.services.scheduler import remove_task
-        job_id = params.get("job_id")
-
         if not job_id:
             return {"error": "Missing 'job_id' for delete action."}
-
         try:
-            remove_task(job_id)
+            # Call the function that handles both DB and scheduler
+            delete_event(event_id=job_id)
             logger.info(f"🗑 Deleted event '{name}' (job_id={job_id})")
             return {
                 "status": "success",
                 "message": f"Event '{name}' deleted successfully."
             }
-
         except Exception as e:
             logger.exception(f" Error deleting event: {e}")
             return {"error": str(e)}
+    
+    elif action == "update":
+        if not job_id:
+            return {"error": "Missing 'job_id' for update action."}
+        try:
+            # Parse date if provided
+            run_date_iso = None
+            if date_expression:
+                run_date = dateparser.parse(date_expression, settings={'PREFER_DATES_FROM': 'future'})
+                run_date = correct_run_date(run_date)
+                run_date_iso = run_date.isoformat()
+            
+            update_event(
+                event_id=job_id,
+                name=name if name != "Unnamed Event" else None,
+                description=description,
+                run_date=run_date_iso
+            )
+            return {"status": "success", "message": f"Event {job_id} updated."}
+        except Exception as e:
+            logger.exception(f" Error updating event: {e}")
+            return {"error": str(e)}
+
+    elif action == "list":
+        try:
+            events = list_events()
+            return {"status": "success", "events": events}
+        except Exception as e:
+            logger.exception(f" Error listing events: {e}")
+            return {"error": str(e)}
+
     else:
         logger.error(f" Unknown action '{action}' provided.")
-        return {"error": f"Unknown action '{action}'."}
+        return {"error": f"Unknown action '{action}' provided."}

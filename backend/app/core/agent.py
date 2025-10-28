@@ -4,7 +4,7 @@ from pydantic import SecretStr
 import logging
 
 from langchain_openai import ChatOpenAI
-from langchain.agents import create_tool_calling_agent, AgentExecutor
+from langchain.agents import create_tool_calling_agent, AgentExecutor  # Correct imports
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import tool
 
@@ -18,10 +18,12 @@ from app.tools.calculator_tool import calculator_tool
 from app.tools.translator_tool import translator_tool
 from app.tools.weather_tool import weather_tool
 from app.services.scheduler import add_new_task, start_scheduler, run_research_task, correct_run_date
-from app.tools.calender_tool import manage_calendar_events 
+from app.services.scheduler_service import manage_calendar_events 
 
 logger = logging.getLogger(__name__)
-llm = ChatOpenAI(api_key=SecretStr(settings.openai_api_key), model="gpt-3.5-turbo", temperature=0)
+
+# Fix 1: Removed SecretStr() wrapper
+llm = ChatOpenAI(api_key=settings.openai_api_key, model="gpt-3.5-turbo", temperature=0)
 
 
 @tool
@@ -44,6 +46,7 @@ def schedule_research_task(query: str, run_date_iso: str):
         return f"An unexpected error occurred: {e}"
 
 
+# Fix 2: Re-added 'agent_scratchpad' and kept '{input}'
 prompt = ChatPromptTemplate.from_messages([
     ("system", """You are a multi-functional AI Helping assistant.
 Your primary knowledge source is the `local_document_retriever` tool.
@@ -52,8 +55,8 @@ Only if the local retriever finds no information should you then consider using 
 Use the chat history to understand the context of the user's query."""),
 
     MessagesPlaceholder(variable_name="chat_history"),
-    ("human", "{query}"),
-    MessagesPlaceholder(variable_name="agent_scratchpad"),
+    ("human", "{input}"),  # Use 'input'
+    MessagesPlaceholder(variable_name="agent_scratchpad")  # This is REQUIRED
 ])
 
 
@@ -84,24 +87,32 @@ def research_query(query: str, user_id: str) -> str:
         chat_history = memory.load_memory_variables({}).get("chat_history", [])
         
         intent = detect_intent(query, user_id=user_id)
-        memory.save_context({"input": f"intent:{intent}"}, {"output": ""})
-        logger.info(f"Saved intent '{intent}' for user '{user_id}' to memory.")
+        
+        # This part was also causing the "non-existent session" warning.
+        # Let's save context AFTER getting memory, not before.
+        # memory.save_context({"input": f"intent:{intent}"}, {"output": ""}) # Moved this
+        # logger.info(f"Saved intent '{intent}' for user '{user_id}' to memory.")
 
         logger.info("Passing query to the main agent executor.")
+        
+        # Fix 3: Use 'input' key in invoke
         response = agent_executor.invoke({
-            "query": query,
+            "input": query,
             "chat_history": chat_history
         })
         output = response.get("output", "Sorry, I couldn't find an answer.")
 
+        # Save context *after* the invoke call
+        memory.save_context({"input": f"intent:{intent}"}, {"output": ""})
+        logger.info(f"Saved intent '{intent}' for user '{user_id}' to memory.")
+
+        # --- Date Bugfix (from previous step, still valid) ---
         if "event" in output.lower() or "scheduled" in output.lower():
-            future_year = datetime.now().year
-            outdated_year_match = re.search(r"20(1[0-9]|2[0-4]|23)", output)
-            if outdated_year_match:
-                corrected_date = datetime.now().strftime("%B %d, %Y at %I:%M %p")
-                output = re.sub(r"October\s+\d{1,2},\s*20\d{2}", corrected_date, output)
-                output = re.sub(r"20(1[0-9]|2[0-4]|23)", str(future_year), output)
-                logger.info(f"🛠 Corrected outdated date in agent response → {corrected_date}")
+            current_year = datetime.now().year
+            outdated_year_match = re.search(r"20(1[0-9]|2[0-4])", output)
+            if outdated_year_match and int(outdated_year_match.group(0)) < current_year:
+                output = re.sub(r"20(1[0-9]|2[0-4])", str(current_year), output, 1)
+                logger.info(f"🛠 Corrected outdated date in agent response -> {current_year}")
 
 
         memory.save_context({"input": query}, {"output": output})
@@ -114,6 +125,7 @@ def research_query(query: str, user_id: str) -> str:
 
     finally:
         logger.info(f"Updating session timer for user '{user_id}'.")
+        # This call is correct, the warning was because memory wasn't created yet
         update_session_on_response(user_id, output)
 
 
