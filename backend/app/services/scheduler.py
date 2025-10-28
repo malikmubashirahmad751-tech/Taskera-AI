@@ -28,7 +28,6 @@ os.makedirs(LOG_DIR, exist_ok=True)
 
 def run_research_task(query: str):
     """Run a scheduled research task safely."""
-    # This import stays here to avoid the circular dependency at the top level
     from app.core.agent import research_query
     logger.info(f"Running scheduled task for query: '{query}'")
     try:
@@ -78,10 +77,6 @@ def add_new_task(func, trigger: str, run_date: datetime, args: list = None, job_
         )
 
         logger.info(f"Task '{func.__name__}' scheduled for {run_date} (job_id={job.id})")
-
-        # --- THIS BLOCK WAS REMOVED ---
-        # The logic for saving to Supabase has been moved to 
-        # scheduler_service.py to break the circular dependency.
 
     except Exception as e:
         logger.error(f" Failed to add new task: {e}", exc_info=True)

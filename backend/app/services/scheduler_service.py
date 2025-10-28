@@ -2,13 +2,11 @@ import os
 from datetime import datetime,timedelta
 from typing import Literal, Optional
 
-# Third-Party Library Imports
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from langchain_core.tools import tool
 from app.core.logger import logger
 import dateparser
-# Import all functions from the scheduler
 from app.services.scheduler import add_new_task, run_research_task, correct_run_date, remove_task
 
 
@@ -32,7 +30,6 @@ def create_event(name: str, description: str, run_date: str):
     This is the single function for creating events.
     """
     try:
-        # Use fromisoformat for speed, as we will pass a clean ISO string
         run_dt = datetime.fromisoformat(run_date)
         
         response = supabase.table("events").insert({
@@ -45,13 +42,12 @@ def create_event(name: str, description: str, run_date: str):
         new_event = response.data[0]
         event_id = str(new_event['id']) 
         
-        # Now, schedule the job using the ID from Supabase
         add_new_task(
             func=run_research_task, 
             job_id=event_id, 
             trigger="date", 
             run_date=run_dt, 
-            args=[name] # The arg is the event name
+            args=[name] 
         )
         logger.info(f"Event '{name}' (ID: {event_id}) created and scheduled for {run_dt}")
         return new_event
@@ -76,14 +72,12 @@ def update_event(event_id: str, name=None, description=None, run_date=None):
         if name: update_data["name"] = name
         if description: update_data["description"] = description
         
-        # Default to current name if not provided
         current_name = name or supabase.table("events").select("name").eq("id", event_id).single().execute().data['name']
 
         if run_date: 
             run_dt = datetime.fromisoformat(run_date)
             update_data["run_date"] = run_dt.isoformat()
  
-            # Reschedule the job
             remove_task(event_id)
             add_new_task(run_research_task, job_id=event_id, trigger="date", run_date=run_dt, args=[current_name])
 
@@ -100,7 +94,6 @@ def delete_event(event_id: str):
     try:
         result = supabase.table("events").delete().eq("id", event_id).execute()
 
-        # Also remove the job from the local scheduler
         remove_task(job_id=event_id)
         logger.info(f"Event {event_id} deleted from Supabase and scheduler.")
         return result.data
@@ -109,7 +102,6 @@ def delete_event(event_id: str):
         return {"error": str(e)}
 
 
-# Moved Action literal to the top level for type hinting
 Action = Literal["create", "list", "update", "delete"]
 
 @tool
@@ -133,11 +125,10 @@ def manage_calendar_events(
     
     if action == "create":
         if not date_expression:
-            logger.error("❌ Missing 'date_expression' for event creation.")
+            logger.error(" Missing 'date_expression' for event creation.")
             return {"error": "Missing 'date_expression' to schedule the event."}
 
         try:
-            # 1. Parse the date expression from the user
             run_date = dateparser.parse(
                 date_expression,
                 settings={
@@ -151,21 +142,17 @@ def manage_calendar_events(
             if not run_date:
                 raise ValueError(f"Could not parse date expression: '{date_expression}'")
 
-            # 2. Correct the date to ensure it's in the future
-            run_date = correct_run_date(run_date) # Use the imported function
+            run_date = correct_run_date(run_date) 
 
-            # 3. Call `create_event` which saves to Supabase AND schedules the task
             new_event_or_error = create_event(
                 name=name,
                 description=description or f"Event for {name}",
-                run_date=run_date.isoformat() # Pass the corrected, ISO-formatted date
+                run_date=run_date.isoformat() 
             )
 
-            # 4. Check for errors from the create_event function
             if "error" in new_event_or_error:
                 raise Exception(new_event_or_error["error"])
             
-            # 5. Return a success message
             readable_date = run_date.strftime("%B %d, %Y at %I:%M %p")
             logger.info(f" Created event '{name}' for {readable_date}")
 
@@ -184,7 +171,6 @@ def manage_calendar_events(
         if not job_id:
             return {"error": "Missing 'job_id' for delete action."}
         try:
-            # Call the function that handles both DB and scheduler
             delete_event(event_id=job_id)
             logger.info(f"🗑 Deleted event '{name}' (job_id={job_id})")
             return {
@@ -199,7 +185,6 @@ def manage_calendar_events(
         if not job_id:
             return {"error": "Missing 'job_id' for update action."}
         try:
-            # Parse date if provided
             run_date_iso = None
             if date_expression:
                 run_date = dateparser.parse(date_expression, settings={'PREFER_DATES_FROM': 'future'})

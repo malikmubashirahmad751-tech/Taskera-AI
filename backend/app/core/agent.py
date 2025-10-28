@@ -22,7 +22,6 @@ from app.services.scheduler_service import manage_calendar_events
 
 logger = logging.getLogger(__name__)
 
-# Fix 1: Removed SecretStr() wrapper
 llm = ChatOpenAI(api_key=settings.openai_api_key, model="gpt-3.5-turbo", temperature=0)
 
 
@@ -46,7 +45,6 @@ def schedule_research_task(query: str, run_date_iso: str):
         return f"An unexpected error occurred: {e}"
 
 
-# Fix 2: Re-added 'agent_scratchpad' and kept '{input}'
 prompt = ChatPromptTemplate.from_messages([
     ("system", """You are a multi-functional AI Helping assistant.
 Your primary knowledge source is the `local_document_retriever` tool.
@@ -55,8 +53,8 @@ Only if the local retriever finds no information should you then consider using 
 Use the chat history to understand the context of the user's query."""),
 
     MessagesPlaceholder(variable_name="chat_history"),
-    ("human", "{input}"),  # Use 'input'
-    MessagesPlaceholder(variable_name="agent_scratchpad")  # This is REQUIRED
+    ("human", "{input}"), 
+    MessagesPlaceholder(variable_name="agent_scratchpad") 
 ])
 
 
@@ -88,25 +86,17 @@ def research_query(query: str, user_id: str) -> str:
         
         intent = detect_intent(query, user_id=user_id)
         
-        # This part was also causing the "non-existent session" warning.
-        # Let's save context AFTER getting memory, not before.
-        # memory.save_context({"input": f"intent:{intent}"}, {"output": ""}) # Moved this
-        # logger.info(f"Saved intent '{intent}' for user '{user_id}' to memory.")
-
         logger.info("Passing query to the main agent executor.")
         
-        # Fix 3: Use 'input' key in invoke
         response = agent_executor.invoke({
             "input": query,
             "chat_history": chat_history
         })
         output = response.get("output", "Sorry, I couldn't find an answer.")
 
-        # Save context *after* the invoke call
         memory.save_context({"input": f"intent:{intent}"}, {"output": ""})
         logger.info(f"Saved intent '{intent}' for user '{user_id}' to memory.")
 
-        # --- Date Bugfix (from previous step, still valid) ---
         if "event" in output.lower() or "scheduled" in output.lower():
             current_year = datetime.now().year
             outdated_year_match = re.search(r"20(1[0-9]|2[0-4])", output)
@@ -125,7 +115,6 @@ def research_query(query: str, user_id: str) -> str:
 
     finally:
         logger.info(f"Updating session timer for user '{user_id}'.")
-        # This call is correct, the warning was because memory wasn't created yet
         update_session_on_response(user_id, output)
 
 
