@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent D. - AI Assistant</title>
+  <title>Devis AI - AI Assistant</title>
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -33,7 +33,7 @@
 </head>
 <body class="h-full bg-neutral-950 text-gray-200">
 
-  <input type="file" id="fileUploadInput" class="hidden" accept=".pdf,.txt,.md,.docx">
+  <input type="file" id="fileUploadInput" class="hidden" accept=".pdf,.txt,.md,.docx,.png,.jpg,.jpeg">
 
   <div class="flex h-full overflow-hidden">
 
@@ -41,8 +41,8 @@
       <div class="flex flex-col h-full">
 
         <div class="flex items-center justify-center space-x-3 p-4 h-16 border-b border-neutral-800">
-          <img src="assets/images/logo.jpg" alt="Agent D. Logo" class="w-9 h-9 rounded-lg">
-          <span class="text-xl font-semibold text-white">Agent D.</span>
+          <img src="assets/images/logo.jpg" alt="Devis AI Logo" class="w-9 h-9 rounded-lg">
+          <span class="text-xl font-semibold text-white">Devis AI</span>
         </div>
 
         <div class="p-4 space-y-3">
@@ -51,18 +51,32 @@
             <span>New Session</span>
           </button>
           
-          </div>
+        </div>
 
         <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-2">
           <div id="fileUploadStatus" class="text-xs text-neutral-400"></div>
           <div class="text-sm text-neutral-400 p-2">
-            Upload PDF, TXT, or DOCX files for the AI to use.
+            Upload PDF, TXT, DOCX, or Image files for the AI to use.
           </div>
         </div>
 
-        <div class="p-4 border-t border-neutral-800">
+        <!-- Updated User ID Section -->
+        <div class="p-4 border-t border-neutral-800 space-y-4">
+          <!-- New Manual User ID Input -->
           <div class="flex flex-col space-y-2">
-            <span class="text-xs font-medium text-neutral-500">SESSION USER ID:</span>
+            <label for="userIdInput" class="text-xs font-medium text-neutral-500">SET SESSION ID:</label>
+            <div class="flex space-x-2">
+              <input type="text" id="userIdInput" placeholder="Paste existing User ID" class="flex-1 p-2 bg-neutral-800 border border-neutral-700 rounded-lg text-sm text-white placeholder-neutral-500 focus:outline-none focus:ring-1 focus:ring-fuchsia-500">
+              <button id="setUserIdBtn" class="p-2 bg-fuchsia-600 text-white rounded-lg hover:bg-fuchsia-700 transition-colors">
+                <!-- Set/Arrow Icon -->
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 12h14"></path></svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Existing Current User ID Display -->
+          <div class="flex flex-col space-y-2">
+            <span class="text-xs font-medium text-neutral-500">CURRENT SESSION ID:</span>
             <span id="currentUserId" class="text-sm font-medium text-purple-400 break-all">Not established</span>
           </div>
         </div>
@@ -73,29 +87,20 @@
     <main class="flex-1 flex flex-col h-full transition-all duration-300 ease-in-out">
       <header class="flex items-center justify-between h-16 p-4 border-b border-neutral-800 bg-neutral-900 md:bg-neutral-950">
         
+        <!-- Updated Menu Button with Toggle Icons -->
         <button id="menuButton" class="p-2 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <!-- Menu Icon -->
+          <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <!-- Close Icon (hidden by default) -->
+          <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
         
-        <h1 class="text-lg font-semibold text-white">Welcome to Agent D.</h1>
+        <h1 class="text-lg font-semibold text-white">Welcome to Devis AI</h1>
         <div class="w-6"></div> </header>
 
       <div id="chatLog" class="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-6 space-y-6">
         
-        <div class="flex items-start space-x-3">
-          <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
-            <img src="assets/images/logo.jpg" alt="Agent D. Logo" class="w-9 h-9 rounded-lg">
-          </div>
-          <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
-            <p class="text-sm mb-3">Hello! I'm Agent D., your AI research assistant. You can ask me questions or upload a document (using the paperclip icon below) for me to analyze.</p>
-            <p class="text-sm font-medium mb-3 text-neutral-300">Here are some things you can try:</p>
-            <ul class="list-none space-y-2">
-              <li><button class="suggestion-btn">"Summarize the uploaded document."</button></li>
-              <li><button class="suggestion-btn">"What are the key findings about [topic]?"</button></li>
-              <li><button class="suggestion-btn">"Draft an email to my team about..."</button></li>
-            </ul>
-          </div>
-        </div>
+        <!-- Startup Message will be injected by JS -->
 
       </div>
 
@@ -107,7 +112,7 @@
           <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off"
                  class="flex-1 p-3 bg-neutral-800 border border-neutral-700 rounded-lg text-white placeholder-neutral-500 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 focus:border-transparent transition-all">
           <button type="submit" id="sendButton"
-                   class="p-3 bg-fuchsia-600 text-white rounded-lg hover:bg-fuchsia-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                  class="p-3 bg-fuchsia-600 text-white rounded-lg hover:bg-fuchsia-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
             </svg>

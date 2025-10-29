@@ -4,7 +4,7 @@ from pydantic import SecretStr
 import logging
 
 from langchain_openai import ChatOpenAI
-from langchain.agents import create_tool_calling_agent, AgentExecutor  # Correct imports
+from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import tool
 
@@ -17,7 +17,9 @@ from app.tools.news_tool import latest_news_tool
 from app.tools.calculator_tool import calculator_tool
 from app.tools.translator_tool import translator_tool
 from app.tools.weather_tool import weather_tool
-from app.services.scheduler import add_new_task, start_scheduler, run_research_task, correct_run_date
+from app.tools.image_ocr_tool import image_text_extractor
+from app.services.scheduler import add_new_task
+from app.services.scheduler import scheduler, start_scheduler, run_research_task, correct_run_date
 from app.services.scheduler_service import manage_calendar_events 
 
 logger = logging.getLogger(__name__)
@@ -44,18 +46,36 @@ def schedule_research_task(query: str, run_date_iso: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
+# --- UPDATED PROMPT ---
+# This new prompt explains the different workflows to the agent.
+system_prompt = """You are a multi-functional AI Helping assistant named Devis AI.
+
+**Workflow for Handling User Content:**
+
+1.  **For Document-Based Questions (PDF, TXT, etc.):** Your primary knowledge source for documents is the `local_document_retriever` tool.
+    You **MUST** use this tool FIRST for any query that could be answered by user-provided documents.
+
+2.  **For Image-Based Questions (PNG, JPG, etc.):**
+    When a user uploads an image, the system automatically extracts the text and saves it to the chat history.
+    If the user asks a follow-up question (like "summarize this," "what are the key points," or "translate it"), 
+    you **MUST** look at the `chat_history` to find the recently extracted text (it will be in an 'ai' or 'system' message).
+    You should then perform the action (e.g., summarize) on that text from the history.
+    **DO NOT** use the `image_text_extractor` tool unless the user explicitly asks you to re-analyze an image or you cannot find the text in the history.
+    **DO NOT** use `local_document_retriever` for images.
+
+3.  **For General Questions:**
+    If the query is not related to uploaded documents or images, use your other tools (like `web_search` or `wikipedia_search`) or answer directly.
+
+**Always use the chat history to understand the full context of the user's query.**
+"""
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", """You are a multi-functional AI Helping assistant.
-Your primary knowledge source is the `local_document_retriever` tool.
-**You MUST use `local_document_retriever` FIRST for any query that could be answered by user-provided documents.**
-Only if the local retriever finds no information should you then consider using `wikipedia_search` or `web_search`.
-Use the chat history to understand the context of the user's query."""),
-
+    ("system", system_prompt),  # Use the new, detailed prompt
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}"), 
     MessagesPlaceholder(variable_name="agent_scratchpad") 
 ])
+# --- END OF PROMPT UPDATE ---
 
 
 def detect_intent(query: str, user_id: str = "") -> str:
@@ -75,7 +95,7 @@ def research_query(query: str, user_id: str) -> str:
         tools = [
             user_rag_tool, wiki_tool, search_tool, summarize_tool, weather_tool,
             latest_news_tool, calculator_tool, translator_tool,
-            schedule_research_task, manage_calendar_events
+            schedule_research_task, manage_calendar_events, image_text_extractor
         ]
         
         agent = create_tool_calling_agent(llm=llm, prompt=prompt, tools=tools)
@@ -119,3 +139,4 @@ def research_query(query: str, user_id: str) -> str:
 
 
 start_scheduler()
+

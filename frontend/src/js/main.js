@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const UPLOAD_ENDPOINT = '/api/upload';
     const LOGO_PATH = "assets/images/logo.jpg";
 
+    // --- Get All Elements ---
     const chatLog = document.getElementById('chatLog');
     const chatForm = document.getElementById('chatForm');
     const userInput = document.getElementById('userInput');
@@ -20,14 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatUploadBtn = document.getElementById('chatUploadBtn');
     const fileUploadInput = document.getElementById('fileUploadInput');
     const fileUploadStatus = document.getElementById('fileUploadStatus');
+    
+    // --- New Elements ---
     const currentUserIdSpan = document.getElementById('currentUserId');
+    const userIdInput = document.getElementById('userIdInput');
+    const setUserIdBtn = document.getElementById('setUserIdBtn');
+    const menuIcon = document.getElementById('menuIcon');
+    const closeIcon = document.getElementById('closeIcon');
 
     loadSession();
 
+    // --- Event Listeners ---
     chatForm.addEventListener('submit', handleChatSubmit);
     menuButton.addEventListener('click', toggleSidebar);
     sidebarOverlay.addEventListener('click', toggleSidebar);
     newSessionBtn.addEventListener('click', handleNewSession);
+    setUserIdBtn.addEventListener('click', handleSetUserId); // New listener
     chatUploadBtn.addEventListener('click', () => fileUploadInput.click());
     fileUploadInput.addEventListener('change', handleFileUpload);
 
@@ -35,28 +44,52 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('suggestion-btn')) {
             const suggestionText = e.target.innerText.replace(/"/g, '');
             userInput.value = suggestionText;
-            
             userInput.focus();
         }
     });
 
+    // --- Functions ---
+
     function loadSession() {
         const storedUserId = sessionStorage.getItem(USER_ID_STORAGE_KEY);
         if (storedUserId) {
-            currentUserId = storedUserId;
-            updateUserIdUI(currentUserId);
+            setUserId(storedUserId); // Use setUserId to ensure UI updates
         }
     }
 
     function setUserId(userId) {
-        if (!userId) return;
-        currentUserId = userId;
-        sessionStorage.setItem(USER_ID_STORAGE_KEY, userId);
-        updateUserIdUI(userId);
+        if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
+            console.warn("Invalid User ID passed to setUserId");
+            return;
+        }
+        currentUserId = userId.trim();
+        sessionStorage.setItem(USER_ID_STORAGE_KEY, currentUserId);
+        updateUserIdUI(currentUserId);
     }
 
     function updateUserIdUI(userId) {
         currentUserIdSpan.textContent = userId || 'Not established';
+        if (userId) {
+            userIdInput.value = ''; // Clear input if setting was successful
+        }
+    }
+
+    // --- New Function ---
+    // Handles the "Set ID" button click
+    function handleSetUserId() {
+        const newUserId = userIdInput.value.trim();
+        if (newUserId) {
+            // Clear the chat log
+            chatLog.innerHTML = '';
+            // Set the new user ID
+            setUserId(newUserId);
+            // Add a status message
+            addStatusMessageToChat(`Session loaded for User ID: ${newUserId}`);
+            // Add the startup message
+            addStartupMessage();
+            // Close the sidebar
+            toggleSidebar(false); // Force close
+        }
     }
 
     async function handleNewSession() {
@@ -139,9 +172,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const file = e.target.files[0];
         if (!file) return;
 
+        // --- Use new UUID if no session exists ---
+        if (!currentUserId) setUserId(crypto.randomUUID());
+
         const formData = new FormData();
         formData.append('file', file);
-        if (currentUserId) formData.append('user_id', currentUserId);
+        formData.append('user_id', currentUserId); // currentUserId is guaranteed to be set
 
         const statusId = `file-${Date.now()}`;
         fileUploadStatus.innerHTML = `
@@ -156,13 +192,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) throw new Error(data.detail || 'File upload failed.');
 
-            setUserId(data.user_id);
-            document.getElementById(statusId).innerHTML = `
+            setUserId(data.user_id); // API might return a new ID if one wasn't sent
+            
+            const statusElement = document.getElementById(statusId);
+            statusElement.innerHTML = `
                 <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 
                     9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                <span>${file.name} uploaded successfully.</span>`;
-            addStatusMessageToChat(`File uploaded and indexed: ${file.name}`);
+                <span>${data.message || `${file.name} processed.`}</span>`;
+
+            if (data.file_details) {
+                const uploadTime = new Date(data.file_details.upload_time).toLocaleTimeString();
+                addStatusMessageToChat(
+                    `File: ${data.file_details.name} (Uploaded by: ${data.file_details.uploaded_by} at ${uploadTime})`
+                );
+            }
+
+            if (data.extracted_text) {
+                addMessageToChat('ai', data.extracted_text);
+                if (data.follow_up_prompt) {
+                    addMessageToChat('ai', data.follow_up_prompt);
+                }
+            } 
+            else if (data.note) {
+                addStatusMessageToChat(data.note);
+            }
+
         } catch (error) {
             document.getElementById(statusId).innerHTML = `
                 <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
@@ -176,13 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span>Error uploading ${file.name}.</span>`;
             addStatusMessageToChat(`Error uploading file: ${error.message}`);
         } finally {
-            e.target.value = null;
+            e.target.value = null; 
         }
     }
 
     function addStatusMessageToChat(message) {
         const wrapper = document.createElement('div');
-        wrapper.className = 'flex justify-center';
+        wrapper.className = 'flex justify-center my-2'; // Added margin
         wrapper.innerHTML = `
             <div class="text-xs text-neutral-500 italic px-4 py-1 bg-neutral-800 rounded-full">
                 ${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
@@ -227,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
                         <p class="text-sm"></p>
                     </div>`;
-                wrapper.querySelector('p').textContent = message;
+                wrapper.querySelector('p').innerText = message;
             }
         }
         chatLog.appendChild(wrapper);
@@ -239,10 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
         wrapper.className = 'flex items-start space-x-3';
         wrapper.innerHTML = `
             <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
-              <img src="assets/images/logo.jpg" alt="Agent D. Logo" class="w-9 h-9 rounded-lg">
+              <img src="assets/images/logo.jpg" alt="Devis AI Logo" class="w-9 h-9 rounded-lg">
             </div>
             <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
-              <p class="text-sm mb-3">Hello! I'm Agent D., your AI research assistant. A new session has started. You can ask me questions or upload a document (using the paperclip icon below) for me to analyze.</p>
+              <p class="text-sm mb-3">Hello! I'm Devis AI, your AI research assistant. A new session has started. You can ask me questions or upload a document (using the paperclip icon below) for me to analyze.</p>
               <p class="text-sm font-medium mb-3 text-neutral-300">Here are some things you can try:</p>
               <ul class="list-none space-y-2">
                 <li><button class="suggestion-btn">"Summarize the uploaded document."</button></li>
@@ -265,18 +320,36 @@ document.addEventListener('DOMContentLoaded', () => {
         chatUploadBtn.disabled = !isEnabled;
     }
 
-    function toggleSidebar() {
-        sidebar.classList.toggle('-translate-x-full');
+    // --- Updated Function ---
+    // Can now be forced open or closed by passing a boolean
+    function toggleSidebar(forceState) {
+        const isOpen = !sidebar.classList.contains('-translate-x-full');
         
-        // Toggle the main content's margin (for desktop)
-        mainContent.classList.toggle('md:ml-64');
-        
-        // Toggle the overlay's visibility (for mobile)
-        sidebarOverlay.classList.toggle('hidden');
+        // Determine the new state
+        let newState = !isOpen; // Default is to toggle
+        if (typeof forceState === 'boolean') {
+            newState = forceState; // Use forced state if provided
+        }
+
+        // Apply new state
+        if (newState) {
+            // Open sidebar
+            sidebar.classList.remove('-translate-x-full');
+            mainContent.classList.add('md:ml-64');
+            sidebarOverlay.classList.remove('hidden');
+            menuIcon.classList.add('hidden');
+            closeIcon.classList.remove('hidden');
+        } else {
+            // Close sidebar
+            sidebar.classList.add('-translate-x-full');
+            mainContent.classList.remove('md:ml-64');
+            sidebarOverlay.classList.add('hidden');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+        }
     }
 
-    // --- Add the initial startup message on first load ---
-    // (We clear the chatLog first, just in case there's static HTML)
+    // --- Initial Load ---
     chatLog.innerHTML = '';
     addStartupMessage();
 });
