@@ -46,8 +46,6 @@ def schedule_research_task(query: str, run_date_iso: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
-# --- UPDATED PROMPT ---
-# This new prompt explains the different workflows to the agent.
 system_prompt = """You are a multi-functional AI Helping assistant named Devis AI.
 
 **Workflow for Handling User Content:**
@@ -70,12 +68,11 @@ system_prompt = """You are a multi-functional AI Helping assistant named Devis A
 """
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", system_prompt),  # Use the new, detailed prompt
+    ("system", system_prompt),  
     MessagesPlaceholder(variable_name="chat_history"),
     ("human", "{input}"), 
     MessagesPlaceholder(variable_name="agent_scratchpad") 
 ])
-# --- END OF PROMPT UPDATE ---
 
 
 def detect_intent(query: str, user_id: str = "") -> str:
@@ -139,4 +136,3 @@ def research_query(query: str, user_id: str) -> str:
 
 
 start_scheduler()
-

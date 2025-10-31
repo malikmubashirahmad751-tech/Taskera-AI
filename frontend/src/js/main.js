@@ -2,13 +2,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentUserId = null;
     const USER_ID_STORAGE_KEY = 'agentUserId';
+    
+    let stagedFiles = [];
+    const MAX_FILES = 10;
 
     const API_BASE_URL = 'http://127.0.0.1:8000'; 
     const CHAT_ENDPOINT = '/api/chat';
-    const UPLOAD_ENDPOINT = '/api/upload';
     const LOGO_PATH = "assets/images/logo.jpg";
 
-    // --- Get All Elements ---
     const chatLog = document.getElementById('chatLog');
     const chatForm = document.getElementById('chatForm');
     const userInput = document.getElementById('userInput');
@@ -22,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileUploadInput = document.getElementById('fileUploadInput');
     const fileUploadStatus = document.getElementById('fileUploadStatus');
     
-    // --- New Elements ---
+    const filePreviewContainer = document.getElementById('filePreviewContainer');
+    
     const currentUserIdSpan = document.getElementById('currentUserId');
     const userIdInput = document.getElementById('userIdInput');
     const setUserIdBtn = document.getElementById('setUserIdBtn');
@@ -31,14 +33,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadSession();
 
-    // --- Event Listeners ---
-    chatForm.addEventListener('submit', handleChatSubmit);
+    chatForm.addEventListener('submit', handleChatSubmit); 
     menuButton.addEventListener('click', toggleSidebar);
     sidebarOverlay.addEventListener('click', toggleSidebar);
     newSessionBtn.addEventListener('click', handleNewSession);
-    setUserIdBtn.addEventListener('click', handleSetUserId); // New listener
+    setUserIdBtn.addEventListener('click', handleSetUserId);
     chatUploadBtn.addEventListener('click', () => fileUploadInput.click());
-    fileUploadInput.addEventListener('change', handleFileUpload);
+    fileUploadInput.addEventListener('change', handleFileStage); 
+
+    filePreviewContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('file-chip-remove') || e.target.closest('.file-chip-remove')) {
+            const button = e.target.classList.contains('file-chip-remove') ? e.target : e.target.closest('.file-chip-remove');
+            const fileId = button.dataset.fileId;
+            if (fileId) {
+                removeStagedFile(fileId);
+            }
+        }
+    });
 
     chatLog.addEventListener('click', (e) => {
         if (e.target.classList.contains('suggestion-btn')) {
@@ -48,12 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- Functions ---
 
     function loadSession() {
         const storedUserId = sessionStorage.getItem(USER_ID_STORAGE_KEY);
         if (storedUserId) {
-            setUserId(storedUserId); // Use setUserId to ensure UI updates
+            setUserId(storedUserId);
         }
     }
 
@@ -70,25 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateUserIdUI(userId) {
         currentUserIdSpan.textContent = userId || 'Not established';
         if (userId) {
-            userIdInput.value = ''; // Clear input if setting was successful
+            userIdInput.value = '';
         }
     }
 
-    // --- New Function ---
-    // Handles the "Set ID" button click
     function handleSetUserId() {
         const newUserId = userIdInput.value.trim();
         if (newUserId) {
-            // Clear the chat log
             chatLog.innerHTML = '';
-            // Set the new user ID
             setUserId(newUserId);
-            // Add a status message
             addStatusMessageToChat(`Session loaded for User ID: ${newUserId}`);
-            // Add the startup message
             addStartupMessage();
-            // Close the sidebar
-            toggleSidebar(false); // Force close
+            toggleSidebar(false);
         }
     }
 
@@ -109,26 +112,118 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUserIdUI(null);
         chatLog.innerHTML = '';
         addStartupMessage();
-        fileUploadStatus.innerHTML = '';
+        fileUploadStatus.innerHTML = ''; 
+        clearStagedFiles(); 
     }
+
+    function handleFileStage(e) {
+        const files = e.target.files;
+        if (!files) return;
+
+        if (stagedFiles.length + files.length > MAX_FILES) {
+            alert(`You can only upload a maximum of ${MAX_FILES} files.`);
+            e.target.value = null;
+            return;
+        }
+
+        for (const file of files) {
+            const fileId = crypto.randomUUID();
+            const fileWithId = { id: fileId, file: file };
+            stagedFiles.push(fileWithId);
+            addFileChip(fileWithId);
+        }
+        
+        e.target.value = null; 
+    }
+
+    function addFileChip(fileWithId) {
+        const file = fileWithId.file;
+        const fileId = fileWithId.id;
+        
+        filePreviewContainer.style.display = 'flex'; 
+
+        const chip = document.createElement('div');
+        chip.className = 'file-chip';
+        chip.id = `file-chip-${fileId}`; 
+
+        const removeButtonHtml = `<button type="button" class="file-chip-remove" data-file-id="${fileId}">&times;</button>`;
+        const fileNameHtml = `<span class="file-chip-name">${file.name.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>`;
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                chip.innerHTML = `
+                    <img src="${event.target.result}" alt="Preview" class="w-8 h-8 rounded object-cover mr-2">
+                    ${fileNameHtml}
+                    ${removeButtonHtml}
+                `;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            chip.innerHTML = `
+                ${fileNameHtml}
+                ${removeButtonHtml}
+            `;
+        }
+        
+        filePreviewContainer.appendChild(chip);
+    }
+
+    function removeStagedFile(fileId) {
+        stagedFiles = stagedFiles.filter(f => f.id !== fileId);
+        
+        const chip = document.getElementById(`file-chip-${fileId}`);
+        if (chip) {
+            chip.remove();
+        }
+
+        if (stagedFiles.length === 0) {
+            filePreviewContainer.style.display = 'none';
+        }
+    }
+
+
+    function clearStagedFiles() {
+        stagedFiles = [];
+        filePreviewContainer.innerHTML = '';
+        filePreviewContainer.style.display = 'none';
+        fileUploadInput.value = null;
+    }
+
 
     async function handleChatSubmit(e) {
         e.preventDefault(); 
         const message = userInput.value.trim();
-        if (!message) return;
+        
+        if (!message && stagedFiles.length === 0) return;
 
-        addMessageToChat('user', message);
+        if (!currentUserId) setUserId(crypto.randomUUID());
+
+        const formData = new FormData();
+        formData.append('query', message);
+        formData.append('user_id', currentUserId);
+        
+        const fileNames = [];
+        for (const fileWithId of stagedFiles) {
+            formData.append('files', fileWithId.file, fileWithId.file.name);
+            fileNames.push(fileWithId.file.name);
+        }
+        
+        if (fileNames.length > 0) {
+            addMessageToChat('user', message, fileNames); 
+        } else {
+            addMessageToChat('user', message, null);
+        }
+
         userInput.value = '';
+        clearStagedFiles(); 
         toggleForm(false);
         addMessageToChat('ai', '...', 'typing');
 
         try {
-            if (!currentUserId) setUserId(crypto.randomUUID());
-
             const response = await fetch(`${API_BASE_URL}${CHAT_ENDPOINT}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: message, user_id: currentUserId })
+                body: formData 
             });
 
             const data = await response.json().catch(() => ({}));
@@ -167,77 +262,11 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.focus();
         }
     }
-
-    async function handleFileUpload(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        // --- Use new UUID if no session exists ---
-        if (!currentUserId) setUserId(crypto.randomUUID());
-
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('user_id', currentUserId); // currentUserId is guaranteed to be set
-
-        const statusId = `file-${Date.now()}`;
-        fileUploadStatus.innerHTML = `
-            <div id="${statusId}" class="flex items-center space-x-2 text-xs">
-                <div class="upload-spinner"></div>
-                <span>Uploading ${file.name}...</span>
-            </div>`;
-
-        try {
-            const response = await fetch(`${API_BASE_URL}${UPLOAD_ENDPOINT}`, { method: 'POST', body: formData });
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok) throw new Error(data.detail || 'File upload failed.');
-
-            setUserId(data.user_id); // API might return a new ID if one wasn't sent
-            
-            const statusElement = document.getElementById(statusId);
-            statusElement.innerHTML = `
-                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 
-                    9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                <span>${data.message || `${file.name} processed.`}</span>`;
-
-            if (data.file_details) {
-                const uploadTime = new Date(data.file_details.upload_time).toLocaleTimeString();
-                addStatusMessageToChat(
-                    `File: ${data.file_details.name} (Uploaded by: ${data.file_details.uploaded_by} at ${uploadTime})`
-                );
-            }
-
-            if (data.extracted_text) {
-                addMessageToChat('ai', data.extracted_text);
-                if (data.follow_up_prompt) {
-                    addMessageToChat('ai', data.follow_up_prompt);
-                }
-            } 
-            else if (data.note) {
-                addStatusMessageToChat(data.note);
-            }
-
-        } catch (error) {
-            document.getElementById(statusId).innerHTML = `
-                <svg class="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 
-                    8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 
-                    1.414L8.586 10l-1.293 1.293a1 1 0 
-                    101.414 1.414L10 11.414l1.293 
-                    1.293a1 1 0 001.414-1.414L11.414 
-                    10l1.293-1.293a1 1 0 00-1.414-1.414L10 
-                    8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                <span>Error uploading ${file.name}.</span>`;
-            addStatusMessageToChat(`Error uploading file: ${error.message}`);
-        } finally {
-            e.target.value = null; 
-        }
-    }
-
+    
+    
     function addStatusMessageToChat(message) {
         const wrapper = document.createElement('div');
-        wrapper.className = 'flex justify-center my-2'; // Added margin
+        wrapper.className = 'flex justify-center my-2';
         wrapper.innerHTML = `
             <div class="text-xs text-neutral-500 italic px-4 py-1 bg-neutral-800 rounded-full">
                 ${message.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
@@ -246,20 +275,42 @@ document.addEventListener('DOMContentLoaded', () => {
         chatLog.scrollTop = chatLog.scrollHeight;
     }
 
-    function addMessageToChat(sender, message, type = 'message') {
+    function addMessageToChat(sender, message, fileNames = null, type = 'message') {
         const wrapper = document.createElement('div');
 
         if (sender === 'user') {
             wrapper.className = 'flex justify-end mb-2';
+            
+            let fileChipsHtml = '';
+            if (fileNames && fileNames.length > 0) {
+                const chips = fileNames.map(name => `
+                    <span class="text-xs px-3 py-1 bg-purple-800 rounded-full">
+                        ${name.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
+                    </span>
+                `).join('');
+                
+                fileChipsHtml = `
+                    <div class="mt-2 border-t border-fuchsia-800 pt-2 flex flex-wrap gap-2">
+                        ${chips}
+                    </div>`;
+            }
+
             wrapper.innerHTML = `
                 <div class="flex items-start space-x-3 max-w-lg">
                     <div class="bg-fuchsia-700 text-white rounded-lg rounded-tr-none p-4 shadow-md">
                         <p class="text-sm"></p>
+                        ${fileChipsHtml}
                     </div>
                     <div class="w-9 h-9 rounded-full bg-purple-700 flex items-center justify-center font-semibold flex-shrink-0">U</div>
                 </div>`;
-            wrapper.querySelector('p').textContent = message;
-        } else {
+            
+            if (message) {
+                wrapper.querySelector('p').textContent = message;
+            } else {
+                wrapper.querySelector('p').remove(); 
+            }
+
+        } else { 
             wrapper.className = 'flex items-start space-x-3 mb-2';
             if (type === 'typing') {
                 wrapper.id = 'typing-indicator';
@@ -297,12 +348,12 @@ document.addEventListener('DOMContentLoaded', () => {
               <img src="assets/images/logo.jpg" alt="Devis AI Logo" class="w-9 h-9 rounded-lg">
             </div>
             <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
-              <p class="text-sm mb-3">Hello! I'm Devis AI, your AI research assistant. A new session has started. You can ask me questions or upload a document (using the paperclip icon below) for me to analyze.</p>
+              <p class="text-sm mb-3">Hello! I'm Devis AI, your AI research assistant. A new session has started. You can ask me questions or upload documents (using the paperclip icon below) for me to analyze.</p>
               <p class="text-sm font-medium mb-3 text-neutral-300">Here are some things you can try:</p>
               <ul class="list-none space-y-2">
-                <li><button class="suggestion-btn">"Summarize the uploaded document."</button></li>
+                <li><button class="suggestion-btn">"Summarize the uploaded document(s)."</button></li>
                 <li><button class="suggestion-btn">"What are the key findings about [topic]?"</button></li>
-                <li><button class="suggestion-btn">"Draft an email to my team about..."</button></li>
+                <li><button class="suggestion-btn">"Compare the contents of the uploaded files."</button></li>
               </ul>
             </div>`;
         chatLog.appendChild(wrapper);
@@ -320,27 +371,19 @@ document.addEventListener('DOMContentLoaded', () => {
         chatUploadBtn.disabled = !isEnabled;
     }
 
-    // --- Updated Function ---
-    // Can now be forced open or closed by passing a boolean
     function toggleSidebar(forceState) {
         const isOpen = !sidebar.classList.contains('-translate-x-full');
-        
-        // Determine the new state
-        let newState = !isOpen; // Default is to toggle
+        let newState = !isOpen;
         if (typeof forceState === 'boolean') {
-            newState = forceState; // Use forced state if provided
+            newState = forceState;
         }
-
-        // Apply new state
         if (newState) {
-            // Open sidebar
             sidebar.classList.remove('-translate-x-full');
             mainContent.classList.add('md:ml-64');
             sidebarOverlay.classList.remove('hidden');
             menuIcon.classList.add('hidden');
             closeIcon.classList.remove('hidden');
         } else {
-            // Close sidebar
             sidebar.classList.add('-translate-x-full');
             mainContent.classList.remove('md:ml-64');
             sidebarOverlay.classList.add('hidden');
@@ -349,7 +392,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Initial Load ---
     chatLog.innerHTML = '';
     addStartupMessage();
 });
