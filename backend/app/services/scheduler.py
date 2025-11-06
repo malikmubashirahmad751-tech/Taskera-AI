@@ -40,22 +40,17 @@ def run_research_task(query: str):
 def correct_run_date(run_date: datetime) -> datetime:
     """
     Ensure the run_date is always in the *future* relative to the current system time.
-    - If it's in a past year, replace with current or next year.
-    - If it's in the same year but before 'now', shift it forward to the next valid time.
-    - Always return a valid future datetime.
     """
     now = datetime.now()
 
-
     if run_date.year < now.year:
         run_date = run_date.replace(year=now.year)
-
 
     if run_date < now:
         try:
             run_date = run_date.replace(year=now.year + 1)
         except ValueError:
-                run_date = now + timedelta(days=1)
+            run_date = now + timedelta(days=1)
 
     if run_date < now:
         run_date = now + timedelta(days=1)
@@ -65,13 +60,14 @@ def correct_run_date(run_date: datetime) -> datetime:
 
 
 def add_new_task(func, trigger: str, run_date: datetime, args: list = None, job_id: str = None):
-    """Add a new task to the scheduler and sync with Supabase."""
+    """
+    Add a new task to the scheduler. 
+    This function no longer handles Supabase logic.
+    """
     args = args or []
     try:
-      
         run_date = correct_run_date(run_date)
 
-      
         job = scheduler.add_job(
             func,
             trigger,
@@ -81,20 +77,6 @@ def add_new_task(func, trigger: str, run_date: datetime, args: list = None, job_
         )
 
         logger.info(f"Task '{func.__name__}' scheduled for {run_date} (job_id={job.id})")
-
-        
-        if func == run_research_task:
-            query = args[0] if args else "N/A"
-            try:
-                supabase.table("events").insert({
-                    "name": query,
-                    "description": f"Scheduled research task for '{query}'",
-                    "run_date": run_date.isoformat(),
-                    "status": "scheduled",
-                    "job_id": job.id
-                }).execute()
-            except Exception as e:
-                logger.error(f" Failed to sync scheduled event to Supabase: {e}")
 
     except Exception as e:
         logger.error(f" Failed to add new task: {e}", exc_info=True)
