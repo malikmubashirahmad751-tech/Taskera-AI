@@ -1,15 +1,14 @@
 import os
-import logging
 from datetime import datetime, timedelta
+import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 from supabase import create_client, Client
 from dotenv import load_dotenv
-from app.core.memory_manager import clear_expired_sessions
-from app.core.logger import logger
+from app.core.session_manager import clear_expired_sessions
 
-from app.agents.tools_agent import search_tool 
-
+logger = logging.getLogger(__name__)
 scheduler = BackgroundScheduler()
+
 
 load_dotenv()
 
@@ -22,96 +21,92 @@ if not supabase_url or not supabase_key:
 try:
     supabase: Client = create_client(supabase_url, supabase_key)
 except Exception as e:
-    logger.error(f"Error creating Supabase client: {e}")
-    supabase = None
+    print(f"Error creating Supabase client: {e}")
 
 LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
-
 def run_research_task(query: str):
-    """
-    Run a scheduled research task.
-    This now calls the search_tool directly to avoid circular imports.
-    """
-    logger.info(f"[Scheduler] Running scheduled research task: '{query}'")
+    """Run a scheduled research task safely."""
+    from app.core.agent import research_query
+    logger.info(f"Running scheduled task for query: '{query}'")
     try:
-        
-        result = search_tool.invoke(query)
-        logger.info(f"[Scheduler] Task completed successfully:\n{result}")
-        
-        
+        result = research_query(query, user_id="scheduled_task")
+        logger.info(f"Scheduled Task Result at {datetime.now()}:\n{result}")
     except Exception as e:
-        logger.error(f"[Scheduler] Task for query '{query}' failed: {e}", exc_info=True)
+        logger.error(f"Task for query '{query}' failed: {e}")
 
 
 def correct_run_date(run_date: datetime) -> datetime:
     """
-    Ensure run_date is always in the *future* relative to now.
-    If given date is in the past, shift it to next available day at 10:00 AM.
+    Ensure the run_date is always in the *future* relative to the current system time.
     """
     now = datetime.now()
+
+    if run_date.year < now.year:
+        run_date = run_date.replace(year=now.year)
+
+    if run_date < now:
+        try:
+            run_date = run_date.replace(year=now.year + 1)
+        except ValueError:
+            run_date = now + timedelta(days=1)
+
     if run_date < now:
         run_date = now + timedelta(days=1)
         run_date = run_date.replace(hour=10, minute=0, second=0, microsecond=0)
+
     return run_date
 
 
 def add_new_task(func, trigger: str, run_date: datetime, args: list = None, job_id: str = None):
-    """Add a new task to APScheduler."""
+    """
+    Add a new task to the scheduler. 
+    This function no longer handles Supabase logic.
+    """
     args = args or []
     try:
         run_date = correct_run_date(run_date)
+
         job = scheduler.add_job(
             func,
             trigger,
             run_date=run_date,
             args=args,
             id=job_id if job_id else None,
-            replace_existing=True
         )
-        logger.info(f"[Scheduler] Task '{func.__name__}' scheduled for {run_date} (job_id={job.id})")
-        return job
-    except Exception as e:
-        logger.error(f"[Scheduler] Failed to add task '{func.__name__}': {e}", exc_info=True)
-        return None
 
+        logger.info(f"Task '{func.__name__}' scheduled for {run_date} (job_id={job.id})")
+
+    except Exception as e:
+        logger.error(f" Failed to add new task: {e}", exc_info=True)
 
 def remove_task(job_id: str):
-    """Remove a task from the scheduler by its ID."""
+    """Removes a job from the scheduler by its ID."""
     try:
         scheduler.remove_job(job_id)
-        logger.info(f"[Scheduler] Task '{job_id}' removed from scheduler.")
+        logger.info(f" Task with ID '{job_id}' removed from scheduler.")
     except KeyError:
-        logger.warning(f"[Scheduler] Task '{job_id}' not found.")
+        logger.warning(f" Failed to remove task with ID '{job_id}': Job not found.")
     except Exception as e:
-        logger.error(f"[Scheduler] Error removing task '{job_id}': {e}", exc_info=True)
-
+        logger.error(f" Error removing task '{job_id}': {e}")
 
 def start_scheduler():
-    """Start the background scheduler and recurring jobs safely."""
-    if scheduler.running:
-        logger.info("[Scheduler] Scheduler already running.")
-        return
-
-    try:
+    """Start the background scheduler and add recurring jobs."""
+    if not scheduler.running:
         scheduler.add_job(
             func=clear_expired_sessions,
             trigger='interval',
             minutes=30,
-            id='clear_expired_sessions_job',
-            replace_existing=True
+            id='clear_expired_sessions_job'
         )
         scheduler.start()
-        logger.info("[Scheduler] Started successfully with recurring cleanup job.")
-    except Exception as e:
-        logger.error(f"[Scheduler] Failed to start: {e}", exc_info=True)
-
+        logger.info(" Scheduler started successfully with recurring jobs.")
 
 def shutdown_scheduler():
-    """Gracefully stop the scheduler (on app shutdown)."""
+    """Gracefully stop scheduler (call this on app shutdown)."""
     if scheduler.running:
         scheduler.shutdown(wait=False)
-        logger.info("[Scheduler] Stopped cleanly.")
+        logger.info(" Scheduler stopped cleanly.")
     else:
-        logger.info("[Scheduler] Scheduler was not running.")
+        logger.info("Scheduler was not running.")

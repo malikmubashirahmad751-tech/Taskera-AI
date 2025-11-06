@@ -1,5 +1,4 @@
 langchain
-langgraph
 wikipedia 
 langchain-community 
 langchain-openai
@@ -18,6 +17,3 @@ supabase
 apscheduler
 uvicorn
 dateparser
-playwright
-pytesseract
-pyowm

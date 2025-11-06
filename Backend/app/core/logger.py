@@ -10,6 +10,7 @@ LOG_FILE = os.path.join(LOG_DIR, f"app.log")
 
 
 logging.basicConfig(
+
    level=logging.INFO,
    format= '%(asctime)s [%(levelname)s] %(name)s : %(message)s',
    handlers=[

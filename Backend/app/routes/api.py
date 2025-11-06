@@ -3,19 +3,17 @@ import uuid
 from fastapi import APIRouter, UploadFile, File, HTTPException, Form, Depends
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
+from datetime import datetime
 from typing import Optional, List 
-
+from app.core.agent import research_query
 from app.core.config import settings
+from app.services.rag_system import create_rag_tool
 from app.core.logger import logger
-from app.services.file_handler import delete_specific_user_file, delete_all_user_files
-from app.services.rag_service import delete_user_vectorstore
-from app.agents.knowledge_agent import create_rag_tool
-from app.services.ocr_service import image_text_extractor
+from app.core.file_handler import delete_specific_user_file, delete_all_user_files
+from app.tools.image_ocr_tool import image_text_extractor
 
-from app.agents.controller_agent import app as agent_app
-from app.core.memory_manager import get_user_checkpointer, clear_user_session, update_session_on_response
-from langgraph.checkpoint.memory import MemorySaver
-from langchain_core.messages import HumanMessage
+from app.core.session_manager import get_user_memory, clear_user_session
+from app.services.rag_system import delete_user_vectorstore
 
 router = APIRouter()
 UPLOAD_PATH = "user_files"
@@ -51,7 +49,7 @@ async def handle_chat_query(
     prompt for the agent.
     """
     
-    user_checkpointer: MemorySaver = get_user_checkpointer(user_id)
+    memory = get_user_memory(user_id)
     
     agent_input = query 
     
@@ -87,7 +85,11 @@ async def handle_chat_query(
                         "file_name": file.filename
                     })
                     ocr_texts.append(f"--- Text from '{file.filename}' ---\n{extracted_text}\n")
-                    logger.info(f"Successfully extracted text from {file.filename}")
+                    
+                    memory.save_context(
+                        {"input": f"(System note: User uploaded image '{file.filename}')"},
+                        {"output": extracted_text}
+                    )
                 except Exception as e:
                     logger.error(f"Failed OCR for {file.filename}: {e}")
                     ocr_texts.append(f"--- FAILED to extract text from '{file.filename}' ---")
@@ -142,30 +144,36 @@ async def handle_chat_query(
         )
         
     try:
-        logger.info(f"Sending final prompt to graph for user '{user_id}': '{agent_input[:250]}...'")
-        graph_with_memory = agent_app.with_config(checkpointer=user_checkpointer)
-        config = {"configurable": {"thread_id": user_id}}
-        input_message = {
-            "messages": [HumanMessage(content=agent_input)],
-            "user_id": user_id 
-        }
-
-        final_state = await graph_with_memory.ainvoke(input_message, config)
-        
-        if not final_state.get('messages') or not isinstance(final_state['messages'], list):
-             raise HTTPException(status_code=500, detail="Agent returned an invalid state.")
-             
-        result_message = final_state['messages'][-1]
-        result = result_message.content
-
-        update_session_on_response(user_id, result)
-
+        logger.info(f"Sending final prompt to agent for user '{user_id}': '{agent_input[:250]}...'")
+        result = research_query(agent_input, user_id=user_id)
         return JSONResponse(
             content={"answer": result, "user_id": user_id},
             status_code=200
         )
     except Exception as e:
         logger.exception(f"Error processing query for user '{user_id}': {e}")
+        raise HTTPException(status_code=500, detail="An internal error occurred.")
+
+@router.post(
+    "/api/research",
+    summary="Process a user query (Research Endpoint - JSON fallback)",
+    deprecated=True
+)
+async def handle_research_query(request: ResearchRequest):
+    """
+    This endpoint is now deprecated. The main endpoint is /api/chat.
+    This remains for testing or old clients.
+    """
+    if not request.query:
+        raise HTTPException(status_code=422, detail="Query cannot be empty.")
+    try:
+        result = research_query(request.query, user_id=request.user_id)
+        return JSONResponse(
+            content={"answer": result, "user_id": request.user_id},
+            status_code=200
+        )
+    except Exception as e:
+        logger.exception(f"Error processing query for user '{request.user_id}': {e}")
         raise HTTPException(status_code=500, detail="An internal error occurred.")
 
 
