@@ -1,4 +1,4 @@
-langchain 
+langchain
 wikipedia 
 langchain-community 
 langchain-openai
@@ -16,3 +16,4 @@ unstructured
 supabase
 apscheduler
 uvicorn
+dateparser
