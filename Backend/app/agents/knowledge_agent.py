@@ -16,7 +16,9 @@ def create_rag_tool(api_key: str, user_id: str):
     os.makedirs(DATA_PATH, exist_ok=True)
     os.makedirs(user_upload_path, exist_ok=True)
 
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(
+        model="models/embedding-001",
+        google_api_key=api_key)
 
     db = _get_or_create_user_chroma(user_id, embeddings)
 

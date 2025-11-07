@@ -1,12 +1,12 @@
+// --- FIXED & ENHANCED main.js ---
 document.addEventListener('DOMContentLoaded', () => {
 
     let currentUserId = null;
     const USER_ID_STORAGE_KEY = 'agentUserId';
-    
     let stagedFiles = [];
     const MAX_FILES = 10;
 
-    const API_BASE_URL = 'http://127.0.0.1:8000'; 
+    const API_BASE_URL = 'http://127.0.0.1:8000';
     const CHAT_ENDPOINT = '/api/chat';
     const LOGO_PATH = "assets/images/logo.png";
 
@@ -17,14 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuButton = document.getElementById('menuButton');
     const sidebar = document.getElementById('sidebar');
     const sidebarOverlay = document.getElementById('sidebarOverlay');
-    const mainContent = document.querySelector('main'); 
+    const mainContent = document.querySelector('main');
     const newSessionBtn = document.getElementById('newSessionBtn');
     const chatUploadBtn = document.getElementById('chatUploadBtn');
     const fileUploadInput = document.getElementById('fileUploadInput');
     const fileUploadStatus = document.getElementById('fileUploadStatus');
-    
     const filePreviewContainer = document.getElementById('filePreviewContainer');
-    
     const currentUserIdSpan = document.getElementById('currentUserId');
     const userIdInput = document.getElementById('userIdInput');
     const setUserIdBtn = document.getElementById('setUserIdBtn');
@@ -33,13 +31,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadSession();
 
-    chatForm.addEventListener('submit', handleChatSubmit); 
+    chatForm.addEventListener('submit', handleChatSubmit);
     menuButton.addEventListener('click', toggleSidebar);
     sidebarOverlay.addEventListener('click', toggleSidebar);
     newSessionBtn.addEventListener('click', handleNewSession);
     setUserIdBtn.addEventListener('click', handleSetUserId);
     chatUploadBtn.addEventListener('click', () => fileUploadInput.click());
-    fileUploadInput.addEventListener('change', handleFileStage); 
+    fileUploadInput.addEventListener('change', handleFileStage);
 
     filePreviewContainer.addEventListener('click', (e) => {
         if (e.target.classList.contains('file-chip-remove') || e.target.closest('.file-chip-remove')) {
@@ -59,29 +57,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-
     function loadSession() {
-        const storedUserId = sessionStorage.getItem(USER_ID_STORAGE_KEY);
-        if (storedUserId) {
-            setUserId(storedUserId);
-        }
+        const storedUserId = localStorage.getItem(USER_ID_STORAGE_KEY);
+        if (storedUserId) setUserId(storedUserId);
     }
 
     function setUserId(userId) {
-        if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
-            console.warn("Invalid User ID passed to setUserId");
-            return;
-        }
+        if (!userId || typeof userId !== 'string' || userId.trim().length === 0) return;
         currentUserId = userId.trim();
-        sessionStorage.setItem(USER_ID_STORAGE_KEY, currentUserId);
+        localStorage.setItem(USER_ID_STORAGE_KEY, currentUserId);
         updateUserIdUI(currentUserId);
     }
 
     function updateUserIdUI(userId) {
         currentUserIdSpan.textContent = userId || 'Not established';
-        if (userId) {
-            userIdInput.value = '';
-        }
+        if (userId) userIdInput.value = '';
     }
 
     function handleSetUserId() {
@@ -106,49 +96,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 addStatusMessageToChat(`Error clearing session: ${error.message}`);
             }
         }
-
-        sessionStorage.removeItem(USER_ID_STORAGE_KEY);
+        localStorage.removeItem(USER_ID_STORAGE_KEY);
         currentUserId = null;
         updateUserIdUI(null);
         chatLog.innerHTML = '';
         addStartupMessage();
-        fileUploadStatus.innerHTML = ''; 
-        clearStagedFiles(); 
+        fileUploadStatus.innerHTML = '';
+        clearStagedFiles();
     }
 
     function handleFileStage(e) {
         const files = e.target.files;
         if (!files) return;
-
         if (stagedFiles.length + files.length > MAX_FILES) {
             alert(`You can only upload a maximum of ${MAX_FILES} files.`);
             e.target.value = null;
             return;
         }
-
         for (const file of files) {
             const fileId = crypto.randomUUID();
             const fileWithId = { id: fileId, file: file };
             stagedFiles.push(fileWithId);
             addFileChip(fileWithId);
         }
-        
-        e.target.value = null; 
+        e.target.value = null;
     }
 
     function addFileChip(fileWithId) {
         const file = fileWithId.file;
         const fileId = fileWithId.id;
-        
-        filePreviewContainer.style.display = 'flex'; 
-
+        filePreviewContainer.style.display = 'flex';
         const chip = document.createElement('div');
         chip.className = 'file-chip';
-        chip.id = `file-chip-${fileId}`; 
-
+        chip.id = `file-chip-${fileId}`;
         const removeButtonHtml = `<button type="button" class="file-chip-remove" data-file-id="${fileId}">&times;</button>`;
         const fileNameHtml = `<span class="file-chip-name">${file.name.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</span>`;
-
         if (file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.onload = (event) => {
@@ -160,28 +142,17 @@ document.addEventListener('DOMContentLoaded', () => {
             };
             reader.readAsDataURL(file);
         } else {
-            chip.innerHTML = `
-                ${fileNameHtml}
-                ${removeButtonHtml}
-            `;
+            chip.innerHTML = `${fileNameHtml}${removeButtonHtml}`;
         }
-        
         filePreviewContainer.appendChild(chip);
     }
 
     function removeStagedFile(fileId) {
         stagedFiles = stagedFiles.filter(f => f.id !== fileId);
-        
         const chip = document.getElementById(`file-chip-${fileId}`);
-        if (chip) {
-            chip.remove();
-        }
-
-        if (stagedFiles.length === 0) {
-            filePreviewContainer.style.display = 'none';
-        }
+        if (chip) chip.remove();
+        if (stagedFiles.length === 0) filePreviewContainer.style.display = 'none';
     }
-
 
     function clearStagedFiles() {
         stagedFiles = [];
@@ -190,80 +161,63 @@ document.addEventListener('DOMContentLoaded', () => {
         fileUploadInput.value = null;
     }
 
-
     async function handleChatSubmit(e) {
-        e.preventDefault(); 
+        e.preventDefault();
         const message = userInput.value.trim();
-        
         if (!message && stagedFiles.length === 0) return;
-
         if (!currentUserId) setUserId(crypto.randomUUID());
 
         const formData = new FormData();
         formData.append('query', message);
         formData.append('user_id', currentUserId);
-        
+
         const fileNames = [];
         for (const fileWithId of stagedFiles) {
             formData.append('files', fileWithId.file, fileWithId.file.name);
             fileNames.push(fileWithId.file.name);
         }
-        
-        if (fileNames.length > 0) {
-            addMessageToChat('user', message, fileNames); 
-        } else {
-            addMessageToChat('user', message, null);
-        }
 
+        addMessageToChat('user', message, fileNames.length > 0 ? fileNames : null);
         userInput.value = '';
-        clearStagedFiles(); 
+        clearStagedFiles();
         toggleForm(false);
-        addMessageToChat('ai', '...', 'typing');
+        addMessageToChat('ai', '...', [], 'typing');
 
         try {
             const response = await fetch(`${API_BASE_URL}${CHAT_ENDPOINT}`, {
                 method: 'POST',
-                body: formData 
+                body: formData
             });
-
             const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.detail || `${response.status} ${response.statusText}`);
 
-            if (!response.ok) {
-                const detail = data.detail || `${response.status} ${response.statusText}`;
-                throw new Error(detail);
+            console.log('API Response:', data);
+            removeTypingIndicator();
+
+            let aiResponse =
+                data.answer || data.response || data.message || data.output || data.result || null;
+
+            // --- FIX: handle nested objects and arrays ---
+            if (typeof aiResponse === 'object' && aiResponse !== null) {
+                aiResponse = aiResponse.text || aiResponse.content || JSON.stringify(aiResponse, null, 2);
             }
-
-            console.log(" API Response:", data);
-
-            const aiResponse =
-                data.answer ||
-                data.response ||
-                data.message ||
-                data.output ||
-                data.result ||
-                (typeof data === 'string' ? data : null);
+            if (Array.isArray(aiResponse)) {
+                aiResponse = aiResponse.join('\n');
+            }
 
             if (data.user_id) setUserId(data.user_id);
-            
-            removeTypingIndicator();
-
-            if (aiResponse) {
-                addMessageToChat('ai', aiResponse);
-            } else {
-                addMessageToChat('ai', ' No readable response from backend.');
-            }
+            addMessageToChat('ai', aiResponse || 'No readable response from backend.');
 
         } catch (error) {
-            console.error(' Error fetching AI response:', error);
+            console.error('Error fetching AI response:', error);
             removeTypingIndicator();
-            addMessageToChat('ai', ` Error: ${error.message}`);
+            addMessageToChat('ai', `Error: ${error.message}`);
         } finally {
             toggleForm(true);
             userInput.focus();
         }
     }
-    
-    
+
     function addStatusMessageToChat(message) {
         const wrapper = document.createElement('div');
         wrapper.className = 'flex justify-center my-2';
@@ -277,46 +231,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addMessageToChat(sender, message, fileNames = null, type = 'message') {
         const wrapper = document.createElement('div');
-
         if (sender === 'user') {
             wrapper.className = 'flex justify-end mb-2';
-            
-            let fileChipsHtml = '';
-            if (fileNames && fileNames.length > 0) {
-                const chips = fileNames.map(name => `
-                    <span class="text-xs px-3 py-1 bg-purple-800 rounded-full">
-                        ${name.replace(/</g, "&lt;").replace(/>/g, "&gt;")}
-                    </span>
-                `).join('');
-                
-                fileChipsHtml = `
-                    <div class="mt-2 border-t border-fuchsia-800 pt-2 flex flex-wrap gap-2">
-                        ${chips}
-                    </div>`;
-            }
-
             wrapper.innerHTML = `
                 <div class="flex items-start space-x-3 max-w-lg">
                     <div class="bg-fuchsia-700 text-white rounded-lg rounded-tr-none p-4 shadow-md">
-                        <p class="text-sm"></p>
-                        ${fileChipsHtml}
+                        <p class="text-sm">${message}</p>
+                        ${fileNames ? `<div class="mt-2 border-t border-fuchsia-800 pt-2 flex flex-wrap gap-2">
+                            ${fileNames.map(name => `<span class="text-xs px-3 py-1 bg-purple-800 rounded-full">${name}</span>`).join('')}
+                        </div>` : ''}
                     </div>
-                    <div class="w-9 h-9 rounded-full bg-purple-700 flex items-center justify-center font-semibold flex-shrink-0">U</div>
+                    <div class="w-9 h-9 rounded-full bg-purple-700 flex items-center justify-center font-semibold">U</div>
                 </div>`;
-            
-            if (message) {
-                wrapper.querySelector('p').textContent = message;
-            } else {
-                wrapper.querySelector('p').remove(); 
-            }
-
-        } else { 
+        } else {
             wrapper.className = 'flex items-start space-x-3 mb-2';
             if (type === 'typing') {
                 wrapper.id = 'typing-indicator';
                 wrapper.innerHTML = `
-                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <img src="${LOGO_PATH}" alt="Agent Logo" class="w-9 h-9 rounded-lg">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center">
+                        <img src="${LOGO_PATH}" class="w-9 h-9 rounded-lg">
                     </div>
                     <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 shadow-md">
                         <div class="flex space-x-1">
@@ -327,13 +260,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>`;
             } else {
                 wrapper.innerHTML = `
-                    <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <img src="${LOGO_PATH}" alt="Agent Logo" class="w-9 h-9 rounded-lg">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center">
+                        <img src="${LOGO_PATH}" class="w-9 h-9 rounded-lg">
                     </div>
                     <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
-                        <p class="text-sm"></p>
+                        <p class="text-sm chat-message-text"></p>
                     </div>`;
-                wrapper.querySelector('p').innerText = message;
+                wrapper.querySelector('p').textContent = message;
             }
         }
         chatLog.appendChild(wrapper);
@@ -344,17 +277,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const wrapper = document.createElement('div');
         wrapper.className = 'flex items-start space-x-3';
         wrapper.innerHTML = `
-            <div class="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0">
-              <img src="assets/images/logo.jpg" alt="Devis AI Logo" class="w-9 h-9 rounded-lg">
+            <div class="w-9 h-9 rounded-lg flex items-center justify-center">
+                <img src="assets/images/logo.png" class="w-9 h-9 rounded-lg">
             </div>
             <div class="bg-neutral-800 rounded-lg rounded-tl-none p-4 max-w-lg shadow-md">
-              <p class="text-sm mb-3">Hello! I'm Devis AI, your AI research assistant. A new session has started. You can ask me questions or upload documents (using the paperclip icon below) for me to analyze.</p>
-              <p class="text-sm font-medium mb-3 text-neutral-300">Here are some things you can try:</p>
-              <ul class="list-none space-y-2">
-                <li><button class="suggestion-btn">"Summarize the uploaded document(s)."</button></li>
-                <li><button class="suggestion-btn">"What are the key findings about [topic]?"</button></li>
-                <li><button class="suggestion-btn">"Compare the contents of the uploaded files."</button></li>
-              </ul>
+                <p class="text-sm mb-3">Hello! I'm Taskera AI. A new session has started. You can ask me questions or upload documents.</p>
+                <p class="text-sm font-medium mb-3 text-neutral-300">Here are some things you can try:</p>
+                <ul class="list-none space-y-2">
+                    <li><button class="suggestion-btn">"Summarize the uploaded document(s)."</button></li>
+                    <li><button class="suggestion-btn">"What are the key findings about [topic]?"</button></li>
+                    <li><button class="suggestion-btn">"Compare the contents of the uploaded files."</button></li>
+                </ul>
             </div>`;
         chatLog.appendChild(wrapper);
         chatLog.scrollTop = chatLog.scrollHeight;
@@ -374,9 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleSidebar(forceState) {
         const isOpen = !sidebar.classList.contains('-translate-x-full');
         let newState = !isOpen;
-        if (typeof forceState === 'boolean') {
-            newState = forceState;
-        }
+        if (typeof forceState === 'boolean') newState = forceState;
         if (newState) {
             sidebar.classList.remove('-translate-x-full');
             mainContent.classList.add('md:ml-64');
@@ -394,4 +325,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatLog.innerHTML = '';
     addStartupMessage();
-})
+});

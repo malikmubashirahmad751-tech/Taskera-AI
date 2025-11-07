@@ -100,7 +100,7 @@ async def handle_chat_query(
     if has_docs_for_rag:
         try:
             logger.info(f"Document(s) detected. Indexing RAG for user '{user_id}'.")
-            create_rag_tool(api_key=settings.openai_api_key, user_id=user_id)
+            create_rag_tool(api_key=settings.gemini_api_key, user_id=user_id)
             logger.info(f"RAG tool re-indexed for user '{user_id}'.")
         except Exception as e:
             logger.error(f"Failed to index RAG for user '{user_id}': {e}")
@@ -179,7 +179,7 @@ def delete_file(user_id: str, filename: str):
         raise HTTPException(status_code=404, detail="File not found or error during deletion.")
     try:
         logger.info(f"Re-indexing RAG for user '{user_id}' after file deletion.")
-        create_rag_tool(api_key=settings.openai_api_key, user_id=user_id)
+        create_rag_tool(api_key=settings.gemini_api_key, user_id=user_id)
     except Exception as e:
         logger.error(f"Failed to re-index RAG after deleting file for user '{user_id}': {e}")
     

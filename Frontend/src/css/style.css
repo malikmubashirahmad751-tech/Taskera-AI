@@ -2,7 +2,6 @@ body {
     font-family: 'Inter', sans-serif;
 }
 
-
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
@@ -16,7 +15,6 @@ body {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #737373; 
 }
-
 
 .typing-dot {
     animation: pulse 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -32,44 +30,49 @@ body {
     50% { opacity: 0.3; }
 }
 
-    .suggestion-btn {
-      background-color: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 8px 12px;
-      border-radius: 8px;
-      width: 100%;
-      text-align: left;
-      font-weight: 500;
-      color: #c084fc; 
-      transition: all 0.2s ease;
-    }
-    .suggestion-btn:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-color: #c084fc;
-    }
-    
-    #filePreviewContainer {
-      display: none; 
-      padding: 8px;
-      margin-bottom: 8px;
-      border-top: 1px solid #3f3f46; 
-    }
-    .file-chip {
-      display: inline-flex;
-      align-items: center;
-      background-color: #3f3f46;
-      border-radius: 9999px;
-      padding: 4px 12px;
-      font-size: 0.875rem;
-      font-weight: 500;
-    }
-    .file-chip-remove {
-      margin-left: 8px;
-      background: none;
-      border: none;
-      color: #a1a1aa;
-      cursor: pointer;
-    }
-    .file-chip-remove:hover {
-      color: white;
-    }
+.suggestion-btn {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: left;
+    font-weight: 500;
+    color: #c084fc; 
+    transition: all 0.2s ease;
+}
+.suggestion-btn:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #c084fc;
+}
+
+#filePreviewContainer {
+    display: none; 
+    padding: 8px;
+    margin-bottom: 8px;
+    border-top: 1px solid #3f3f46; 
+}
+.file-chip {
+    display: inline-flex;
+    align-items: center;
+    background-color: #3f3f46;
+    border-radius: 9999px;
+    padding: 4px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+.file-chip-remove {
+    margin-left: 8px;
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+}
+.file-chip-remove:hover {
+    color: white;
+}
+
+.chat-message-text {
+    white-space: pre-wrap; 
+    word-break: break-word;
+}
