@@ -1,13 +1,13 @@
 import os
 import asyncio
 from langchain_core.tools import StructuredTool, tool
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from app.core.config import settings
 from playwright.async_api import async_playwright
 from langchain_community.tools import DuckDuckGoSearchRun, WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper, OpenWeatherMapAPIWrapper
 
-llm = ChatOpenAI(api_key=settings.openai_api_key, model="gpt-3.5-turbo", temperature=0)
+llm = ChatGoogleGenerativeAI(api_key=settings.gemini_api_key, model="gemini-2.5-flash", temperature=0)
 
 search = DuckDuckGoSearchRun()
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(wiki_client=None))
@@ -31,6 +31,8 @@ wiki_tool = StructuredTool.from_function(
     description="Fetches live data from Wikipedia based on the query."
 )
 
+
+
 openweathermap_api_key = os.getenv("YOUR_OPENWEATHERMAP_API_KEY")
 weather_wrapper = OpenWeatherMapAPIWrapper(openweathermap_api_key=openweathermap_api_key)
 
@@ -52,6 +54,8 @@ weather_tool = StructuredTool.from_function(
     description="Get current weather for a given city and country code, e.g., 'London, UK'. If city not provided, it asks for one."
 )
 
+
+
 def latest_news_tool_function(headline: str) -> str:
     """Fetches the latest news."""
     try:
@@ -65,6 +69,8 @@ latest_news_tool = StructuredTool.from_function(
     func=latest_news_tool_function,
     description="Fetches the latest news."
 )
+
+
 
 def calculator_tool_function(expression: str) -> str:
     """Evaluates basic mathematical expressions safely."""
@@ -83,6 +89,8 @@ calculator_tool = StructuredTool.from_function(
     description="Performs basic arithmetic calculations like addition, subtraction, multiplication, and division."
 )
 
+
+
 def summarize_text(text: str) -> str:
     """Summarize a given text input."""
     response = llm.invoke([
@@ -99,6 +107,8 @@ summarize_tool = StructuredTool.from_function(
     func=summarize_text,
     description="Summarizes any given text or query into a concise summary."
 )
+
+
 
 def translator_tool_function(text: str, target_language: str = "English") -> str:
     """Translates text into the specified target language."""
@@ -119,6 +129,9 @@ translator_tool = StructuredTool.from_function(
     func=translator_tool_function,
     description="Translates text into a specified language. Provide 'text' and 'target_language'."
 )
+
+
+
 
 PREDEFINED_SOURCES = {
     "general": [

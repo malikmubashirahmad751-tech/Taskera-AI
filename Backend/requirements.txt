@@ -1,8 +1,9 @@
 langchain
 wikipedia 
 langchain-community 
-langchain-openai
+langchain-google-genai
 langchain-anthropic
+google-generativeai
 python-dotenv
 pydantic
 duckduckgo-search
@@ -10,10 +11,12 @@ fastapi
 chromadb
 langchain-chroma
 unstructured
-openai
 ddgs
 unstructured
 supabase
 apscheduler
 uvicorn
 dateparser
+playwright
+pytesseract
+pyowm

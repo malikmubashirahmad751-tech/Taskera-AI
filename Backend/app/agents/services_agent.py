@@ -23,7 +23,6 @@ def schedule_research_task(query: str, run_date_iso: str):
     except Exception as e:
         return f"An unexpected error occurred: {e}"
 
-# === Calendar Tool ===
 Action = Literal["create", "list", "update", "delete"]
 
 @tool

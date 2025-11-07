@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 from typing import TypedDict, Annotated, Sequence, List
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import BaseMessage
 from langgraph.graph import StateGraph, END
@@ -24,11 +24,11 @@ from app.agents.tools_agent import (
 from app.services.ocr_service import image_text_extractor
 
 
-llm = ChatOpenAI(
-    model="gpt-3.5-turbo",
+llm =ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash"
     temperature=0,
-    api_key=settings.openai_api_key
-)
+    api_key=settings.gemini_api_key)
+
 
 static_tools = [
     wiki_tool,
@@ -51,7 +51,7 @@ class AgentState(TypedDict):
 def get_full_tool_list(user_id: str) -> List:
     """Return the full list of tools for a specific user, including RAG tool."""
     try:
-        user_rag_tool = create_rag_tool(api_key=settings.openai_api_key, user_id=user_id)
+        user_rag_tool = create_rag_tool(api_key=settings.gemini_api_key, user_id=user_id)
         return [user_rag_tool] + static_tools
     except Exception as e:
         logger.error(f"Failed to create RAG tool for user {user_id}: {e}. Proceeding without it.")
