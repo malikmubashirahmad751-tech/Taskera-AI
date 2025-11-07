@@ -33,7 +33,7 @@ wiki_tool = StructuredTool.from_function(
 
 
 
-openweathermap_api_key = os.getenv("YOUR_OPENWEATHERMAP_API_KEY")
+openweathermap_api_key = os.getenv("OPENWEATHERMAP_API_KEY")
 weather_wrapper = OpenWeatherMapAPIWrapper(openweathermap_api_key=openweathermap_api_key)
 
 def weather_search(location: str = "") -> str:
@@ -158,7 +158,7 @@ PREDEFINED_SOURCES = {
 }
 
 @tool
-def headless_browser_search(query: str) -> str:
+async def headless_browser_search(query: str) -> str:
     """
     Uses a headless browser (Playwright) to fetch data from predefined URLs
     and extract meaningful text related to the query.
@@ -171,13 +171,12 @@ def headless_browser_search(query: str) -> str:
                 page = await context.new_page()
 
                 collected_texts = []
-
                 search_url = f"https://www.google.com/search?q={query}"
-                
+
                 try:
                     await page.goto(search_url, timeout=20000)
                     await asyncio.sleep(2) 
-                    
+
                     content = await page.evaluate("""
                         () => {
                             const body = document.body.innerText;
@@ -186,10 +185,10 @@ def headless_browser_search(query: str) -> str:
                     """)
                     if content:
                         collected_texts.append(f"--- Source: {search_url} ---\n{content.strip()}\n")
-                
+
                 except Exception as e:
                     collected_texts.append(f"[Error accessing {search_url}: {e}]")
-                
+
                 await browser.close()
 
                 if not collected_texts:
@@ -199,4 +198,4 @@ def headless_browser_search(query: str) -> str:
         except Exception as e:
             return f"Error running Playwright: {e}"
 
-    return asyncio.run(run_playwright())
+    return await run_playwright()

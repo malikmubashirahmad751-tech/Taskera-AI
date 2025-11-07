@@ -25,7 +25,7 @@ from app.services.ocr_service import image_text_extractor
 
 
 llm =ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash"
+    model="gemini-2.5-flash",
     temperature=0,
     api_key=settings.gemini_api_key)
 
