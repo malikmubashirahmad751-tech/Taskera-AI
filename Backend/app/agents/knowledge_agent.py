@@ -1,5 +1,5 @@
 import os
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters.character import RecursiveCharacterTextSplitter
 from langchain_core.tools import StructuredTool
 from app.core.logger import logger
@@ -16,7 +16,7 @@ def create_rag_tool(api_key: str, user_id: str):
     os.makedirs(DATA_PATH, exist_ok=True)
     os.makedirs(user_upload_path, exist_ok=True)
 
-    embeddings = OpenAIEmbeddings(api_key=api_key, model="text-embedding-3-small")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
     db = _get_or_create_user_chroma(user_id, embeddings)
 

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const API_BASE_URL = 'http://127.0.0.1:8000'; 
     const CHAT_ENDPOINT = '/api/chat';
-    const LOGO_PATH = "assets/images/logo.jpg";
+    const LOGO_PATH = "assets/images/logo.png";
 
     const chatLog = document.getElementById('chatLog');
     const chatForm = document.getElementById('chatForm');
@@ -394,4 +394,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatLog.innerHTML = '';
     addStartupMessage();
-});
+})
