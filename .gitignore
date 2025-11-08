@@ -25,3 +25,14 @@ backend/chroma_db/
 
 # OS
 .DS_Store
+
+Frontend/node_modules/
+Frontend/.env
+Frontend/.next/
+Frontend/build/
+
+# Python / Backend
+Backend/venv/
+Backend/.venv/
+Backend/.env
+Backend/__pycache__/
