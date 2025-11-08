@@ -1,0 +1,783 @@
+2025-11-05 04:11:11,112 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-05 04:11:19,495 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-05 04:11:19,637 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-05 04:11:19,638 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-05 04:11:19,638 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-05 04:11:19,639 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-05 04:12:19,784 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-05 04:12:19,785 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-05 05:21:30,990 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-05 05:21:39,999 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-05 05:21:40,138 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-05 05:21:40,139 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-05 05:21:40,140 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-05 05:21:40,141 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-05 05:21:52,995 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:21:52,995 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'hello...'
+2025-11-05 05:21:52,999 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:21:54,699 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-05 05:21:55,595 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:21:57,875 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:21:57,895 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:00,666 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'hello...'
+2025-11-05 05:22:00,668 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:01,845 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:04,226 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:22:04,229 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:27,586 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'tell me about the weather?...'
+2025-11-05 05:22:27,598 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:28,759 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:30,173 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:22:30,181 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:33,936 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'Okara...'
+2025-11-05 05:22:33,943 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:35,143 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:36,309 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:22:37,410 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:38,494 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:39,589 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:42,205 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:22:46,295 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'exelent...'
+2025-11-05 05:22:46,304 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:22:47,471 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:22:50,423 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:22:50,432 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:23:11,573 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'what is 5734958637345868+654378658465348654365736...'
+2025-11-05 05:23:11,587 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:23:12,748 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:23:14,043 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:23:15,135 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:23:15,142 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:23:16,290 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:23:17,662 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:25:42,620 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'add a schedule for next week meeting with boss ,not getting new projects...'
+2025-11-05 05:25:42,625 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:25:43,812 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:25:45,823 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:25:46,983 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:25:51,852 [INFO] httpx : HTTP Request: POST https://bhhszlsamglgxggpughw.supabase.co/rest/v1/events "HTTP/2 201 Created"
+2025-11-05 05:25:51,856 [INFO] apscheduler.scheduler : Added job "run_research_task" to job store "default"
+2025-11-05 05:25:51,856 [INFO] app.logger : [Scheduler] Task 'run_research_task' scheduled for 2025-11-12 05:25:46.991047 (job_id=42)
+2025-11-05 05:25:51,857 [INFO] app.logger : [Calendar] Event 'Meeting with Boss' (ID: 42) scheduled for 2025-11-12 05:25:46.991047
+2025-11-05 05:25:51,859 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:25:52,964 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:25:53,798 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:27:44,162 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'delete all the events and schedule...'
+2025-11-05 05:27:44,171 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:27:45,345 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:27:46,159 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:27:47,278 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:27:47,287 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:27:48,379 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:27:49,447 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:27:49,457 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:28:00,711 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': '42...'
+2025-11-05 05:28:00,716 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:28:01,877 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:28:03,099 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:28:03,115 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:28:34,473 [INFO] app.logger : 1 file(s) detected for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'
+2025-11-05 05:28:34,476 [INFO] app.logger : File for user 'f2556102-f6c8-45f5-9f83-8a828cb14578' saved to: user_files\f2556102-f6c8-45f5-9f83-8a828cb14578\logo.png
+2025-11-05 05:28:34,477 [INFO] app.logger : Image file detected: logo.png. Running OCR.
+2025-11-05 05:28:34,480 [INFO] app.services.ocr_service : Attempting to extract text for user 'f2556102-f6c8-45f5-9f83-8a828cb14578' from file 'logo.png'
+2025-11-05 05:28:35,592 [INFO] app.services.ocr_service : Successfully extracted text from 'logo.png' for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:28:35,593 [INFO] app.logger : Successfully extracted text from logo.png
+2025-11-05 05:28:35,593 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'The user has also uploaded 1 image(s): logo.png. I have extracted the following text from them:
+
+--- Text from 'logo.png' ---
+Extracted text from 'logo.png':
+
+®)
+
+j—
+
+
+The user's prompt is: 'tell me about this picture'. Please answer it using the con...'
+2025-11-05 05:28:35,596 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:28:36,745 [INFO] app.logger : Skipping unsupported file type: logo.png
+2025-11-05 05:28:36,745 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:28:37,737 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:29:12,816 [INFO] app.logger : 1 file(s) detected for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'
+2025-11-05 05:29:12,818 [INFO] app.logger : File for user 'f2556102-f6c8-45f5-9f83-8a828cb14578' saved to: user_files\f2556102-f6c8-45f5-9f83-8a828cb14578\logo.png
+2025-11-05 05:29:12,820 [INFO] app.logger : Image file detected: logo.png. Running OCR.
+2025-11-05 05:29:12,822 [INFO] app.services.ocr_service : Attempting to extract text for user 'f2556102-f6c8-45f5-9f83-8a828cb14578' from file 'logo.png'
+2025-11-05 05:29:13,937 [INFO] app.services.ocr_service : Successfully extracted text from 'logo.png' for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:29:13,938 [INFO] app.logger : Successfully extracted text from logo.png
+2025-11-05 05:29:13,938 [INFO] app.logger : Sending final prompt to graph for user 'f2556102-f6c8-45f5-9f83-8a828cb14578': 'The user has also uploaded 1 image(s): logo.png. I have extracted the following text from them:
+
+--- Text from 'logo.png' ---
+Extracted text from 'logo.png':
+
+®)
+
+j—
+
+
+The user's prompt is: 'tell me about this picture'. Please answer it using the con...'
+2025-11-05 05:29:13,941 [INFO] app.logger : Agent node executing for user: f2556102-f6c8-45f5-9f83-8a828cb14578
+2025-11-05 05:29:15,051 [INFO] app.logger : Skipping unsupported file type: logo.png
+2025-11-05 05:29:15,051 [INFO] app.logger : No documents found to index for user 'f2556102-f6c8-45f5-9f83-8a828cb14578'.
+2025-11-05 05:29:16,831 [INFO] httpx : HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-11-05 05:30:01,908 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-05 05:30:01,909 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 04:19:56,453 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 04:19:56,458 [ERROR] fastapi : Form data requires "python-multipart" to be installed. 
+You can install "python-multipart" with: 
+
+pip install python-multipart
+
+2025-11-07 04:20:37,669 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 04:20:44,708 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 04:20:44,912 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 04:20:44,914 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 04:20:44,914 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 04:20:44,916 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 04:40:07,005 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:40:07,010 [INFO] app.logger : Sending final prompt to graph for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c': 'hello...'
+2025-11-07 04:40:07,021 [INFO] app.logger : Agent node executing for user: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:40:07,153 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 04:40:07,962 [INFO] app.logger : No documents found to index for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c'.
+2025-11-07 04:40:09,704 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:40:26,413 [INFO] app.logger : Sending final prompt to graph for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c': 'can u tell me what are the latest news...'
+2025-11-07 04:40:26,422 [INFO] app.logger : Agent node executing for user: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:40:26,441 [INFO] app.logger : No documents found to index for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c'.
+2025-11-07 04:40:27,549 [INFO] app.logger : No documents found to index for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c'.
+2025-11-07 04:40:27,558 [INFO] app.logger : Agent node executing for user: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:40:27,563 [INFO] app.logger : No documents found to index for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c'.
+2025-11-07 04:41:00,423 [INFO] app.logger : Sending final prompt to graph for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c': 'tell me about the weather...'
+2025-11-07 04:41:00,433 [INFO] app.logger : Agent node executing for user: 6d8f513d-c145-4edc-bd1c-e257aed2ba9c
+2025-11-07 04:41:00,456 [INFO] app.logger : No documents found to index for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c'.
+2025-11-07 04:41:01,617 [ERROR] app.logger : Error processing query for user '6d8f513d-c145-4edc-bd1c-e257aed2ba9c': 'list' object has no attribute 'strip'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\routes\api.py", line 161, in handle_chat_query
+    update_session_on_response(user_id, result)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\app\core\memory_manager.py", line 60, in update_session_on_response
+    is_question = agent_response.strip().endswith("?")
+                  ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'strip'
+2025-11-07 04:48:12,917 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 04:48:12,919 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 04:48:37,855 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 04:48:37,929 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 04:48:37,930 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 04:48:37,930 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 04:48:37,931 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 04:49:12,176 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 04:49:12,178 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-07 04:49:12,187 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 04:49:12,279 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 04:49:12,775 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 04:49:14,041 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: bash-dev
+2025-11-07 04:51:58,509 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-07 04:51:58,511 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 04:51:58,517 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 04:51:59,812 [INFO] app.logger : [Session] AI asked a question → shorter expiry (300s) for user: bash-dev
+2025-11-07 04:52:13,450 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can you tell me about the weather...'
+2025-11-07 04:52:13,453 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 04:52:13,458 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:02:58,118 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 05:02:58,119 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 05:03:10,624 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 05:03:10,777 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 05:03:10,779 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 05:03:10,783 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 05:03:10,784 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 05:03:22,926 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 05:03:22,927 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-07 05:03:22,930 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:03:23,025 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 05:03:23,303 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:03:24,543 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 05:03:42,280 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather today......'
+2025-11-07 05:03:42,293 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:03:42,304 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:04:33,682 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-07 05:04:33,685 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:04:33,699 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:04:34,775 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 05:04:55,125 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather update today......'
+2025-11-07 05:04:55,130 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:04:55,138 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:07:06,458 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-07 05:07:06,460 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:07:06,466 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:07:08,456 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 05:07:16,850 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather today...'
+2025-11-07 05:07:16,856 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:07:16,872 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:12:50,494 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 05:12:50,495 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 05:21:32,356 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 05:21:39,660 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 05:21:39,732 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 05:21:39,733 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 05:21:39,734 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 05:21:39,735 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 05:21:49,335 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 05:21:49,335 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the latest news in pakistan...'
+2025-11-07 05:21:49,339 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:21:49,433 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 05:21:49,720 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:21:51,359 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:21:51,369 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:21:51,376 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:22:31,358 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'what can you do for mr...'
+2025-11-07 05:22:31,362 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 05:22:31,373 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 05:27:39,242 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 05:27:39,243 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 05:59:43,794 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 05:59:52,975 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 05:59:53,045 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 05:59:53,046 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 05:59:53,046 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 05:59:53,047 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:01:11,020 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 06:01:11,021 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hello...'
+2025-11-07 06:01:11,025 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:01:11,135 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 06:01:11,422 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:01:12,958 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 06:01:58,385 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'schedule a meeting for me next week at 9am with Mr.Tehmoor...'
+2025-11-07 06:01:58,392 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:01:58,410 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:01:59,706 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:02:02,168 [INFO] httpx : HTTP Request: POST https://bhhszlsamglgxggpughw.supabase.co/rest/v1/events "HTTP/2 201 Created"
+2025-11-07 06:02:02,175 [INFO] apscheduler.scheduler : Added job "run_research_task" to job store "default"
+2025-11-07 06:02:02,176 [INFO] app.logger : [Scheduler] Task 'run_research_task' scheduled for 2025-11-14 09:00:00 (job_id=43)
+2025-11-07 06:02:02,176 [INFO] app.logger : [Calendar] Event 'Meeting with Mr.Tehmoor' (ID: 43) scheduled for 2025-11-14 09:00:00
+2025-11-07 06:02:02,179 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:02:02,186 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:04:17,075 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'remove the id 43 scheduled meeting...'
+2025-11-07 06:04:17,086 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:04:17,104 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:04:18,214 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:04:20,144 [INFO] httpx : HTTP Request: DELETE https://bhhszlsamglgxggpughw.supabase.co/rest/v1/events?id=eq.43 "HTTP/2 200 OK"
+2025-11-07 06:04:20,145 [INFO] apscheduler.scheduler : Removed job 43
+2025-11-07 06:04:20,146 [INFO] app.logger : [Scheduler] Task '43' removed from scheduler.
+2025-11-07 06:04:20,146 [INFO] app.logger : [Calendar] Event 43 deleted successfully.
+2025-11-07 06:04:20,148 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:04:20,153 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:04:50,805 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather...'
+2025-11-07 06:04:50,815 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:04:50,836 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:04:59,149 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'its OKara...'
+2025-11-07 06:04:59,157 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:04:59,172 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:05:00,543 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:05:01,420 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 06:05:01,426 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 06:21:31,943 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:21:31,944 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 06:21:42,728 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 06:21:42,799 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 06:21:42,800 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 06:21:42,800 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 06:21:42,801 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:26:31,898 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:26:31,899 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 06:26:54,872 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 06:26:54,948 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 06:26:54,949 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 06:26:54,949 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 06:26:54,950 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:28:13,955 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:28:13,956 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 06:28:24,480 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 06:28:24,556 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 06:28:24,556 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 06:28:24,557 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 06:28:24,561 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:30:01,045 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:30:01,047 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 06:30:12,654 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 06:30:12,730 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 06:30:12,730 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 06:30:12,731 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 06:30:12,732 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:31:33,819 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:31:33,820 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 06:32:04,703 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 06:32:04,771 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 06:32:04,771 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 06:32:04,772 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 06:32:04,774 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 06:42:24,070 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:42:24,071 [INFO] app.logger : Sending final prompt to graph for user '7912db59-29fa-4bc6-bba2-dfaca56f827b': 'hello...'
+2025-11-07 06:42:24,074 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:42:24,180 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 06:42:24,728 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:42:25,737 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:42:29,944 [INFO] app.logger : Sending final prompt to graph for user '7912db59-29fa-4bc6-bba2-dfaca56f827b': 'kesa ham ap...'
+2025-11-07 06:42:29,950 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:42:29,968 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:42:44,738 [INFO] app.logger : Sending final prompt to graph for user '7912db59-29fa-4bc6-bba2-dfaca56f827b': 'tell me about the weather...'
+2025-11-07 06:42:44,746 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:42:44,762 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:47:16,128 [INFO] app.logger : Sending final prompt to graph for user '7912db59-29fa-4bc6-bba2-dfaca56f827b': 'hello...'
+2025-11-07 06:47:16,130 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:47:16,135 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:47:17,784 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:47:21,726 [INFO] app.logger : Sending final prompt to graph for user '7912db59-29fa-4bc6-bba2-dfaca56f827b': 'kesa han ap...'
+2025-11-07 06:47:21,736 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:47:21,753 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:47:24,918 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:47:39,108 [INFO] app.logger : Agent node executing for user: 7912db59-29fa-4bc6-bba2-dfaca56f827b
+2025-11-07 06:47:39,113 [INFO] app.logger : No documents found to index for user '7912db59-29fa-4bc6-bba2-dfaca56f827b'.
+2025-11-07 06:48:45,295 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 06:48:45,296 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 07:55:26,693 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 07:55:33,090 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 07:55:33,142 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 07:55:33,143 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 07:55:33,144 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 07:55:33,145 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 07:55:42,634 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 07:55:42,634 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'helo...'
+2025-11-07 07:55:42,637 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:55:42,705 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 07:55:43,020 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:55:44,801 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 07:55:56,199 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can you tell me about the weather...'
+2025-11-07 07:55:56,203 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:55:56,222 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:56:12,893 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'i'm looking for the OKara...'
+2025-11-07 07:56:12,899 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:56:12,911 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:56:14,047 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:56:14,149 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=OKara): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-07 07:56:15,727 [INFO] primp : response: https://www.mojeek.com/search?q=OKara 200
+2025-11-07 07:56:16,606 [INFO] primp : response: https://yandex.com/search/site/?text=OKara&web=1&searchid=3523856 200
+2025-11-07 07:56:16,669 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:56:16,676 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:56:19,665 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 07:56:36,597 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'what you can do for me...'
+2025-11-07 07:56:36,607 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:56:36,615 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:56:38,396 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 07:57:07,243 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'what are the news updates in Pakistan...'
+2025-11-07 07:57:07,253 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:57:07,271 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:57:08,284 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 07:57:08,293 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 07:57:08,299 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:04:14,581 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 08:04:14,582 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 08:07:09,087 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 08:07:09,141 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 08:07:09,141 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 08:07:09,142 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 08:07:09,143 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 08:07:56,847 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 08:07:56,849 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hello...'
+2025-11-07 08:07:56,854 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:07:56,933 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 08:07:57,237 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:07:58,887 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 08:08:20,375 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the latest news in Pakistan...'
+2025-11-07 08:08:20,389 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:08:20,415 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:08:21,577 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:08:21,628 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:08:21,639 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:11:17,211 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 08:11:17,212 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 08:11:37,431 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 08:11:37,485 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 08:11:37,486 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 08:11:37,486 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 08:11:37,487 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 08:11:56,590 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 08:11:56,597 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather updates...'
+2025-11-07 08:11:56,615 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:11:56,683 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 08:11:56,972 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:12:05,836 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'for Okara City...'
+2025-11-07 08:12:05,843 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:12:05,859 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:12:07,161 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:12:07,168 [INFO] app.logger : Fetching weather for: Okara City
+2025-11-07 08:12:08,088 [ERROR] app.logger : Weather tool failed for 'Okara City': Unable to find the resource
+2025-11-07 08:12:08,091 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:12:08,097 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:14:19,353 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the latest news in the world...'
+2025-11-07 08:14:19,368 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:14:19,391 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:14:20,607 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:14:20,622 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:14:20,630 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:14:21,413 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 08:17:40,748 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 08:17:40,749 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 08:17:50,120 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 08:17:50,190 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 08:17:50,191 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 08:17:50,192 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 08:17:50,193 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 08:20:29,852 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 08:20:29,853 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 08:21:39,440 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 08:21:46,796 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 08:21:46,870 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 08:21:46,871 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 08:21:46,872 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 08:21:46,873 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 08:22:29,318 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 08:22:29,318 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the lastest news in the world...'
+2025-11-07 08:22:29,322 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:22:29,406 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 08:22:29,724 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:22:31,743 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:22:31,749 [INFO] app.logger : Fetching news for: world news
+2025-11-07 08:22:31,750 [ERROR] app.logger : News tool failed for 'world news': 'StructuredTool' object is not callable
+2025-11-07 08:22:31,752 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 08:22:31,757 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 08:31:55,874 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-07 08:31:55,875 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-07 23:40:39,270 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 23:40:45,615 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-07 23:40:45,691 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-07 23:40:45,691 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-07 23:40:45,692 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-07 23:40:45,693 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-07 23:41:01,204 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-07 23:41:01,206 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'Hello...'
+2025-11-07 23:41:01,210 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 23:41:01,324 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-07 23:41:01,837 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 23:41:03,674 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-07 23:43:03,475 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather today...'
+2025-11-07 23:43:03,481 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 23:43:03,491 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 23:43:19,919 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'OKara...'
+2025-11-07 23:43:19,924 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 23:43:19,935 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-07 23:46:28,517 [INFO] app.logger : 1 file(s) detected for user 'bash-dev'
+2025-11-07 23:46:28,518 [INFO] app.logger : File for user 'bash-dev' saved to: user_files\bash-dev\text.jpg
+2025-11-07 23:46:28,519 [INFO] app.logger : Image file detected: text.jpg. Running OCR.
+2025-11-07 23:46:28,521 [INFO] app.services.ocr_service : Attempting to extract text for user 'bash-dev' from file 'text.jpg'
+2025-11-07 23:46:29,192 [INFO] app.services.ocr_service : Successfully extracted text from 'text.jpg' for user 'bash-dev'.
+2025-11-07 23:46:29,193 [INFO] app.logger : Successfully extracted text from text.jpg
+2025-11-07 23:46:29,194 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'The user has also uploaded 1 image(s): text.jpg. I have extracted the following text from them:
+
+--- Text from 'text.jpg' ---
+Extracted text from 'text.jpg':
+
+This is a lot of 12 point text to test the
+ocr code and see if it works on all types
+of fil...'
+2025-11-07 23:46:29,196 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-07 23:46:29,203 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-07 23:46:29,204 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 00:10:45,701 [INFO] apscheduler.executors.default : Running job "clear_expired_sessions (trigger: interval[0:30:00], next run at: 2025-11-08 00:10:45 PST)" (scheduled at 2025-11-08 00:10:45.690889-08:00)
+2025-11-08 00:10:45,703 [INFO] apscheduler.executors.default : Job "clear_expired_sessions (trigger: interval[0:30:00], next run at: 2025-11-08 00:40:45 PST)" executed successfully
+2025-11-08 00:40:45,692 [INFO] apscheduler.executors.default : Running job "clear_expired_sessions (trigger: interval[0:30:00], next run at: 2025-11-08 01:10:45 PST)" (scheduled at 2025-11-08 00:40:45.690889-08:00)
+2025-11-08 00:40:45,693 [INFO] apscheduler.executors.default : Job "clear_expired_sessions (trigger: interval[0:30:00], next run at: 2025-11-08 01:10:45 PST)" executed successfully
+2025-11-08 00:51:34,551 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 00:51:34,552 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 00:51:56,953 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 00:51:57,137 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 00:51:57,138 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 00:51:57,138 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 00:51:57,139 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 00:54:07,568 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 00:54:07,569 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:26:07,856 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:26:20,700 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:26:20,790 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:26:20,791 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:26:20,792 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:26:20,799 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:36:06,883 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 01:36:06,884 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-08 01:36:06,888 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:36:07,002 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 01:36:07,332 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:36:07,333 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:36:08,990 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 01:36:25,640 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can you tell me about the weather updates...'
+2025-11-08 01:36:25,646 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:36:25,669 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:36:25,675 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:44:03,172 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 01:44:03,173 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:44:13,629 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:44:13,701 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:44:13,701 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:44:13,702 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:44:13,703 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:44:33,016 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 01:44:33,024 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'what is the weather update...'
+2025-11-08 01:44:33,031 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:44:33,137 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 01:44:33,412 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:44:33,412 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:44:35,155 [ERROR] app.logger : Error processing query for user 'bash-dev': 'str' object has no attribute 'content'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\routes\api.py", line 159, in handle_chat_query
+    result = result_message.content
+             ^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'content'
+2025-11-08 01:48:49,762 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 01:48:49,763 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:49:00,283 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:49:00,354 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:49:00,354 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:49:00,355 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:49:00,356 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:49:12,964 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 01:49:12,966 [INFO] app.logger : Dispatching prompt to agent for 'bash-dev'...
+2025-11-08 01:49:12,971 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:49:13,080 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 01:49:13,353 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:49:13,353 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:49:14,352 [ERROR] app.logger : Error in /api/chat for 'bash-dev': 500: Empty response from agent.
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\routes\api.py", line 162, in handle_chat_query
+    raise HTTPException(status_code=500, detail="Empty response from agent.")
+fastapi.exceptions.HTTPException: 500: Empty response from agent.
+2025-11-08 01:56:03,350 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 01:56:03,351 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:56:15,409 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:56:15,500 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:56:15,500 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:56:15,501 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:56:15,502 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:57:31,976 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 01:57:31,977 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:57:43,527 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:57:43,593 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:57:43,594 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:57:43,594 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:57:43,595 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:58:16,448 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 01:58:16,449 [INFO] app.logger : 1 file(s) uploaded by user 'bash-dev'
+2025-11-08 01:58:16,451 [INFO] app.logger : File 'text.jpg' saved for user 'bash-dev'
+2025-11-08 01:58:16,453 [INFO] app.services.ocr_service : [OCR] Starting text extraction for user='bash-dev', file='text.jpg'
+2025-11-08 01:58:17,024 [INFO] app.services.ocr_service : [OCR] Successfully extracted text from 'text.jpg' for user 'bash-dev'.
+2025-11-08 01:58:17,025 [INFO] app.logger : OCR success for 'text.jpg'
+2025-11-08 01:58:17,025 [INFO] app.logger : Dispatching prompt to agent for 'bash-dev'...
+2025-11-08 01:58:17,028 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:58:17,082 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 01:58:17,322 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:58:17,322 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:58:19,755 [WARNING] app.logger : Empty response from agent for user 'bash-dev'.
+2025-11-08 01:58:46,987 [INFO] app.logger : Dispatching prompt to agent for 'bash-dev'...
+2025-11-08 01:58:46,991 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:58:47,002 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:58:47,003 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:58:48,244 [WARNING] app.logger : Empty response from agent for user 'bash-dev'.
+2025-11-08 01:58:51,642 [INFO] app.logger : Dispatching prompt to agent for 'bash-dev'...
+2025-11-08 01:58:51,644 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:58:51,654 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:58:51,660 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:58:52,405 [WARNING] app.logger : Empty response from agent for user 'bash-dev'.
+2025-11-08 01:58:59,304 [INFO] app.logger : Dispatching prompt to agent for 'bash-dev'...
+2025-11-08 01:58:59,314 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:58:59,332 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:58:59,335 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:59:00,848 [WARNING] app.logger : Empty response from agent for user 'bash-dev'.
+2025-11-08 01:59:08,868 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 01:59:08,869 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 01:59:32,925 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 01:59:33,063 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 01:59:33,064 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 01:59:33,065 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 01:59:33,066 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 01:59:38,717 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 01:59:38,719 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hlo...'
+2025-11-08 01:59:38,727 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 01:59:38,828 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 01:59:39,122 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 01:59:39,123 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 01:59:40,769 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 02:00:08,327 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the weather...'
+2025-11-08 02:00:08,336 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 02:00:08,364 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:08,367 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:00:13,350 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'for okara...'
+2025-11-08 02:00:13,358 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 02:00:13,372 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:13,379 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:00:21,680 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'city...'
+2025-11-08 02:00:21,687 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 02:00:21,696 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:21,703 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:00:30,802 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'Okara city...'
+2025-11-08 02:00:30,810 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 02:00:30,824 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:30,828 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:00:31,982 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:31,982 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:00:31,988 [INFO] app.logger : Fetching weather for: Okara city
+2025-11-08 02:00:33,170 [ERROR] app.logger : Weather tool failed for 'Okara city': Unable to find the resource
+2025-11-08 02:00:33,174 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 02:00:33,181 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 02:00:33,182 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 02:12:29,724 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 02:12:29,725 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 03:48:23,916 [INFO] app.logger : Supabase client created successfully
+2025-11-08 03:48:24,366 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 03:48:43,746 [INFO] app.logger : Supabase client created successfully
+2025-11-08 03:48:44,065 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 03:48:44,323 [INFO] app.logger : Starting Taskera AI Backend...
+2025-11-08 03:48:44,327 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 03:48:44,328 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 03:48:44,329 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 03:48:44,332 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 03:48:44,332 [INFO] app.logger : Application startup complete
+2025-11-08 03:51:43,102 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 03:51:43,104 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hello...'
+2025-11-08 03:51:43,110 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:51:43,219 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 03:51:44,056 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:51:46,072 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 03:52:02,225 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can you tell me about the weather updates...'
+2025-11-08 03:52:02,229 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:52:02,240 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:03,436 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 03:52:09,076 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'fro OKara...'
+2025-11-08 03:52:09,083 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:52:09,094 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:10,248 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:10,274 [INFO] app.logger : Fetching weather for: OKara
+2025-11-08 03:52:12,085 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:52:12,125 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:38,257 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the latest news in Pakistan...'
+2025-11-08 03:52:38,277 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:52:38,298 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:39,432 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:52:39,476 [INFO] app.logger : Fetching news for: Pakistan
+2025-11-08 03:52:39,831 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=latest%20news%20about%20Pakistan): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 03:52:39,833 [INFO] ddgs.ddgs : Error in engine brave: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://search.brave.com/search?q=latest+news+about+Pakistan&source=web&tf=py): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 03:52:41,573 [INFO] primp : response: https://search.yahoo.com/search;_ylt=TQ-aNGm8iMjtPJunDk5m13aQ;_ylu=rUWXgRURWh5EPJs3R9xorU-WOpjozsStpeG5o2aYzf5vlMg?p=latest+news+about+Pakistan&btf=y 200
+2025-11-08 03:52:42,481 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:52:42,493 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:53:42,707 [INFO] app.logger : 1 file(s) detected for user 'bash-dev'
+2025-11-08 03:53:42,709 [INFO] app.logger : File for user 'bash-dev' saved to: user_files\bash-dev\text.jpg
+2025-11-08 03:53:42,710 [INFO] app.logger : Image file detected: text.jpg. Running OCR.
+2025-11-08 03:53:42,712 [INFO] app.services.ocr_service : Attempting to extract text for user 'bash-dev' from file 'text.jpg'
+2025-11-08 03:53:43,353 [INFO] app.services.ocr_service : Successfully extracted text from 'text.jpg' for user 'bash-dev'.
+2025-11-08 03:53:43,354 [INFO] app.logger : Successfully extracted text from text.jpg
+2025-11-08 03:53:43,355 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'The user has also uploaded 1 image(s): text.jpg. I have extracted the following text from them:
+
+--- Text from 'text.jpg' ---
+Extracted text from 'text.jpg':
+
+This is a lot of 12 point text to test the
+ocr code and see if it works on all types
+of fil...'
+2025-11-08 03:53:43,361 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:53:43,370 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:53:43,370 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:55:50,604 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'schedule an event for next week with Mr. Hasan regarding to the sales droping...'
+2025-11-08 03:55:50,610 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:55:50,618 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:55:50,621 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:55:51,712 [WARNING] langchain_google_genai.chat_models : Retrying langchain_google_genai.chat_models._chat_with_retry.<locals>._chat_with_retry in 2.0 seconds as it raised ResourceExhausted: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details..
+2025-11-08 03:55:55,787 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:55:55,789 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:55:58,784 [INFO] httpx : HTTP Request: POST https://bhhszlsamglgxggpughw.supabase.co/rest/v1/events "HTTP/2 201 Created"
+2025-11-08 03:55:58,802 [INFO] apscheduler.scheduler : Added job "run_research_task" to job store "default"
+2025-11-08 03:55:58,806 [INFO] app.logger : [Scheduler] Task 'run_research_task' scheduled for 2025-11-15 03:55:55.836968 (job_id=44)
+2025-11-08 03:55:58,810 [INFO] app.logger : [Calendar] Event 'Meeting with Mr. Hasan' (ID: 44) scheduled for 2025-11-15 03:55:55.836968
+2025-11-08 03:55:58,822 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:55:58,845 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:55:58,846 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:56:33,470 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'perfect thanks...'
+2025-11-08 03:56:33,478 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:56:33,493 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:56:33,501 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:56:34,628 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 03:56:55,860 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can you tell me who is shapater boi?...'
+2025-11-08 03:56:55,870 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:56:55,883 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:56:55,884 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:56:57,181 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:56:57,182 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:56:57,308 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=shapater%20boi): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 03:56:58,698 [INFO] primp : response: https://www.mojeek.com/search?q=shapater+boi 200
+2025-11-08 03:56:58,849 [INFO] primp : response: https://search.yahoo.com/search;_ylt=jOOobZQdTxgrFLPUZ-Td8v1Y;_ylu=N7U-_PL26VoyL7PzgkdlrcvR8HYKBB55P9Zu0tsiPUdfs9U?p=shapater+boi&btf=y 200
+2025-11-08 03:56:59,010 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:56:59,074 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:56:59,092 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:57:00,943 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 03:57:56,233 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the sources you are using to provide the info...'
+2025-11-08 03:57:56,236 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 03:57:56,252 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 03:57:56,257 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 03:57:58,181 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 04:00:01,931 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'can we use claude for free?...'
+2025-11-08 04:00:01,946 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 04:00:01,955 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 04:00:01,956 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 04:00:03,296 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 04:00:03,297 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 04:00:03,452 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=can%20claude%20be%20used%20for%20free%3F): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 04:00:03,455 [INFO] ddgs.ddgs : Error in engine brave: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://search.brave.com/search?q=can+claude+be+used+for+free%3F&source=web&tf=py): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 04:00:04,645 [INFO] httpx : HTTP Request: POST https://html.duckduckgo.com/html/ "HTTP/2 200 OK"
+2025-11-08 04:00:04,689 [INFO] primp : response: https://yandex.com/search/site/?text=can+claude+be+used+for+free%3F&web=1&searchid=9008508 200
+2025-11-08 04:00:04,746 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 04:00:04,771 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 04:00:04,779 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 04:02:05,182 [INFO] app.logger : Shutting down Taskera AI Backend...
+2025-11-08 04:02:05,183 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 04:02:05,186 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 04:02:05,187 [INFO] app.logger : Application shutdown complete
+2025-11-08 04:58:49,408 [INFO] app.logger : Supabase client created successfully
+2025-11-08 04:58:49,703 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 04:59:07,652 [INFO] app.logger : Supabase client created successfully
+2025-11-08 04:59:08,040 [INFO] app.logger : LangGraph workflow compiled successfully.
+2025-11-08 04:59:08,166 [INFO] app.logger : Starting Taskera AI Backend...
+2025-11-08 04:59:08,168 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-08 04:59:08,169 [INFO] apscheduler.scheduler : Added job "clear_expired_sessions" to job store "default"
+2025-11-08 04:59:08,169 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-08 04:59:08,171 [INFO] app.logger : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-08 04:59:08,171 [INFO] app.logger : Application startup complete
+2025-11-08 04:59:58,710 [INFO] app.logger : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-08 04:59:58,710 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'hi...'
+2025-11-08 04:59:58,713 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 04:59:58,810 [INFO] chromadb.telemetry.product.posthog : Anonymized telemetry enabled. See                     https://docs.trychroma.com/telemetry for more information.
+2025-11-08 04:59:59,325 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 04:59:59,327 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:00:01,323 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 05:00:23,172 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'tell me about the latest news in europe...'
+2025-11-08 05:00:23,184 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:00:23,209 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:00:23,209 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:00:24,374 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:00:24,375 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:00:24,400 [INFO] app.logger : Fetching news for: Europe
+2025-11-08 05:00:24,875 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=latest%20news%20about%20Europe): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 05:00:25,067 [INFO] primp : response: https://www.bing.com/search?q=latest+news+about+Europe&pq=latest+news+about+Europe&cc=wt&filters=ex1%3A%22ez5_20035_20400%22 200
+2025-11-08 05:00:26,588 [INFO] primp : response: https://yandex.com/search/site/?text=latest+news+about+Europe&web=1&searchid=4697502 200
+2025-11-08 05:00:26,685 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:00:26,700 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:00:26,701 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:01:06,780 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'i heard that the new york got its first muslim mayor...'
+2025-11-08 05:01:06,786 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:01:06,804 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:01:06,813 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:01:08,111 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:01:08,117 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:01:08,201 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=new%20york%20muslim%20mayor): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 05:01:08,209 [INFO] ddgs.ddgs : Error in engine brave: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://search.brave.com/search?q=new+york+muslim+mayor&source=web&tf=py): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-08 05:01:09,286 [INFO] httpx : HTTP Request: POST https://html.duckduckgo.com/html/ "HTTP/2 200 OK"
+2025-11-08 05:01:09,799 [INFO] primp : response: https://search.yahoo.com/search;_ylt=gxERqv98ypmpu7qrHO-3ZsQg;_ylu=Pl5E-qc-oPi1DKU7VGlBwd9a9oppxkJwaXJzpeR7nrcbS48?p=new+york+muslim+mayor&btf=y 200
+2025-11-08 05:01:10,663 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:01:10,672 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:01:10,674 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:01:46,348 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'how is he handling things any latest words...'
+2025-11-08 05:01:46,357 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:01:46,377 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:01:46,380 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:01:47,711 [INFO] app.logger : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-08 05:01:59,574 [INFO] app.logger : Sending final prompt to graph for user 'bash-dev': 'exit...'
+2025-11-08 05:01:59,576 [INFO] app.logger : Agent node executing for user: bash-dev
+2025-11-08 05:01:59,594 [INFO] app.logger : Skipping unsupported file type: text.jpg
+2025-11-08 05:01:59,595 [INFO] app.logger : No documents found to index for user 'bash-dev'.
+2025-11-08 05:02:32,223 [INFO] app.logger : Shutting down Taskera AI Backend...
+2025-11-08 05:02:32,225 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-08 05:02:32,228 [INFO] app.logger : [Scheduler] Stopped cleanly.
+2025-11-08 05:02:32,230 [INFO] app.logger : Application shutdown complete
