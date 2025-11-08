@@ -97,7 +97,6 @@ def start_scheduler():
         return
 
     try:
-        # Import here to avoid circular imports
         from app.core.memory_manager import clear_expired_sessions
         
         scheduler.add_job(

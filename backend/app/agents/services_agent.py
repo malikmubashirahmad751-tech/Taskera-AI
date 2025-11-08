@@ -6,7 +6,6 @@ from app.core.logger import logger
 from app.services.scheduler import add_new_task, correct_run_date
 from app.services import scheduler_service
 
-# Import search_tool function to avoid circular imports
 def run_research_task_wrapper(query: str):
     """Wrapper to run research task - imports search dynamically to avoid circular imports"""
     try:
