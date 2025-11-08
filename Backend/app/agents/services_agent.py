@@ -3,8 +3,20 @@ from datetime import datetime
 from typing import Literal, Optional
 from langchain_core.tools import tool
 from app.core.logger import logger
-from app.services.scheduler import add_new_task, run_research_task, correct_run_date
+from app.services.scheduler import add_new_task, correct_run_date
 from app.services import scheduler_service
+
+# Import search_tool function to avoid circular imports
+def run_research_task_wrapper(query: str):
+    """Wrapper to run research task - imports search dynamically to avoid circular imports"""
+    try:
+        from app.agents.tools_agent import search_tool
+        result = search_tool.invoke(query)
+        logger.info(f"[Research] Task completed for query: '{query}'")
+        return result
+    except Exception as e:
+        logger.error(f"[Research] Task failed for query '{query}': {e}")
+        return f"Error: {e}"
 
 @tool
 def schedule_research_task(query: str, run_date_iso: str):
@@ -13,7 +25,7 @@ def schedule_research_task(query: str, run_date_iso: str):
         run_date = datetime.fromisoformat(run_date_iso)
         run_date = correct_run_date(run_date)
         return add_new_task(
-            func=run_research_task,
+            func=run_research_task_wrapper,
             trigger='date',
             run_date=run_date,
             args=[query]
@@ -21,6 +33,7 @@ def schedule_research_task(query: str, run_date_iso: str):
     except ValueError:
         return "Error: Invalid date format. Use ISO format (YYYY-MM-DDTHH:MM:SS)."
     except Exception as e:
+        logger.error(f"Error scheduling research task: {e}")
         return f"An unexpected error occurred: {e}"
 
 Action = Literal["create", "list", "update", "delete"]
@@ -90,8 +103,9 @@ def manage_calendar_events(
             run_date_iso = None
             if date_expression:
                 run_date = dateparser.parse(date_expression, settings={"PREFER_DATES_FROM": "future"})
-                run_date = correct_run_date(run_date)
-                run_date_iso = run_date.isoformat()
+                if run_date:
+                    run_date = correct_run_date(run_date)
+                    run_date_iso = run_date.isoformat()
 
             return scheduler_service.update_event(
                 event_id=job_id,

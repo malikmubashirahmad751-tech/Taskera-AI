@@ -13,7 +13,6 @@ user_sessions = {}
 session_lock = threading.Lock()
 
 
-# --- NEW HELPER FUNCTION ---
 def _perform_data_cleanup(user_id: str):
     """
     Internal helper to safely delete user files and vectorstore.
@@ -31,7 +30,6 @@ def _perform_data_cleanup(user_id: str):
         logger.error(f"[Cleanup] Error deleting vectorstore for user {user_id}: {e}", exc_info=True)
 
 
-# --- MODIFIED FUNCTION ---
 def get_user_checkpointer(user_id: str) -> MemorySaver:
     """
     Fetch or create a user's persistent LangGraph checkpointer
@@ -56,28 +54,21 @@ def get_user_checkpointer(user_id: str) -> MemorySaver:
         else:
             session_data = user_sessions[user_id]
 
-            # Check if session expired
             if current_time - session_data["last_active"] > session_data["expiry_duration"]:
                 logger.info(f"[Session] Session expired for user: {user_id}. Performing reset.")
                 
-                # Mark for cleanup, but do it *outside* the lock
                 perform_cleanup = True 
                 
-                # Reset the checkpointer and timers
                 user_sessions[user_id]["checkpointer"] = MemorySaver()
                 user_sessions[user_id]["last_active"] = current_time
                 user_sessions[user_id]["expiry_duration"] = SESSION_EXPIRY_SECONDS
             
             else:
-                # --- THIS IS THE KEY FIX ---
-                # Session is active. ONLY update last_active.
-                # DO NOT touch expiry_duration, or it will break the
-                # short expiry for questions.
+                
                 user_sessions[user_id]["last_active"] = current_time
 
         checkpointer = user_sessions[user_id]["checkpointer"]
     
-    # --- Perform slow I/O cleanup *outside* the lock ---
     if perform_cleanup:
         logger.info(f"[Session] Performing post-reset data cleanup for user: {user_id}")
         _perform_data_cleanup(user_id)
@@ -111,13 +102,10 @@ def update_session_on_response(user_id: str, agent_response: str):
             logger.info(f"[Session] AI asked a question -> shorter expiry ({QUESTION_EXPIRY_SECONDS}s) for user: {user_id}")
         else:
             user_sessions[user_id]["expiry_duration"] = SESSION_EXPIRY_SECONDS
-            # We can optionally log this, but it might be noisy
-            # logger.debug(f"[Session] Reset to full expiry ({SESSION_EXPIRY_SECONDS}s) for user: {user_id}")
-
+            
         user_sessions[user_id]["last_active"] = time.time()
 
 
-# --- MODIFIED FUNCTION ---
 def clear_expired_sessions():
     """
     Periodic job that checks and clears expired sessions.
@@ -127,16 +115,13 @@ def clear_expired_sessions():
     current_time = time.time()
     expired_users = []
 
-    # --- Step 1: Acquire lock, find expired users, and delete from dict ---
     with session_lock:
-        # Use list() to create a copy for safe iteration while modifying
         for user_id, data in list(user_sessions.items()):
             if current_time - data["last_active"] > data["expiry_duration"]:
                 logger.info(f"[Session] Clearing expired session for user: {user_id}")
                 del user_sessions[user_id]
                 expired_users.append(user_id)
 
-    # --- Step 2: Release lock, then perform slow I/O cleanup ---
     if expired_users:
         logger.info(f"[Session] Cleared {len(expired_users)} in-memory sessions. Now performing I/O cleanup.")
         for user_id in expired_users:
@@ -146,7 +131,6 @@ def clear_expired_sessions():
         logger.debug("[Session] No expired sessions found.")
 
 
-# --- MODIFIED FUNCTION ---
 def clear_user_session(user_id: str):
     """
     Fully removes a user's session and related data upon request.
@@ -163,8 +147,7 @@ def clear_user_session(user_id: str):
         else:
             logger.warning(f"[Session] No active session found to clear for user: {user_id}")
 
-    # Always attempt cleanup even if session wasn't in memory,
-    # in case of orphaned files/vectors.
+    
     if session_found:
         logger.info(f"[Session] Performing full data cleanup for user: {user_id}")
     else:
@@ -172,5 +155,4 @@ def clear_user_session(user_id: str):
 
     _perform_data_cleanup(user_id)
 
-    # --- FIX: Added missing closing parenthesis ---
     logger.info(f"[Session] Completed full cleanup for user: {user_id}")
