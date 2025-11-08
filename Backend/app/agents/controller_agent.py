@@ -24,10 +24,11 @@ from app.agents.tools_agent import (
 from app.services.ocr_service import image_text_extractor
 
 
-llm =ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash",
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.0-flash-exp",
     temperature=0,
-    api_key=settings.gemini_api_key)
+    api_key=settings.gemini_api_key
+)
 
 
 static_tools = [
@@ -67,7 +68,7 @@ def agent_node(state: AgentState):
     all_tools = get_full_tool_list(user_id)
     llm_with_tools = llm.bind_tools(all_tools)
 
-    system_prompt = """You are a multi-functional AI assistant named Devis AI.
+    system_prompt = """You are a multi-functional AI assistant named Taskera AI.
 
     **Core Instruction: CONTEXT AWARENESS**
     This is your most important rule. You must pay close attention to the immediate conversational history.
@@ -84,7 +85,7 @@ def agent_node(state: AgentState):
         * Use this ONLY for questions about specific documents the user has uploaded.
         * **DO NOT** use this for general knowledge, weather, news, or web searches.
 
-    3.  **Weather:** `weather_tool`
+    3.  **Weather:** `weather_search`
         * Use this to get the current weather. It requires a 'location'.
         * If you ask for a location, the user's next message IS that location. Call this tool again with that location.
 
@@ -97,7 +98,7 @@ def agent_node(state: AgentState):
     6.  **Web Browsing:** `headless_browser_search`
         * Use this for complex queries that require browsing a specific URL or finding live data online.
 
-    7.  **General Search:** `search_tool` or `wiki_tool`
+    7.  **General Search:** `web_search` or `wikipedia_search`
         * Use these for general knowledge, facts, and definitions that are *not* in the user's documents.
 
     8.  **Other Tools:**
@@ -125,13 +126,13 @@ def should_continue(state: AgentState) -> str:
         return "execute_tools"
     return END
 
-def execute_tools_node(state: AgentState):
+async def execute_tools_node(state: AgentState):
     """Executes the tools dynamically based on the user ID in state."""
     user_id = state.get("user_id", "unknown")
     tools = get_full_tool_list(user_id)
 
     tool_node = ToolNode(tools)
-    return tool_node.invoke(state)
+    return await tool_node.ainvoke(state)
 
 workflow = StateGraph(AgentState)
 workflow.add_node("agent", agent_node)

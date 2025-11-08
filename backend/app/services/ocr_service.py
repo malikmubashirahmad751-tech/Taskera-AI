@@ -1,4 +1,3 @@
-# app/services/ocr_service.py
 import pytesseract
 from PIL import Image
 from langchain_core.tools import tool

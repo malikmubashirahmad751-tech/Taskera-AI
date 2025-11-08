@@ -1,4 +1,3 @@
-// --- FIXED & ENHANCED main.js ---
 document.addEventListener('DOMContentLoaded', () => {
 
     let currentUserId = null;
@@ -197,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let aiResponse =
                 data.answer || data.response || data.message || data.output || data.result || null;
 
-            // --- FIX: handle nested objects and arrays ---
             if (typeof aiResponse === 'object' && aiResponse !== null) {
                 aiResponse = aiResponse.text || aiResponse.content || JSON.stringify(aiResponse, null, 2);
             }
