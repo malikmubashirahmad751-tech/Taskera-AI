@@ -1,21 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from app.routes.api import router  # Changed to match your structure
+from app.routes.api import router  
 from app.services.scheduler import start_scheduler, shutdown_scheduler
 from app.core.logger import logger
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Handle startup and shutdown events"""
-    # Startup
     logger.info("Starting Taskera AI Backend...")
     start_scheduler()
     logger.info("Application startup complete")
     
     yield
     
-    # Shutdown
     logger.info("Shutting down Taskera AI Backend...")
     shutdown_scheduler()
     logger.info("Application shutdown complete")
@@ -27,16 +25,14 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS Configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change this to specific origins in production
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include routers
 app.include_router(router)
 
 @app.get("/")
