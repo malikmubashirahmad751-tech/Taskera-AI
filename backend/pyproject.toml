@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "Taskera-Ai-Project"
+version = "1.0.0"
+description = "Multi-functional AI agent with ACP/MCP architecture."
+authors = ["Mubashir Hassan <mubashir.hassan@devisgon.com>"]
+packages = [
+    { include = "app" }
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.8.2"
+python-dotenv = "^1.0.1"
+acp-sdk = "^0.4.0"
+langchain-google-genai = "^3.0.3"
+httpx = "^0.28.1"
+
+# --- This is the critical fix for the acp-sdk error ---
+uvicorn = ">=0.29.0"
+
+apscheduler = "^3.10.4"
+supabase = "^2.5.2"
+chromadb = "^0.5.4"
+langchain-community = "^0.3.0"
+langchain-text-splitters = "^0.3.0"
+langchain = "^1.0.0"
+pypdf = "^4.3.1"
+docx2txt = "^0.8"
+unstructured = "^0.18.15"
+pytesseract = "^0.3.10"
+pillow = "^10.4.0"
+dateparser = "^1.2.0"
+playwright = "^1.45.1"
+duckduckgo-search = "^6.1.9"
+pyowm = "^3.3.0"
+wikipedia = "^1.4.0"
+google-api-python-client = "^2.187.0"
+google-auth-httplib2 = "^0.2.1"
+google-auth-oauthlib = "^1.2.3"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+pytest-asyncio = "^0.23.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
