@@ -183,16 +183,19 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessageToChat('ai', '...', [], 'typing');
 
         try {
+            
             const response = await fetch(`${API_BASE_URL}${CHAT_ENDPOINT}`, {
                 method: 'POST',
                 body: formData
             });
+
             const data = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(data.detail || `${response.status} ${response.statusText}`);
 
             console.log('API Response:', data);
             removeTypingIndicator();
 
+        
             let aiResponse =
                 data.answer || data.response || data.message || data.output || data.result || null;
 

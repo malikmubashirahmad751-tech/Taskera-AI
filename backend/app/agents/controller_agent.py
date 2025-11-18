@@ -1,15 +1,20 @@
 from __future__ import annotations
 import logging
 from typing import TypedDict, Annotated, Sequence, List
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import BaseMessage
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
+
 from app.core.config import settings
 from app.core.logger import logger
 
 from app.agents.knowledge_agent import create_rag_tool
+from app.services.ocr_service import create_ocr_tool
+from app.agents.google_agent import create_google_calendar_tools 
+
 from app.agents.services_agent import schedule_research_task, manage_calendar_events
 from app.agents.tools_agent import (
     wiki_tool,
@@ -21,15 +26,13 @@ from app.agents.tools_agent import (
     translator_tool,
     headless_browser_search,
 )
-from app.services.ocr_service import image_text_extractor
-
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.0-flash-exp",
+    model="gemini-2.5-flash-lite",  
     temperature=0,
-    api_key=settings.gemini_api_key
+    api_key=settings.gemini_api_key,
+    max_retries=0  
 )
-
 
 static_tools = [
     wiki_tool,
@@ -41,7 +44,6 @@ static_tools = [
     translator_tool,
     schedule_research_task,
     manage_calendar_events,
-    image_text_extractor,
     headless_browser_search,
 ]
 
@@ -50,16 +52,38 @@ class AgentState(TypedDict):
     user_id: str
 
 def get_full_tool_list(user_id: str) -> List:
-    """Return the full list of tools for a specific user, including RAG tool."""
+    """
+    Build the full list of tools for the given user.
+    """
+    dynamic_tools = []
+
     try:
-        user_rag_tool = create_rag_tool(api_key=settings.gemini_api_key, user_id=user_id)
-        return [user_rag_tool] + static_tools
+        user_rag_tool = create_rag_tool(user_id=user_id)
+        dynamic_tools.append(user_rag_tool)
+        logger.info(f"Created RAG tool for user={user_id}")
     except Exception as e:
-        logger.error(f"Failed to create RAG tool for user {user_id}: {e}. Proceeding without it.")
-        return static_tools
+        logger.error(f"Failed to create RAG proxy tool for user {user_id}: {e}")
+
+    try:
+        user_ocr_tool = create_ocr_tool(user_id=user_id)
+        dynamic_tools.append(user_ocr_tool)
+        logger.info(f"Created OCR tool for user={user_id}")
+    except Exception as e:
+        logger.error(f"Failed to create OCR proxy tool for user {user_id}: {e}")
+
+    try:
+        user_calendar_tools = create_google_calendar_tools(user_id=user_id)
+        dynamic_tools.extend(user_calendar_tools) 
+        logger.info(f"Created Google Calendar tools for user={user_id}")
+    except Exception as e:
+        logger.error(f"Failed to create Google Calendar tools for user {user_id}: {e}")
+
+    return dynamic_tools + static_tools
 
 def agent_node(state: AgentState):
-    """Primary node that calls the LLM with the correct tools bound."""
+    """
+    Primary node: call the LLM with the correct tools bound.
+    """
     user_id = state.get("user_id", "unknown")
     messages = state["messages"]
 
@@ -69,43 +93,48 @@ def agent_node(state: AgentState):
     llm_with_tools = llm.bind_tools(all_tools)
 
     system_prompt = """You are a multi-functional AI assistant named Taskera AI.
+Your primary goal is to be helpful and complete tasks.
 
-    **Core Instruction: CONTEXT AWARENESS**
-    This is your most important rule. You must pay close attention to the immediate conversational history.
-    **If you have just asked a question (e.g., "What city?"), the user's next message is the answer to that question.**
-    You MUST use that answer to complete the tool call you were trying to make (e.g., use the city to call `weather_tool`).
-    Do not treat the user's answer as a new, separate query for a different tool.
+---
+**CRITICAL RULE 1: CONTEXTUAL FOLLOW-UP**
+1.  **If you asked a question:** Use the user's reply to complete the *original* task.
+2.  **Handling "Yes/No":** Assume "yes" confirms your last suggestion.
+3.  **Handling "No":** Ask for new instructions or clarifications.
 
-    **Tool Priority & Purpose:**
+---
+**CRITICAL RULE 2: TOOL vs. CHAT**
+-   **If a tool can answer the question, USE THE TOOL.**
+-   Only provide general chat if no tool applies.
+-   If the request is vague, ASK CLARIFYING QUESTIONS.
 
-    1.  **Image Analysis (OCR):** `image_text_extractor`
-        * Use this tool when the user provides an image and asks to read text from it.
+---
+**Tool Priority & Purpose:**
 
-    2.  **Document/File Queries:** `local_document_retriever` (This is your RAG tool)
-        * Use this ONLY for questions about specific documents the user has uploaded.
-        * **DO NOT** use this for general knowledge, weather, news, or web searches.
+1.  **Google Calendar (REAL): `google_calendar_list`, `google_calendar_schedule`**
+    * **Check Schedule:** Use `google_calendar_list` to find free slots or see what's up next.
+    * **Book Meetings:** Use `google_calendar_schedule` to create actual events on the user's calendar.
+    * *Auth Error:* If these tools fail with an auth error, tell the user to log in via the dashboard.
 
-    3.  **Weather:** `weather_search`
-        * Use this to get the current weather. It requires a 'location'.
-        * If you ask for a location, the user's next message IS that location. Call this tool again with that location.
+2.  **Image Analysis (OCR): `image_text_extractor`**
+    * Use this if the user uploaded an image.
 
-    4.  **Scheduling:** `schedule_research_task` or `manage_calendar_events`
-        * Use these to create, manage, or check calendar events and scheduled tasks.
+3.  **Document/File Queries (RAG): `local_document_retriever`**
+    * Use this to answer questions about user-uploaded documents.
 
-    5.  **News:** `latest_news_tool`
-        * Use this to get current news headlines.
+4.  **Math/Computation: `wolfram_alpha_query`**
+    * Use this for math, science, and unit conversions.
 
-    6.  **Web Browsing:** `headless_browser_search`
-        * Use this for complex queries that require browsing a specific URL or finding live data online.
+5.  **Weather: `weather_tool`**
+    * Use this for weather forecasts.
 
-    7.  **General Search:** `web_search` or `wikipedia_search`
-        * Use these for general knowledge, facts, and definitions that are *not* in the user's documents.
+6.  **Internal Scheduling: `schedule_research_task`**
+    * Use this for *internal* agent tasks (like "search for this topic tomorrow"), NOT for meetings.
 
-    8.  **Other Tools:**
-        * `calculator_tool`: For math calculations.
-        * `translator_tool`: For translating text.
-        * `summarize_tool`: For summarizing long text.
-    """
+7.  **Web Search: `search_tool`, `headless_browser_search`**
+    * Use for real-time information.
+
+8.  **Other:** `calculator_tool`, `translator_tool`, `summarize_tool`, `latest_news_tool`
+"""
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),
@@ -113,12 +142,12 @@ def agent_node(state: AgentState):
     ])
 
     agent_chain = prompt | llm_with_tools
+
     response = agent_chain.invoke({"messages": messages})
 
     return {"messages": [response]}
 
 def should_continue(state: AgentState) -> str:
-    """Decides whether to call tools or end."""
     if not state["messages"]:
         return "agent"
     last_message = state["messages"][-1]
@@ -127,9 +156,11 @@ def should_continue(state: AgentState) -> str:
     return END
 
 async def execute_tools_node(state: AgentState):
-    """Executes the tools dynamically based on the user ID in state."""
+    """
+    Executes the tools dynamically based on the user ID in state.
+    """
     user_id = state.get("user_id", "unknown")
-    tools = get_full_tool_list(user_id)
+    tools = get_full_tool_list(user_id) 
 
     tool_node = ToolNode(tools)
     return await tool_node.ainvoke(state)

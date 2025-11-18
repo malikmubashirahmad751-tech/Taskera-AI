@@ -36,3 +36,6 @@ Backend/venv/
 Backend/.venv/
 Backend/.env
 Backend/__pycache__/
+
+credentials.json
+token.pickle

@@ -2,27 +2,11 @@ import os
 import logging
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
-from supabase import create_client, Client
-from dotenv import load_dotenv
 from app.core.logger import logger
+from app.core.database import supabase
+
 
 scheduler = BackgroundScheduler()
-
-load_dotenv()
-
-supabase_url = os.getenv("SUPABASE_URL")
-supabase_key = os.getenv("SUPABASE_KEY")
-
-if not supabase_url or not supabase_key:
-    logger.warning("Supabase URL and Key not set in .env file. Calendar features will be disabled.")
-    supabase = None
-else:
-    try:
-        supabase: Client = create_client(supabase_url, supabase_key)
-        logger.info("Supabase client created successfully")
-    except Exception as e:
-        logger.error(f"Error creating Supabase client: {e}")
-        supabase = None
 
 LOG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -35,8 +19,8 @@ def run_research_task(query: str):
     """
     logger.info(f"[Scheduler] Running scheduled research task: '{query}'")
     try:
-        from app.agents.tools_agent import search_tool
-        result = search_tool.invoke(query)
+        from app.impl.tools_agent_impl import duckduckgo_search_wrapper
+        result = duckduckgo_search_wrapper(query)
         logger.info(f"[Scheduler] Task completed successfully:\n{result}")
         return result
     except Exception as e:
@@ -97,10 +81,10 @@ def start_scheduler():
         return
 
     try:
-        from app.core.memory_manager import clear_expired_sessions
+        from app.core.memory_manager import run_expired_session_cleanup
         
         scheduler.add_job(
-            func=clear_expired_sessions,
+            func=run_expired_session_cleanup,
             trigger='interval',
             minutes=30,
             id='clear_expired_sessions_job',

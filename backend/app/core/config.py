@@ -1,18 +1,25 @@
 import os
-from dotenv import load_dotenv
+from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field
 
-class Settings:
-    """Holds all application settings."""
-    def __init__(self):
-        load_dotenv()
-        self.gemini_api_key = self._get_api_key()
-
-    def _get_api_key(self) -> str:
-        api_key = os.getenv("GOOGLE_API_KEY")
-        if not api_key:
-            raise ValueError("GOOGLE_API_KEY is missing from your .env file")
-        os.environ["HTTP_PROXY"] = ""
-        os.environ["HTTPS_PROXY"] = ""
-        return api_key
+class Settings(BaseSettings):
     
+    GOOGLE_CLIENT_ID: str = Field(default="")
+    GOOGLE_CLIENT_SECRET: str = Field(default="")
+    GOOGLE_REDIRECT_URI: str = Field(default="http://localhost:8000/auth/google/callback")
+    
+    SUPABASE_URL: str = Field(default="")
+    SUPABASE_KEY: str = Field(default="")
+
+    gemini_api_key: str = Field(default="", alias="GOOGLE_API_KEY")
+    
+    openweathermap_api_key: str = Field(default="", alias="OPENWEATHERMAP_API_KEY")
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",  
+        case_sensitive=False
+    )
+
 settings = Settings()
