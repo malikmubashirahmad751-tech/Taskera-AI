@@ -8,7 +8,6 @@ timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
 LOG_FILE = os.path.join(LOG_DIR, f"app.log")
 
-
 logging.basicConfig(
    level=logging.INFO,
    format= '%(asctime)s [%(levelname)s] %(name)s : %(message)s',
@@ -17,5 +16,8 @@ logging.basicConfig(
        logging.StreamHandler()
    ]
 )
-logger = logging.getLogger("app.logger")
+logger = logging.getLogger("Taskera AI")
+
 logging.getLogger("watchfiles").setLevel(logging.ERROR)
+logging.getLogger("chromadb").setLevel(logging.WARNING)
+logging.getLogger("httpx").setLevel(logging.WARNING)

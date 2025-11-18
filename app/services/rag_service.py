@@ -2,7 +2,7 @@ import os
 import shutil
 import chromadb
 from chromadb.config import Settings as ChromaSettings
-from langchain_chroma import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from app.core.logger import logger
 
