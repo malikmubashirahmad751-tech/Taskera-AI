@@ -1,0 +1,32 @@
+# Version Control
+.git
+.gitignore
+
+# Python / Environment (BIGGEST CULPRITS)
+.venv
+venv/
+__pycache__
+*.pyc
+.pytest_cache
+
+# Data & Storage
+chroma_db/
+user_files/
+logs/
+data/
+
+# AI Models (CRITICAL TO IGNORE)
+models/
+*.gguf
+*.bin
+*.pth
+*.pt
+*.safetensors
+*.h5
+
+# Environment Config
+.env
+
+# Docker itself
+Dockerfile
+.dockerignore

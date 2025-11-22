@@ -4484,3 +4484,894 @@ violations {
 2025-11-17 05:17:10,940 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
 2025-11-17 05:17:23,425 [INFO] apscheduler.scheduler : Scheduler has been shut down
 2025-11-17 05:17:23,426 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 01:27:32,042 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 01:27:55,285 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 01:27:56,546 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 01:27:58,893 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 01:27:58,894 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 01:27:58,894 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 01:27:58,896 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 01:28:09,958 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 01:28:09,959 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 01:28:09,962 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 01:28:09,963 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 01:28:09,963 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 01:28:09,964 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 01:28:13,333 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 01:28:26,651 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 01:28:26,653 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 01:28:26,654 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 01:28:26,654 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 01:28:26,655 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 01:32:13,120 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 01:32:13,127 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 01:32:13,128 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 01:32:13,129 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 01:32:13,131 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 01:32:14,437 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 01:32:14,439 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 01:32:14,444 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 01:32:14,488 [INFO] Taskera AI : [MCP Server] Request: 'weather_search'
+2025-11-18 01:32:14,488 [INFO] Taskera AI : Fetching weather for: Birmingham
+2025-11-18 01:32:16,034 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 01:32:16,035 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 01:32:16,040 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 01:32:16,046 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 01:35:05,731 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 01:35:05,733 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:02:43,615 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:02:53,793 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:02:54,267 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:02:55,870 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:02:55,871 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:02:55,871 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:02:55,872 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:03:03,967 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:03:03,967 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:03:03,971 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:03:03,971 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:03:03,972 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:03:03,973 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:03:07,402 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:03:49,634 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:03:49,658 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:03:49,659 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:03:53,784 [ERROR] Taskera AI : [MCP Server] Error in 'index_rag_documents': Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_google_genai\embeddings.py", line 306, in embed_documents
+    result = self.client.batch_embed_contents(
+        BatchEmbedContentsRequest(requests=requests, model=self.model)
+    )
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 1438, in batch_embed_contents
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.NotFound: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 197, in mcp_endpoint
+    result = func(**params)
+  File "D:\TASKERA_AI\backend\app\impl\knowledge_agent_impl.py", line 34, in create_rag_tool_impl
+    db.add_documents(chunks, overwrite=True)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_core\vectorstores\base.py", line 258, in add_documents
+    return self.add_texts(texts, metadatas, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_community\vectorstores\chroma.py", line 277, in add_texts
+    embeddings = self._embedding_function.embed_documents(texts)
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_google_genai\embeddings.py", line 311, in embed_documents
+    raise GoogleGenerativeAIError(msg) from e
+langchain_google_genai._common.GoogleGenerativeAIError: Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-18 02:03:53,986 [ERROR] Taskera AI : [MCP Client] MCP server returned error for method 'index_rag_documents': Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-18 02:03:53,987 [ERROR] Taskera AI : [MCP Client] Unexpected error calling method 'index_rag_documents': MCP Error -32000: Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-18 02:03:53,988 [ERROR] Taskera AI : Failed MCP-RAG indexing: MCP Error None: MCP Error -32000: Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-18 02:03:53,997 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:03:53,998 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:03:53,999 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:03:53,999 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:03:55,269 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:03:55,270 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:03:55,272 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:03:55,283 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=explain this file
+2025-11-18 02:03:55,294 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:03:55,295 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'explain this file'
+2025-11-18 02:03:55,910 [ERROR] Taskera AI : [MCP-RAG] Error retrieving info for 'bash-dev': Error embedding content: 404 models/embedding-004 is not found for API version v1beta, or is not supported for embedContent. Call ListModels to see the list of available models and their supported methods.
+2025-11-18 02:03:55,919 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:03:55,920 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:03:55,921 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:03:55,923 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:09:25,100 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:09:25,103 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:09:34,312 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:09:45,104 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:09:45,632 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:10:32,480 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:10:43,236 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:10:43,851 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:10:45,376 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:10:45,377 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:10:45,377 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:10:45,382 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:10:57,560 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:10:57,561 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:10:57,566 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:10:57,566 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:10:57,567 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:10:57,568 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:11:03,052 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:11:03,059 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:11:03,060 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:11:03,064 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:11:03,068 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:11:04,588 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:11:29,831 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:11:29,847 [INFO] Taskera AI : [MCP Server] Request: 'image_text_extractor'
+2025-11-18 02:11:29,847 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'bash-dev' from file 'Date Sheet.jpeg'
+2025-11-18 02:11:32,454 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Date Sheet.jpeg' for user 'bash-dev'.
+2025-11-18 02:11:32,461 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:11:32,462 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:11:32,462 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:11:32,464 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:11:33,872 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:11:33,874 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:11:33,877 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:11:33,891 [INFO] Taskera AI : [OCR Proxy] user=bash-dev, file=Date Sheet.jpeg
+2025-11-18 02:11:33,901 [INFO] Taskera AI : [MCP Server] Request: 'image_text_extractor'
+2025-11-18 02:11:33,903 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'bash-dev' from file 'Date Sheet.jpeg'
+2025-11-18 02:11:35,196 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Date Sheet.jpeg' for user 'bash-dev'.
+2025-11-18 02:11:35,202 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:11:35,202 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:11:35,203 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:11:35,206 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:11:37,047 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:11:46,628 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:11:46,633 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:11:46,633 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:11:46,635 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:11:46,645 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:10,496 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:12:10,504 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:12:10,506 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:10,507 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:10,510 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:25,699 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:12:25,707 [INFO] Taskera AI : [MCP Server] Request: 'image_text_extractor'
+2025-11-18 02:12:25,707 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'bash-dev' from file 'text.jpg'
+2025-11-18 02:12:26,234 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'text.jpg' for user 'bash-dev'.
+2025-11-18 02:12:26,239 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:12:26,239 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:26,241 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:26,242 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:27,633 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:27,634 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:27,636 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:27,648 [INFO] Taskera AI : [OCR Proxy] user=bash-dev, file=text.jpg
+2025-11-18 02:12:27,664 [INFO] Taskera AI : [MCP Server] Request: 'image_text_extractor'
+2025-11-18 02:12:27,667 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'bash-dev' from file 'text.jpg'
+2025-11-18 02:12:28,178 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'text.jpg' for user 'bash-dev'.
+2025-11-18 02:12:28,182 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:12:28,183 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:28,184 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:28,184 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:53,826 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:12:53,835 [INFO] Taskera AI : [MCP Server] Request: 'image_text_extractor'
+2025-11-18 02:12:53,846 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'bash-dev' from file 'Date Sheet.jpeg'
+2025-11-18 02:12:55,070 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Date Sheet.jpeg' for user 'bash-dev'.
+2025-11-18 02:12:55,076 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:12:55,077 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:55,078 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:55,079 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:58,764 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:12:58,765 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:12:58,767 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:12:58,797 [INFO] Taskera AI : [MCP Server] Request: 'summarize_tool'
+2025-11-18 02:13:01,162 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:13:01,166 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:13:01,171 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:13:01,176 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:13:49,546 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:13:49,554 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:13:49,555 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:13:50,603 [INFO] Taskera AI : Skipping unsupported file type: Date Sheet.jpeg
+2025-11-18 02:13:50,769 [INFO] Taskera AI : Skipping unsupported file type: text.jpg
+2025-11-18 02:13:53,414 [INFO] Taskera AI : [MCP-RAG] Indexed 9 chunks for user 'bash-dev'.
+2025-11-18 02:13:53,425 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:13:53,426 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:13:53,427 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:13:53,430 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:13:54,496 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:13:54,502 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:13:54,505 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:13:54,524 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=explain what is written in it
+2025-11-18 02:13:54,541 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:13:54,545 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'explain what is written in it'
+2025-11-18 02:13:55,443 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:13:55,443 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:13:55,444 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:13:55,446 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:13:56,821 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:14:34,553 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:14:34,559 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:14:34,559 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:14:34,757 [INFO] Taskera AI : Skipping unsupported file type: Date Sheet.jpeg
+2025-11-18 02:14:34,907 [INFO] Taskera AI : Skipping unsupported file type: text.jpg
+2025-11-18 02:14:37,791 [INFO] Taskera AI : [MCP-RAG] Indexed 17 chunks for user 'bash-dev'.
+2025-11-18 02:14:37,809 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:14:37,813 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:14:37,814 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:14:37,815 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:14:39,527 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:14:39,528 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:14:39,530 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:14:39,538 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=give me a summary out of this file
+2025-11-18 02:14:39,546 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:14:39,548 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'give me a summary out of this file'
+2025-11-18 02:14:40,372 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:14:40,389 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:14:40,402 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:14:40,404 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:32:09,718 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:32:09,721 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:33:05,285 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:33:16,554 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:33:17,237 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:33:18,621 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:33:18,629 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:33:18,647 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:33:18,680 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:34:33,661 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:34:33,662 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:34:33,666 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:34:33,667 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:34:33,668 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:34:33,670 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:34:35,964 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:34:54,506 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:34:54,538 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:34:54,538 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:34:55,004 [ERROR] Taskera AI : [MCP Server] Error in 'index_rag_documents': endswith expected at most 3 arguments, got 5
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 197, in mcp_endpoint
+    result = func(**params)
+  File "D:\TASKERA_AI\backend\app\impl\knowledge_agent_impl.py", line 86, in create_rag_tool_impl
+    user_docs = _smart_load_directory(user_upload_path)
+  File "D:\TASKERA_AI\backend\app\impl\knowledge_agent_impl.py", line 58, in _smart_load_directory
+    if file_path.lower().endswith(".pdf", ".doc", ".docx", ".txt", ".md"):
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: endswith expected at most 3 arguments, got 5
+2025-11-18 02:34:55,017 [ERROR] Taskera AI : [MCP Client] MCP server returned error for method 'index_rag_documents': endswith expected at most 3 arguments, got 5
+2025-11-18 02:34:55,018 [ERROR] Taskera AI : [MCP Client] Unexpected error calling method 'index_rag_documents': MCP Error -32000: endswith expected at most 3 arguments, got 5
+2025-11-18 02:34:55,019 [ERROR] Taskera AI : Failed MCP-RAG indexing: MCP Error None: MCP Error -32000: endswith expected at most 3 arguments, got 5
+2025-11-18 02:34:55,023 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:34:55,028 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:34:55,030 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:34:55,031 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:34:56,230 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 02:35:19,911 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:35:19,919 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:35:19,920 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:35:19,930 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:35:19,932 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:36:31,269 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:36:31,279 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:36:31,280 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:36:31,297 [ERROR] Taskera AI : [MCP Server] Error in 'index_rag_documents': endswith expected at most 3 arguments, got 5
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 197, in mcp_endpoint
+    result = func(**params)
+  File "D:\TASKERA_AI\backend\app\impl\knowledge_agent_impl.py", line 86, in create_rag_tool_impl
+    user_docs = _smart_load_directory(user_upload_path)
+  File "D:\TASKERA_AI\backend\app\impl\knowledge_agent_impl.py", line 58, in _smart_load_directory
+    if file_path.lower().endswith(".pdf", ".doc", ".docx", ".txt", ".md"):
+       ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: endswith expected at most 3 arguments, got 5
+2025-11-18 02:36:31,341 [ERROR] Taskera AI : [MCP Client] MCP server returned error for method 'index_rag_documents': endswith expected at most 3 arguments, got 5
+2025-11-18 02:36:31,342 [ERROR] Taskera AI : [MCP Client] Unexpected error calling method 'index_rag_documents': MCP Error -32000: endswith expected at most 3 arguments, got 5
+2025-11-18 02:36:31,352 [ERROR] Taskera AI : Failed MCP-RAG indexing: MCP Error None: MCP Error -32000: endswith expected at most 3 arguments, got 5
+2025-11-18 02:36:31,355 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:36:31,355 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:36:31,357 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:36:31,357 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:36:32,682 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:36:32,684 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:36:32,687 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:36:32,703 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize Document (2) (3).pdf and explain essential details.
+2025-11-18 02:36:32,716 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:36:32,718 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize Document (2) (3).pdf and explain essential details.'
+2025-11-18 02:36:34,985 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:36:34,986 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:36:34,988 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:36:34,990 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:39:46,693 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:39:46,695 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:42:18,772 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:42:33,926 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:42:34,407 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:42:36,138 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:42:36,138 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:42:36,139 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:42:36,140 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:44:16,426 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:44:16,430 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:44:16,448 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:44:16,449 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:44:17,113 [INFO] Taskera AI : [RAG-Load] Attempting fast load for: COAL_LECTURE#04.pdf
+2025-11-18 02:44:17,630 [INFO] Taskera AI : [RAG-Load] Attempting fast load for: Digital Signal Processing.pdf
+2025-11-18 02:44:17,653 [WARNING] Taskera AI : [RAG-Load] Scanned PDF detected (Digital Signal Processing.pdf). Switching to OCR...
+2025-11-18 02:44:17,770 [ERROR] Taskera AI : [RAG-Load] Failed to load Digital Signal Processing.pdf: No module named 'pdfminer'
+2025-11-18 02:44:17,771 [INFO] Taskera AI : [RAG-Load] Attempting fast load for: Document (2) (3).pdf
+2025-11-18 02:44:18,013 [INFO] Taskera AI : [RAG-Load] Attempting fast load for: WebProg_Notes.pdf
+2025-11-18 02:44:23,876 [INFO] Taskera AI : [MCP-RAG] Indexed 13 chunks for user 'bash-dev'.
+2025-11-18 02:44:23,893 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:44:23,894 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:44:23,896 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:44:23,897 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:44:26,900 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:44:26,901 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:44:26,902 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:44:26,905 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize this file and explain what's written in it.
+2025-11-18 02:44:26,909 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:44:26,909 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize this file and explain what's written in it.'
+2025-11-18 02:44:27,974 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:44:27,975 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:44:27,976 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:44:27,978 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:47:08,479 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:47:08,481 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:50:03,577 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:50:13,116 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:50:13,648 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:50:15,154 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:50:15,155 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:50:15,156 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:50:15,157 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:51:14,182 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:51:14,183 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:51:14,204 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:51:14,207 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:51:14,771 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: COAL_LECTURE#04.pdf
+2025-11-18 02:51:15,227 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Digital Signal Processing.pdf
+2025-11-18 02:51:15,247 [WARNING] Taskera AI : [RAG-Load] Scanned PDF detected (Digital Signal Processing.pdf). Switching to OCR...
+2025-11-18 02:51:15,279 [ERROR] Taskera AI : [RAG-Load] OCR failed. Is Tesseract/Poppler installed? Error: No module named 'pdfminer'
+2025-11-18 02:51:15,280 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 02:51:15,437 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-18 02:51:20,299 [INFO] Taskera AI : [MCP-RAG] Indexed 17 chunks for user 'bash-dev'.
+2025-11-18 02:51:20,317 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:51:20,319 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:51:20,320 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:51:20,321 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:51:22,708 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:51:22,710 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:51:22,712 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:51:22,741 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize this file and explain what's written in it.
+2025-11-18 02:51:22,760 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:51:22,771 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize this file and explain what's written in it.'
+2025-11-18 02:51:23,679 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:51:23,680 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:51:23,687 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:51:23,689 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:52:45,928 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:52:45,931 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:53:08,029 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:53:18,448 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:53:19,014 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:53:20,271 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:53:20,271 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:53:20,272 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:53:20,273 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 02:53:45,752 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 02:53:45,754 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 02:53:45,780 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 02:53:45,784 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 02:53:46,174 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: COAL_LECTURE#04.pdf
+2025-11-18 02:53:46,730 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Digital Signal Processing.pdf
+2025-11-18 02:53:46,759 [WARNING] Taskera AI : [RAG-Load] Scanned PDF detected (Digital Signal Processing.pdf). Switching to OCR...
+2025-11-18 02:53:48,117 [ERROR] Taskera AI : [RAG-Load] OCR failed. Is Tesseract/Poppler installed? Error: No module named 'pi_heif'
+2025-11-18 02:53:48,119 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 02:53:48,367 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-18 02:53:51,760 [INFO] Taskera AI : [MCP-RAG] Indexed 17 chunks for user 'bash-dev'.
+2025-11-18 02:53:51,788 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:53:51,796 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:53:51,801 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:53:51,803 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:53:53,695 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:53:53,697 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:53:53,699 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:53:53,715 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize this file and explain what's written in it.
+2025-11-18 02:53:53,735 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 02:53:53,737 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize this file and explain what's written in it.'
+2025-11-18 02:53:54,248 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 02:53:54,249 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 02:53:54,249 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 02:53:54,250 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 02:54:58,367 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 02:54:58,369 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 02:59:18,391 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 02:59:34,131 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 02:59:34,762 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 02:59:35,921 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 02:59:35,921 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 02:59:35,922 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 02:59:35,923 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 03:21:23,048 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:21:23,051 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 03:21:23,082 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 03:21:23,084 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 03:21:23,483 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: COAL_LECTURE#04.pdf
+2025-11-18 03:21:23,737 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Digital Signal Processing.pdf
+2025-11-18 03:21:23,754 [WARNING] Taskera AI : [RAG-Load] Scanned PDF detected (Digital Signal Processing.pdf). Switching to OCR...
+2025-11-18 03:21:24,669 [ERROR] Taskera AI : [RAG-Load] OCR failed. Is Tesseract/Poppler installed? Error: No module named 'unstructured_inference'
+2025-11-18 03:21:24,670 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 03:21:24,781 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-18 03:21:28,159 [INFO] Taskera AI : [MCP-RAG] Indexed 17 chunks for user 'bash-dev'.
+2025-11-18 03:21:28,201 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:21:28,205 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:21:28,208 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:21:28,213 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:21:30,252 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:21:30,253 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:21:30,254 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:21:30,264 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize this file and explain what's written in it.
+2025-11-18 03:21:30,274 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 03:21:30,275 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize this file and explain what's written in it.'
+2025-11-18 03:21:31,104 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:21:31,105 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:21:31,114 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:21:31,116 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:25:20,407 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 03:25:20,409 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 03:32:20,264 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 03:33:04,401 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 03:33:13,329 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 03:33:14,948 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 03:33:14,948 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 03:33:14,949 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 03:33:14,950 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 03:34:37,126 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 03:34:37,126 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-18 03:35:27,313 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 03:35:40,710 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 03:35:41,645 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 03:35:43,036 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 03:35:43,036 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 03:35:43,037 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 03:35:43,038 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 03:42:57,361 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 03:43:17,714 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 03:43:20,569 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 03:43:22,043 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 03:43:22,044 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 03:43:22,044 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 03:43:22,045 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 03:44:37,254 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:44:37,254 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 03:44:37,258 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:44:37,258 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:44:37,259 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:44:37,260 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:44:39,655 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 03:45:04,309 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:45:04,324 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 03:45:04,324 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 03:45:04,864 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: 1753455440473-BS-AI-Morning-List1.pdf
+2025-11-18 03:45:05,340 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: COAL_LECTURE#04.pdf
+2025-11-18 03:45:05,424 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Digital Signal Processing.pdf
+2025-11-18 03:45:05,458 [WARNING] Taskera AI : [RAG-Load] Scanned PDF detected (Digital Signal Processing.pdf). Switching to OCR...
+2025-11-18 03:45:18,135 [INFO] matplotlib.font_manager : generated new fontManager
+2025-11-18 03:45:29,945 [INFO] unstructured : PDF text extraction failed, skip text extraction...
+2025-11-18 03:45:49,067 [INFO] unstructured_inference : Reading PDF for file: user_files\bash-dev\Digital Signal Processing.pdf ...
+2025-11-18 03:46:04,808 [ERROR] unstructured : Failed to get OCRAgent instance: No module named 'unstructured_pytesseract'
+2025-11-18 03:46:04,816 [ERROR] Taskera AI : [RAG-Load] OCR failed. Is Tesseract/Poppler installed? Error: Could not get the OCRAgent instance. Please check the OCR package and the OCR_AGENT environment variable.
+2025-11-18 03:46:04,817 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 03:46:04,938 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-18 03:46:11,033 [INFO] Taskera AI : [MCP-RAG] Indexed 22 chunks for user 'bash-dev'.
+2025-11-18 03:46:11,037 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:46:11,038 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:11,038 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:11,038 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:46:12,358 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:12,363 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:12,370 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:46:12,374 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=tell me about this pdf file
+2025-11-18 03:46:12,382 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 03:46:12,386 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'tell me about this pdf file'
+2025-11-18 03:46:13,531 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:46:13,531 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:13,532 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:13,532 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:46:45,901 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:46:45,911 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 03:46:45,918 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 03:46:45,922 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: 1753455440473-BS-AI-Morning-List1.pdf
+2025-11-18 03:46:47,528 [INFO] Taskera AI : [MCP-RAG] Indexed 5 chunks for user 'bash-dev'.
+2025-11-18 03:46:47,534 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:46:47,535 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:47,536 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:47,537 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:46:48,748 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:48,750 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:48,751 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:46:48,754 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=explain this pdf
+2025-11-18 03:46:48,756 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 03:46:48,757 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'explain this pdf'
+2025-11-18 03:46:49,707 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:46:49,707 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:46:49,708 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:46:49,708 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:47:58,792 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:47:58,797 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:47:58,798 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:47:58,799 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:47:58,801 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:48:00,016 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 03:55:05,192 [INFO] Taskera AI : Supabase client created successfully
+2025-11-18 03:55:13,584 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-18 03:55:14,589 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-18 03:55:15,575 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-18 03:55:15,575 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-18 03:55:15,576 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-18 03:55:15,577 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-18 03:55:58,725 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:55:58,729 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-18 03:55:58,756 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 03:55:58,757 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 03:55:59,315 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 03:55:59,598 [INFO] Taskera AI : [RAG-Load] Valid text detected (2080 chars). Skipping OCR.
+2025-11-18 03:56:01,131 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user 'bash-dev'.
+2025-11-18 03:56:01,136 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:56:01,138 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:56:01,138 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:56:01,139 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:56:02,877 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:56:02,877 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:56:02,878 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:56:02,881 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=explain what is written in it
+2025-11-18 03:56:02,885 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 03:56:02,885 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'explain what is written in it'
+2025-11-18 03:56:03,313 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:56:03,314 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:56:03,314 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:56:03,315 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:57:10,044 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:57:10,052 [INFO] Taskera AI : [MCP Server] Request: 'index_rag_documents'
+2025-11-18 03:57:10,053 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'bash-dev'.
+2025-11-18 03:57:10,059 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-18 03:57:10,202 [INFO] Taskera AI : [RAG-Load] Valid text detected (2080 chars). Skipping OCR.
+2025-11-18 03:57:10,203 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-18 03:57:11,073 [INFO] Taskera AI : [RAG-Load] Valid text detected (5725 chars). Skipping OCR.
+2025-11-18 03:57:11,856 [INFO] Taskera AI : [MCP-RAG] Indexed 10 chunks for user 'bash-dev'.
+2025-11-18 03:57:11,859 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:57:11,860 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:57:11,860 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:57:11,861 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:57:12,817 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-18 03:57:50,771 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-18 03:57:50,775 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:57:50,776 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:57:50,777 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:57:50,778 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:57:51,561 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:57:51,562 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:57:51,562 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 03:57:51,565 [INFO] Taskera AI : [RAG Proxy] user=bash-dev, query=Summarize the WebProg_Notes.pdf file.
+2025-11-18 03:57:51,568 [INFO] Taskera AI : [MCP Server] Request: 'local_document_retriever'
+2025-11-18 03:57:51,569 [INFO] Taskera AI : [MCP-RAG] Retrieving info for user 'bash-dev' with query: 'Summarize the WebProg_Notes.pdf file.'
+2025-11-18 03:57:51,965 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-18 03:57:51,965 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-18 03:57:51,966 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-18 03:57:51,966 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-18 04:07:32,458 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-18 04:07:32,459 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-20 02:45:04,707 [INFO] Taskera AI : Supabase client created successfully
+2025-11-20 02:45:28,018 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-20 02:45:32,143 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-20 02:45:34,062 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-20 02:45:34,066 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-20 02:45:34,066 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-20 02:45:34,069 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-20 02:52:10,925 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:10,925 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,071 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,071 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,079 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,080 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,089 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,089 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,097 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,098 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,110 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,111 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,121 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,122 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,133 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,134 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,143 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,147 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,157 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,158 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,165 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,165 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,177 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,177 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,185 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,187 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,196 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,197 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,203 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,204 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,211 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,212 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,223 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,224 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,231 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,231 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,243 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,244 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,252 [INFO] Taskera AI : [MCP Server] Request: 'calculator_tool'
+2025-11-20 02:52:11,253 [ERROR] Taskera AI : [MCP Server] Error in 'calculator_tool': calculator_tool_function() got an unexpected keyword argument 'operation'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 213, in mcp_endpoint
+    result = func(**params)
+TypeError: calculator_tool_function() got an unexpected keyword argument 'operation'
+2025-11-20 02:52:11,259 [WARNING] slowapi : ratelimit 20 per 1 minute (127.0.0.1) exceeded at endpoint: /mcp
+2025-11-20 02:52:11,287 [WARNING] slowapi : ratelimit 20 per 1 minute (127.0.0.1) exceeded at endpoint: /mcp
+2025-11-20 02:52:11,292 [WARNING] slowapi : ratelimit 20 per 1 minute (127.0.0.1) exceeded at endpoint: /mcp
+2025-11-20 02:52:11,298 [WARNING] slowapi : ratelimit 20 per 1 minute (127.0.0.1) exceeded at endpoint: /mcp
+2025-11-20 02:52:11,307 [WARNING] slowapi : ratelimit 20 per 1 minute (127.0.0.1) exceeded at endpoint: /mcp
+2025-11-20 03:15:34,074 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-20 03:15:34 PST)" (scheduled at 2025-11-20 03:15:34.062539-08:00)
+2025-11-20 03:15:34,075 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-20 03:45:34 PST)" executed successfully
+2025-11-20 03:45:34,074 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-20 04:15:34 PST)" (scheduled at 2025-11-20 03:45:34.062539-08:00)
+2025-11-20 03:45:34,075 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-20 04:15:34 PST)" executed successfully
+2025-11-20 03:53:08,965 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-20 03:53:08,966 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-20 04:45:14,426 [INFO] Taskera AI : Supabase client created successfully
+2025-11-20 04:45:22,884 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-20 04:45:23,910 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-20 04:50:27,076 [INFO] Taskera AI : Supabase client created successfully
+2025-11-20 04:50:35,624 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-20 04:50:36,622 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-20 04:50:37,534 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-20 04:50:37,534 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-20 04:50:37,535 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-20 04:50:37,535 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-20 04:53:48,790 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-20 04:53:48,791 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-20 04:53:59,178 [INFO] Taskera AI : Supabase client created successfully
+2025-11-20 04:54:07,955 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-20 04:54:08,959 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-20 04:54:09,893 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-20 04:54:09,893 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-20 04:54:09,894 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-20 04:54:09,895 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-20 04:54:36,790 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-20 04:54:36,791 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-20 04:54:36,801 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-20 04:54:36,802 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-20 04:54:36,804 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-20 04:54:36,805 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-20 04:54:38,632 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-20 05:06:50,755 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-20 05:06:50,756 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-21 05:54:00,395 [INFO] Taskera AI : Supabase client created successfully
+2025-11-21 05:54:23,109 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-21 05:54:26,691 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-21 05:54:28,075 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-21 05:54:28,075 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-21 05:54:28,076 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-21 05:54:28,078 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-21 05:55:10,870 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-21 05:55:10,871 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-21 05:55:10,877 [ERROR] Taskera AI : Graph error: 'tuple' object has no attribute 'content'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 343, in http_chat_endpoint
+    final_state = await graph_with_memory.ainvoke(input_message, config)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\pregel\main.py", line 3137, in ainvoke
+    async for chunk in self.astream(
+    ...<29 lines>...
+            chunks.append(chunk)
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\pregel\main.py", line 2956, in astream
+    async for _ in runner.atick(
+    ...<13 lines>...
+            yield o
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\pregel\_retry.py", line 137, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_core\runnables\config.py", line 603, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "D:\TASKERA_AI\backend\.venv\Lib\site-packages\langchain_core\runnables\config.py", line 594, in wrapper
+    return func(*args, **kwargs)
+  File "D:\TASKERA_AI\backend\app\agents\controller_agent.py", line 103, in agent_node
+    last_msg = messages[-1].content if messages else ""
+               ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'content'
+During task with name 'agent' and id '04d32fcc-f218-1480-54fe-df63bd836eff'
+2025-11-21 06:03:30,356 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-21 06:03:30,356 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-21 06:06:20,634 [INFO] Taskera AI : Supabase client created successfully
+2025-11-21 06:06:30,611 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-21 06:06:31,580 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-21 06:06:32,478 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-21 06:06:32,480 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-21 06:06:32,480 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-21 06:06:32,481 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-21 06:06:48,433 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-21 06:06:48,434 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-21 06:06:48,440 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:06:48,456 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:06:48,457 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:06:48,458 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:06:51,333 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-21 06:07:02,666 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-21 06:07:02,669 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:07:02,669 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:07:02,670 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:07:02,670 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:07:03,844 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-21 06:07:35,530 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-21 06:07:35,536 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:07:35,545 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:07:35,549 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:07:35,550 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:07:37,073 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:07:37,073 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:07:37,074 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:07:37,091 [INFO] Taskera AI : [MCP Server] Request: 'web_search'
+2025-11-21 06:07:37,464 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=interesting%20new%20developments%20in%20the%20tech%20industry): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-21 06:07:38,183 [INFO] primp : response: https://www.bing.com/search?q=interesting+new+developments+in+the+tech+industry&pq=interesting+new+developments+in+the+tech+industry&cc=wt&filters=ex1%3A%22ez5_20048_20413%22 200
+2025-11-21 06:07:39,343 [INFO] primp : response: https://yandex.com/search/site/?text=interesting+new+developments+in+the+tech+industry&web=1&searchid=2477463 200
+2025-11-21 06:07:39,429 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:07:39,430 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:07:39,430 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:07:39,430 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:18:12,940 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-21 06:18:12,941 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-21 06:18:23,875 [INFO] Taskera AI : Supabase client created successfully
+2025-11-21 06:18:33,064 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-21 06:18:34,392 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-21 06:18:35,703 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-21 06:18:35,704 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-21 06:18:35,704 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-21 06:18:35,705 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-21 06:18:58,129 [INFO] Taskera AI : [HTTP API-POST] Chat request for user_id: bash-dev
+2025-11-21 06:18:58,131 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-21 06:18:58,136 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:18:58,137 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:18:58,144 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:18:58,149 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:19:00,948 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:19:00,949 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:19:00,949 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:19:00,972 [INFO] Taskera AI : [MCP Server] Request: 'web_search'
+2025-11-21 06:19:01,211 [INFO] ddgs.ddgs : Error in engine wikipedia: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=interesting%20new%20developments%20in%20the%20tech%20industry): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-21 06:19:01,907 [INFO] primp : response: https://search.yahoo.com/search;_ylt=LpKR94rFL8X0Ii8RrfbhTuig;_ylu=r_NLMPhOxxGHEcRjDzBHx62gHQtu-PpKSfM9zfcfvPwwYCc?p=interesting+new+developments+in+the+tech+industry&btf=y 200
+2025-11-21 06:19:02,098 [INFO] primp : response: https://www.bing.com/search?q=interesting+new+developments+in+the+tech+industry&pq=interesting+new+developments+in+the+tech+industry&cc=wt&filters=ex1%3A%22ez5_20048_20413%22 200
+2025-11-21 06:19:02,675 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-21 06:19:02,676 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-21 06:19:02,677 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-21 06:19:02,678 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-21 06:19:04,519 [INFO] Taskera AI : [HTTP API-RESPONSE] Sending to frontend: The tech industry is constantly evolving, with emerging technologies like generative AI, 5G, and sus...
+2025-11-21 06:19:30,127 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-21 06:19:30,128 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
