@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const CHAT_ENDPOINT = '/api/chat';
     const LOGO_PATH = "assets/images/logo.png";
 
+    let csrfToken = ''; 
+
     const chatLog = document.getElementById('chatLog');
     const chatForm = document.getElementById('chatForm');
     const userInput = document.getElementById('userInput');
@@ -29,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeIcon = document.getElementById('closeIcon');
 
     loadSession();
+    fetchCsrfToken(); 
 
     chatForm.addEventListener('submit', handleChatSubmit);
     menuButton.addEventListener('click', toggleSidebar);
@@ -55,6 +58,18 @@ document.addEventListener('DOMContentLoaded', () => {
             userInput.focus();
         }
     });
+
+    async function fetchCsrfToken() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/csrf-token`);
+            if (!response.ok) throw new Error("Could not fetch CSRF token");
+            const data = await response.json();
+            csrfToken = data.csrf_token;
+            console.log("Security Handshake (CSRF) Successful");
+        } catch (error) {
+            console.error("Failed to initialize security token:", error);
+        }
+    }
 
     function loadSession() {
         const storedUserId = localStorage.getItem(USER_ID_STORAGE_KEY);
@@ -88,7 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (currentUserId) {
             addStatusMessageToChat('Clearing session data on server...');
             try {
-                const response = await fetch(`${API_BASE_URL}/users/${currentUserId}/data`, { method: 'DELETE' });
+                const response = await fetch(`${API_BASE_URL}/users/${currentUserId}/data`, { 
+                    method: 'DELETE',
+                    headers: {
+                        'x-csrftoken': csrfToken 
+                    }
+                });
                 const data = await response.json().catch(() => ({}));
                 addStatusMessageToChat(data.message || 'Server session cleared.');
             } catch (error) {
@@ -102,6 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
         addStartupMessage();
         fileUploadStatus.innerHTML = '';
         clearStagedFiles();
+        
+        fetchCsrfToken();
     }
 
     function handleFileStage(e) {
@@ -183,14 +205,22 @@ document.addEventListener('DOMContentLoaded', () => {
         addMessageToChat('ai', '...', [], 'typing');
 
         try {
-            
             const response = await fetch(`${API_BASE_URL}${CHAT_ENDPOINT}`, {
                 method: 'POST',
+                headers: {
+                    'x-csrftoken': csrfToken 
+                },
                 body: formData
             });
 
             const data = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(data.detail || `${response.status} ${response.statusText}`);
+            if (!response.ok) {
+                // Handle CSRF Error specifically
+                if (response.status === 403) {
+                    throw new Error("Security Check Failed (CSRF). Please refresh the page.");
+                }
+                throw new Error(data.detail || `${response.status} ${response.statusText}`);
+            }
 
             console.log('API Response:', data);
             removeTypingIndicator();

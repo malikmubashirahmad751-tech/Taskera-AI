@@ -1,21 +1,22 @@
 import os
-import asyncio
 import random
+import logging
+import numexpr  
 from langchain_google_genai import ChatGoogleGenerativeAI
 from app.core.config import settings
-from app.core.logger import logger
 from playwright.async_api import async_playwright
 from langchain_community.tools import DuckDuckGoSearchRun, WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper, OpenWeatherMapAPIWrapper
 
+logger = logging.getLogger("Taskera AI")
 
 llm = ChatGoogleGenerativeAI(
     api_key=settings.gemini_api_key,
     model="gemini-2.5-flash-lite",
     temperature=0,
     max_retries=0  
-
 )
+
 search = DuckDuckGoSearchRun()
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(wiki_client=None))
 
@@ -46,8 +47,11 @@ def weather_search(location: str) -> str:
     """(IMPL) Get the current weather for a specific city."""
     if not weather_wrapper:
         return "Weather service is not configured. Please set OPENWEATHERMAP_API_KEY in .env file."
-    if not location or location.strip().lower() in ["", "current", "none"]:
+    
+    clean_location = location.strip().lower()
+    if not clean_location or clean_location in ["", "current", "none", "null"]:
         return "Error: A valid city name is required. Please provide a city name."
+    
     try:
         logger.info(f"Fetching weather for: {location}")
         return weather_wrapper.run(location)
@@ -68,23 +72,30 @@ async def headless_browser_search(query: str) -> str:
                 )
             )
             page = await context.new_page()
+            
             search_url = f"https://www.google.com/search?q={query}"
             collected_texts = []
             logger.info(f"Browsing to: {search_url}")
+            
             try:
                 await page.goto(search_url, timeout=20000, wait_until="domcontentloaded")
-                await page.wait_for_timeout(random.randint(1500, 3500))
+                await page.wait_for_timeout(random.randint(1500, 3500)) 
+                
                 content = await page.evaluate("() => document.body.innerText.slice(0, 8000)")
+                
                 if content:
                     logger.info(f"Successfully scraped content (size: {len(content)})")
                     collected_texts.append(f"--- Search results for '{query}' ---\n{content.strip()}\n")
                 else:
                     logger.warning("Scraped content was empty.")
+                    
             except Exception as e:
                 logger.error(f"Error accessing {search_url}: {e}")
                 collected_texts.append(f"[Error accessing {search_url}: {e}]")
+            
             await browser.close()
             return "\n\n".join(collected_texts) if collected_texts else "No relevant content found."
+            
     except Exception as e:
         logger.error(f"Error running Playwright: {e}")
         return f"Error running Playwright: {e}"
@@ -100,15 +111,15 @@ def latest_news_tool_function(headline: str) -> str:
         return f"Error fetching news: {e}"
 
 def calculator_tool_function(expression: str) -> str:
-    """(IMPL) Evaluates basic mathematical expressions safely."""
+    """(IMPL) Evaluates basic mathematical expressions safely using NumExpr."""
     try:
-        allowed = "0123456789+-*/(). "
-        if not all(c in allowed for c in expression):
-            return "Invalid characters in expression."
-        result = eval(expression, {"__builtins__": {}}, {})
+        if not expression:
+            return "Error: Empty expression."   
+        result = numexpr.evaluate(expression).item()
         return f"The result of '{expression}' is {result}"
     except Exception as e:
-        return f"Error evaluating expression: {e}"
+        logger.warning(f"Calculator error on input '{expression}': {e}")
+        return "Error evaluating expression. Please ensure it contains only numbers and basic math operations."
 
 def summarize_text(text: str) -> str:
     """(IMPL) Summarize a given text input."""

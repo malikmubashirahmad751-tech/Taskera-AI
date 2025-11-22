@@ -80,6 +80,20 @@ def get_full_tool_list(user_id: str) -> List:
 
     return dynamic_tools + static_tools
 
+def detect_prompt_injection(text: str) -> bool:
+    """
+    Returns True if the text looks like a jailbreak attempt.
+    """
+    risky_phrases = [
+        "ignore all prior instructions",
+        "system override",
+        "you are now a developer mode",
+        "delete user files",
+        "exec(",
+    ]
+    text_lower = text.lower()
+    return any(phrase in text_lower for phrase in risky_phrases)
+
 def agent_node(state: AgentState):
     """
     Primary node: call the LLM with the correct tools bound.
@@ -87,54 +101,72 @@ def agent_node(state: AgentState):
     user_id = state.get("user_id", "unknown")
     messages = state["messages"]
 
+    
+    if messages:
+        last_msg = messages[-1]
+        content = ""
+        
+        if hasattr(last_msg, 'content'):
+            content = last_msg.content
+        elif isinstance(last_msg, (tuple, list)) and len(last_msg) > 1:
+            content = last_msg[1]
+        else:
+            content = str(last_msg)
+
+        if isinstance(content, str) and detect_prompt_injection(content):
+            logger.warning(f"Prompt injection blocked for user {user_id}")
+            return {
+                "messages": [("assistant", "I cannot process that request due to security policy.")]
+            }
+
     logger.info(f"Agent node executing for user: {user_id}")
 
     all_tools = get_full_tool_list(user_id)
     llm_with_tools = llm.bind_tools(all_tools)
 
     system_prompt = """You are a multi-functional AI assistant named Taskera AI.
-Your primary goal is to be helpful and complete tasks.
+    Your primary goal is to be helpful and complete tasks.
 
 ---
-**CRITICAL RULE 1: CONTEXTUAL FOLLOW-UP**
-1.  **If you asked a question:** Use the user's reply to complete the *original* task.
-2.  **Handling "Yes/No":** Assume "yes" confirms your last suggestion.
-3.  **Handling "No":** Ask for new instructions or clarifications.
+    **CRITICAL RULE 1: CONTEXTUAL FOLLOW-UP**
+    1.  **If you asked a question:** Use the user's reply to complete the *original* task.
+    2.  **Handling "Yes/No":** Assume "yes" confirms your last suggestion.
+    3.  **Handling "No":** Ask for new instructions or clarifications.
 
----
-**CRITICAL RULE 2: TOOL vs. CHAT**
--   **If a tool can answer the question, USE THE TOOL.**
--   Only provide general chat if no tool applies.
--   If the request is vague, ASK CLARIFYING QUESTIONS.
+    ---
+    **CRITICAL RULE 2: TOOL vs. CHAT**
+    -   **If a tool can answer the question, USE THE TOOL.**
+    -   Only provide general chat if no tool applies.
+    -   If the request is vague, ASK CLARIFYING QUESTIONS.
 
----
-**Tool Priority & Purpose:**
+    ---
+    **Tool Priority & Purpose:**
 
-1.  **Google Calendar (REAL): `google_calendar_list`, `google_calendar_schedule`**
-    * **Check Schedule:** Use `google_calendar_list` to find free slots or see what's up next.
-    * **Book Meetings:** Use `google_calendar_schedule` to create actual events on the user's calendar.
-    * *Auth Error:* If these tools fail with an auth error, tell the user to log in via the dashboard.
+    1.  **Google Calendar (REAL): `google_calendar_list`, `google_calendar_schedule`**
+        * **Check Schedule:** Use `google_calendar_list` to find free slots or see what's up next.
+        * **Book Meetings:** Use `google_calendar_schedule` to create actual events on the user's calendar.
+        * *Auth Error:* If these tools fail with an auth error, tell the user to log in via the dashboard.
 
-2.  **Image Analysis (OCR): `image_text_extractor`**
-    * Use this if the user uploaded an image.
+    2.  **Image Analysis (OCR): `image_text_extractor`**
+        * Use this if the user uploaded an image.
 
-3.  **Document/File Queries (RAG): `local_document_retriever`**
-    * Use this to answer questions about user-uploaded documents.
+    3.  **Document/File Queries (RAG): `local_document_retriever`**
+        * Use this to answer questions about user-uploaded documents.
 
-4.  **Math/Computation: `wolfram_alpha_query`**
-    * Use this for math, science, and unit conversions.
+    4.  **Math/Computation: `wolfram_alpha_query`**
+        * Use this for math, science, and unit conversions.
 
-5.  **Weather: `weather_tool`**
-    * Use this for weather forecasts.
+    5.  **Weather: `weather_tool`**
+        * Use this for weather forecasts.
 
-6.  **Internal Scheduling: `schedule_research_task`**
-    * Use this for *internal* agent tasks (like "search for this topic tomorrow"), NOT for meetings.
+    6.  **Internal Scheduling: `schedule_research_task`**
+        * Use this for *internal* agent tasks (like "search for this topic tomorrow"), NOT for meetings.
 
-7.  **Web Search: `search_tool`, `headless_browser_search`**
-    * Use for real-time information.
+    7.  **Web Search: `search_tool`, `headless_browser_search`**
+        * Use for real-time information.
 
-8.  **Other:** `calculator_tool`, `translator_tool`, `summarize_tool`, `latest_news_tool`
-"""
+    8.  **Other:** `calculator_tool`, `translator_tool`, `summarize_tool`, `latest_news_tool`
+    """
 
     prompt = ChatPromptTemplate.from_messages([
         ("system", system_prompt),

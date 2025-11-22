@@ -1,4 +1,5 @@
 import os
+import re
 import asyncio
 import uvicorn
 from typing import Optional, Any, Dict, List
@@ -6,16 +7,27 @@ from fastapi import (
     FastAPI, HTTPException, Body, Request,
     Form, File, UploadFile
 )
-from fastapi.middleware.cors import CORSMiddleware  
-from pydantic import BaseModel, Field
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field, field_validator
+from fastapi.responses import RedirectResponse
+from google_auth_oauthlib.flow import Flow
+
+from langchain_core.messages import HumanMessage 
+
+from starlette.middleware.sessions import SessionMiddleware
+from starlette_csrf.middleware import CSRFMiddleware
+
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 from app.core.config import settings
 from app.core.logger import logger
 from app.services.scheduler import start_scheduler, shutdown_scheduler
-
 from app.core.memory_manager import get_user_checkpointer, update_session_on_response, clear_user_session
 from app.agents.controller_agent import app as agent_app
 from app.mcp_client import call_mcp, MCPError, shutdown_mcp_client
+from app.core.crud import save_refresh_token
 
 from app.impl.tools_agent_impl import (
     duckduckgo_search_wrapper, wikipedia_query_wrapper, weather_search,
@@ -27,16 +39,18 @@ from app.impl.knowledge_agent_impl import create_rag_tool_impl, retrieve_info_im
 from app.impl.services_agent_impl import schedule_research_task_impl, manage_calendar_events_impl
 from app.services.file_handler import delete_specific_user_file, delete_all_user_files
 from app.services.rag_service import delete_user_vectorstore
-
-from fastapi.responses import RedirectResponse
-from google_auth_oauthlib.flow import Flow
-from app.core.crud import save_refresh_token
 from app.impl.google_tools_impl import list_calendar_events_impl, create_calendar_event_impl
+
+
+limiter = Limiter(key_func=get_remote_address)
 
 app = FastAPI(
     title="Taskera AI Unified Server (MCP + ACP)",
     description="Provides all tools and chat via a single API"
 )
+
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 origins = [
     "http://localhost:5500",
@@ -47,8 +61,29 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"],  
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+SECRET_KEY = os.getenv("CSRF_SESSION_SECRET", "unsafe-local-secret-key-change-me")
+CSRF_SECRET = os.getenv("CSRF_TOKEN_SECRET", "unsafe-local-csrf-secret-change-me")
+
+app.add_middleware(
+    CSRFMiddleware,
+    secret=CSRF_SECRET,
+    sensitive_cookies={"taskera_session"},
+    cookie_path="/",
+    header_name="x-csrftoken", 
+    exempt_urls=[
+        re.compile(r"^/auth/google$"), 
+        re.compile(r"^/auth/google/callback$")
+    ])
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=SECRET_KEY,
+    session_cookie="taskera_session",
+    max_age=3600 
 )
 
 UPLOAD_PATH = "user_files"
@@ -105,13 +140,21 @@ TOOL_REGISTRY = {
     "delete_all_user_data": delete_all_user_data_impl,
 }
 
+@app.get("/csrf-token")
+def get_csrf_token(request: Request):
+    """Returns the CSRF token for the frontend to use in headers."""
+    token = request.scope.get("csrf_token")
+    return {"csrf_token": token}
+
 @app.get("/")
-def read_root():
+@limiter.limit("60/minute")
+def read_root(request: Request):
     return {"message": "Taskera AI Unified Server is running."}
 
 
 @app.get("/auth/google")
-async def auth_google_start(user_id: str):
+@limiter.limit("5/minute")
+async def auth_google_start(request: Request, user_id: str):
     if not settings.GOOGLE_CLIENT_ID:
         raise HTTPException(status_code=500, detail="Google Auth is not configured.")
 
@@ -179,15 +222,19 @@ async def auth_google_callback(request: Request, code: str, state: str):
 
 
 @app.post("/mcp", response_model=MCPResponse)
-async def mcp_endpoint(request: MCPRequest = Body(...)):
-    method_name = request.method
-    params = request.params or {}
+@limiter.limit("20/minute") 
+async def mcp_endpoint(
+    request: Request, 
+    mcp_req: MCPRequest = Body(...) 
+):
+    method_name = mcp_req.method
+    params = mcp_req.params or {}
     logger.info(f"[MCP Server] Request: '{method_name}'")
 
     if method_name not in TOOL_REGISTRY:
         return MCPResponse(
             error={"code": -32601, "message": "Method not found"},
-            id=request.id
+            id=mcp_req.id
         )
     try:
         func = TOOL_REGISTRY[method_name]
@@ -195,23 +242,47 @@ async def mcp_endpoint(request: MCPRequest = Body(...)):
             result = await func(**params)
         else:
             result = func(**params)
-        return MCPResponse(result=result, id=request.id)
+        return MCPResponse(result=result, id=mcp_req.id)
     except Exception as e:
         logger.error(f"[MCP Server] Error in '{method_name}': {e}", exc_info=True)
         return MCPResponse(
             error={"code": -32000, "message": str(e)},
-            id=request.id
+            id=mcp_req.id
         )
 
+
+class SecureChatInput(BaseModel):
+    user_id: str = Field(..., min_length=1, max_length=50, pattern=r"^[a-zA-Z0-9_-]+$")
+    query: str = Field(..., max_length=2000)
+    
+    @field_validator('query')
+    @classmethod
+    def block_injection_patterns(cls, v: str) -> str:
+        sql_patterns = [r"DROP TABLE", r"UNION SELECT", r"OR '1'='1'", r"--"]
+        for p in sql_patterns:
+            if re.search(p, v, re.IGNORECASE):
+                raise ValueError("Invalid characters detected in query.")
+        
+        if "ignore previous instructions" in v.lower():
+            raise ValueError("Invalid input detected.")
+            
+        return v.strip()
+
+
 @app.post("/api/chat")
+@limiter.limit("10/minute") 
 async def http_chat_endpoint(
+    request: Request, 
     query: str = Form(""),
     user_id: str = Form(...),
     files: List[UploadFile] = File([])
 ):
-    
-    logger.info(f"[HTTP API-POST] Chat request for user_id: {user_id}")
-    
+    try:
+        safe_input = SecureChatInput(user_id=user_id, query=query)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+    logger.info(f"[HTTP API-POST] Chat request for user_id: {safe_input.user_id}")    
     user_checkpointer = get_user_checkpointer(user_id)
     config = {"configurable": {"thread_id": user_id}}
 
@@ -270,22 +341,50 @@ async def http_chat_endpoint(
         
     try:
         graph_with_memory = agent_app.with_config(checkpointer=user_checkpointer)
-        input_message = {"messages": [("human", agent_input_content)], "user_id": user_id}
+        
+        input_message = {
+            "messages": [HumanMessage(content=agent_input_content)], 
+            "user_id": user_id
+        }
+        
         final_state = await graph_with_memory.ainvoke(input_message, config)
         
         if final_state.get('messages'):
             result_message = final_state['messages'][-1]
-            answer = str(result_message.content)
+            
+            raw_content = getattr(result_message, "content", "")
+            
+            if isinstance(raw_content, list):
+                 try:
+                     answer = " ".join([str(c) if isinstance(c, str) else c.get('text', '') for c in raw_content])
+                 except Exception:
+                     answer = str(raw_content)
+            else:
+                answer = str(raw_content)
+                
+            if not answer.strip():
+                answer = "I've processed your request."
+                logger.warning(f"[Response Alert] Empty content for user {user_id}. Using fallback.")
+
+            logger.info(f"[HTTP API-RESPONSE] Sending to frontend: {answer[:100]}...")
+
             update_session_on_response(user_id, answer)
-            return {"answer": answer, "user_id": user_id}
+            
+            return {
+                "answer": answer, 
+                "response": answer, 
+                "user_id": user_id
+            }
         else:
             raise HTTPException(status_code=500, detail="No response from agent.")
+            
     except Exception as e:
         logger.exception(f"Graph error: {e}")
         raise HTTPException(status_code=500, detail=f"Error: {e}")
 
 @app.delete("/users/{user_id}/data")
-def delete_user_data_endpoint(user_id: str):
+@limiter.limit("5/minute")
+def delete_user_data_endpoint(request: Request, user_id: str):
     try:
         result = delete_all_user_data_impl(user_id)
         return {"message": "Data cleared.", "details": result}
