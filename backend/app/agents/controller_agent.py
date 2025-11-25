@@ -1,20 +1,22 @@
 from __future__ import annotations
 import logging
+import datetime
 from typing import TypedDict, Annotated, Sequence, List
+
+from google.api_core.exceptions import ResourceExhausted
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.messages import BaseMessage
+from langchain_core.messages import BaseMessage, AIMessage
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
 
 from app.core.config import settings
 from app.core.logger import logger
 
-from app.agents.knowledge_agent import create_rag_tool
-from app.services.ocr_service import create_ocr_tool
-from app.agents.google_agent import create_google_calendar_tools 
-
+from app.agents.knowledge_agent import create_rag_tool 
+from app.services.ocr_service import create_ocr_tool 
+from app.agents.google_agent import google_calendar_tools 
 from app.agents.services_agent import schedule_research_task, manage_calendar_events
 from app.agents.tools_agent import (
     wiki_tool,
@@ -28,13 +30,19 @@ from app.agents.tools_agent import (
 )
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite",  
+    model="gemini-2.0-flash-lite-preview-02-05", 
     temperature=0,
     api_key=settings.gemini_api_key,
     max_retries=0  
 )
 
-static_tools = [
+calendar_tools_list = (
+    google_calendar_tools 
+    if isinstance(google_calendar_tools, list) 
+    else [google_calendar_tools]
+)
+
+ALL_TOOLS = [
     wiki_tool,
     search_tool,
     summarize_tool,
@@ -45,44 +53,21 @@ static_tools = [
     schedule_research_task,
     manage_calendar_events,
     headless_browser_search,
+    create_rag_tool, 
+    create_ocr_tool, 
+    *calendar_tools_list 
 ]
+
+tool_node = ToolNode(ALL_TOOLS)
 
 class AgentState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], lambda x, y: x + y]
     user_id: str
-
-def get_full_tool_list(user_id: str) -> List:
-    """
-    Build the full list of tools for the given user.
-    """
-    dynamic_tools = []
-
-    try:
-        user_rag_tool = create_rag_tool(user_id=user_id)
-        dynamic_tools.append(user_rag_tool)
-        logger.info(f"Created RAG tool for user={user_id}")
-    except Exception as e:
-        logger.error(f"Failed to create RAG proxy tool for user {user_id}: {e}")
-
-    try:
-        user_ocr_tool = create_ocr_tool(user_id=user_id)
-        dynamic_tools.append(user_ocr_tool)
-        logger.info(f"Created OCR tool for user={user_id}")
-    except Exception as e:
-        logger.error(f"Failed to create OCR proxy tool for user {user_id}: {e}")
-
-    try:
-        user_calendar_tools = create_google_calendar_tools(user_id=user_id)
-        dynamic_tools.extend(user_calendar_tools) 
-        logger.info(f"Created Google Calendar tools for user={user_id}")
-    except Exception as e:
-        logger.error(f"Failed to create Google Calendar tools for user {user_id}: {e}")
-
-    return dynamic_tools + static_tools
+    user_email: str
 
 def detect_prompt_injection(text: str) -> bool:
     """
-    Returns True if the text looks like a jailbreak attempt.
+    Detect if a given text contains any risky phrases that might be used to inject prompts.
     """
     risky_phrases = [
         "ignore all prior instructions",
@@ -94,120 +79,168 @@ def detect_prompt_injection(text: str) -> bool:
     text_lower = text.lower()
     return any(phrase in text_lower for phrase in risky_phrases)
 
+
 def agent_node(state: AgentState):
     """
-    Primary node: call the LLM with the correct tools bound.
+    Invokes the LLM with robust error handling for API Limits AND Date Context.
     """
     user_id = state.get("user_id", "unknown")
+    user_email = state.get("user_email", "unknown")
     messages = state["messages"]
 
-    
     if messages:
         last_msg = messages[-1]
-        content = ""
-        
-        if hasattr(last_msg, 'content'):
-            content = last_msg.content
-        elif isinstance(last_msg, (tuple, list)) and len(last_msg) > 1:
-            content = last_msg[1]
-        else:
-            content = str(last_msg)
-
+        content = last_msg.content if hasattr(last_msg, 'content') else str(last_msg)
         if isinstance(content, str) and detect_prompt_injection(content):
             logger.warning(f"Prompt injection blocked for user {user_id}")
-            return {
-                "messages": [("assistant", "I cannot process that request due to security policy.")]
-            }
+            return {"messages": [AIMessage(content="I cannot process that request.")]}
 
     logger.info(f"Agent node executing for user: {user_id}")
 
-    all_tools = get_full_tool_list(user_id)
-    llm_with_tools = llm.bind_tools(all_tools)
+    try:
+        llm_with_tools = llm.bind_tools(ALL_TOOLS)
 
-    system_prompt = """You are a multi-functional AI assistant named Taskera AI.
-    Your primary goal is to be helpful and complete tasks.
+        now = datetime.datetime.now()
+        current_date = now.strftime("%Y-%m-%d")  
+        current_day = now.strftime("%A")         
+        current_time = now.strftime("%H:%M")     
 
----
-    **CRITICAL RULE 1: CONTEXTUAL FOLLOW-UP**
-    1.  **If you asked a question:** Use the user's reply to complete the *original* task.
-    2.  **Handling "Yes/No":** Assume "yes" confirms your last suggestion.
-    3.  **Handling "No":** Ask for new instructions or clarifications.
+        system_prompt = f"""You are Taskera AI, a multi-functional, tool-enabled assistant.
 
-    ---
-    **CRITICAL RULE 2: TOOL vs. CHAT**
-    -   **If a tool can answer the question, USE THE TOOL.**
-    -   Only provide general chat if no tool applies.
-    -   If the request is vague, ASK CLARIFYING QUESTIONS.
+CURRENT CONTEXT:
+- Today is: {current_day}, {current_date}
+- Current time: {current_time}
+- User Email: {user_email}
+- User Timezone: Assume local time unless specified.
 
-    ---
-    **Tool Priority & Purpose:**
+Your purpose is to help the user complete tasks efficiently by using tools intelligently and following strict contextual rules.
 
-    1.  **Google Calendar (REAL): `google_calendar_list`, `google_calendar_schedule`**
-        * **Check Schedule:** Use `google_calendar_list` to find free slots or see what's up next.
-        * **Book Meetings:** Use `google_calendar_schedule` to create actual events on the user's calendar.
-        * *Auth Error:* If these tools fail with an auth error, tell the user to log in via the dashboard.
+1. CORE BEHAVIOR
+Contextual Follow-Up (Most Important Rule)
+If you asked a question, the user’s next message is the answer to that same question.
+ **ACTION OVER TALK:** If the user says "Yeah", "Yes", "Confirm", "Do it", "Okay", or "Sure" after you proposed a plan, **YOU MUST CALL THE TOOL IMMEDIATELY.** Do not simply say "Okay" or "I will do that". Just run the tool function.
+Always respect the immediate conversational context when deciding what to do next.
 
-    2.  **Image Analysis (OCR): `image_text_extractor`**
-        * Use this if the user uploaded an image.
+2. TOOL USAGE RULES
+If a tool can answer the request, YOU MUST USE IT.
+Only respond conversationally if no tool is suitable.
 
-    3.  **Document/File Queries (RAG): `local_document_retriever`**
-        * Use this to answer questions about user-uploaded documents.
+Tool Priority (Highest → Lowest)
 
-    4.  **Math/Computation: `wolfram_alpha_query`**
-        * Use this for math, science, and unit conversions.
+Google Calendar Tools
+Tools: google_calendar_list, google_calendar_schedule
+Use these to check schedules, find free time, or create/edit/cancel real events.
+If a calendar tool call fails due to auth issues, tell the user to log in via the dashboard.
+IMPORTANT: Use the User Email ({user_email}) as the attendee if requested.
+IMPORTANT: If the user says "tomorrow" or "next Friday", CALCULATE the date based on "Today is {current_date}" and pass the YYYY-MM-DD string to the tool.
 
-    5.  **Weather: `weather_tool`**
-        * Use this for weather forecasts.
+Image Text Extraction
+Tool: image_text_extractor
+Use this whenever the user provides an image and asks for its text or content.
 
-    6.  **Internal Scheduling: `schedule_research_task`**
-        * Use this for *internal* agent tasks (like "search for this topic tomorrow"), NOT for meetings.
+Document Question Answering (RAG)
+Tool: local_document_retriever
+Use this for questions about user-uploaded documents only.
+Do NOT use this for general knowledge, weather, news, math, or web lookups.
 
-    7.  **Web Search: `search_tool`, `headless_browser_search`**
-        * Use for real-time information.
+Weather Lookup
+Tools: weather_tool or weather_search
+These require a location.
+If you ask “Which city?”, the user’s reply is the location for the tool call.
 
-    8.  **Other:** `calculator_tool`, `translator_tool`, `summarize_tool`, `latest_news_tool`
-    """
+Task Scheduling (Internal Agent Tasks)
+Tools: schedule_research_task, manage_calendar_events
+Use these only for internal tasks, reminders, or planning—
+NOT for creating real meetings (use Calendar tools instead).
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", system_prompt),
-        MessagesPlaceholder(variable_name="messages"),
-    ])
+News
+Tool: latest_news_tool
+Use for current headlines, breaking news, or recent events.
 
-    agent_chain = prompt | llm_with_tools
+Web Browsing / Live Data
+Tools: headless_browser_search, search_tool
+Use for complex real-time queries, URL-based lookups, and live data research.
 
-    response = agent_chain.invoke({"messages": messages})
+General Search
+Tools: web_search, wikipedia_search
+Use for definitions, factual questions, and general knowledge not tied to user documents.
 
-    return {"messages": [response]}
+Other Tools
+calculator_tool (math)
+translator_tool (language translation)
+summarize_tool (summaries of long text)
+
+3. INTERACTION LOGIC
+If the user request is unclear, ask clarifying questions.
+Do not chain multiple tools unless required.
+Always pick the most relevant tool.
+After a tool call, interpret the results for the user unless stated otherwise.
+
+4. TONE & STYLE
+Clear, concise, professional, helpful
+Action-oriented and task-completion focused
+Maintain logical consistency and follow conversational context
+
+5. CORE PHILOSOPHY
+Understand the context.
+Use the right tool.
+Complete the task.
+        """
+
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", system_prompt),
+            MessagesPlaceholder(variable_name="messages"),
+        ])
+
+        chain = prompt | llm_with_tools
+        response = chain.invoke({"messages": messages})
+
+        return {"messages": [response]}
+
+    except ResourceExhausted:
+        logger.error(f"Google API Quota Exceeded for user {user_id}")
+        # --- FIX: Return AIMessage object ---
+        return {
+            "messages": [
+                AIMessage(content=" I am currently unavailable because the AI usage limit has been reached. Please try again in a minute or switch to a new API key.")
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Unexpected Agent Error: {e}")
+        # --- FIX: Return AIMessage object ---
+        return {
+            "messages": [
+                AIMessage(content="❌ An internal error occurred while processing your request. Please check the system logs.")
+            ]
+        }
 
 def should_continue(state: AgentState) -> str:
-    if not state["messages"]:
-        return "agent"
+    """
+    Checks if the last message had any tool calls and returns "tools" if true.
+    Otherwise, returns END, indicating that the conversation should end.
+    """
     last_message = state["messages"][-1]
     if getattr(last_message, "tool_calls", None):
-        return "execute_tools"
+        return "tools"
     return END
 
-async def execute_tools_node(state: AgentState):
-    """
-    Executes the tools dynamically based on the user ID in state.
-    """
-    user_id = state.get("user_id", "unknown")
-    tools = get_full_tool_list(user_id) 
-
-    tool_node = ToolNode(tools)
-    return await tool_node.ainvoke(state)
-
 workflow = StateGraph(AgentState)
+
 workflow.add_node("agent", agent_node)
-workflow.add_node("execute_tools", execute_tools_node)
+workflow.add_node("tools", tool_node) 
+
 workflow.set_entry_point("agent")
 
 workflow.add_conditional_edges(
     "agent",
     should_continue,
-    {"execute_tools": "execute_tools", END: END}
+    {
+        "tools": "tools",
+        END: END
+    }
 )
-workflow.add_edge("execute_tools", "agent")
+
+workflow.add_edge("tools", "agent")
 
 app = workflow.compile()
 logger.info("LangGraph workflow compiled successfully.")

@@ -30,6 +30,15 @@ class RagToolArgs(BaseModel):
 
 def create_rag_tool(user_id: str) -> StructuredTool:
 
+    """
+    Creates a StructuredTool that retrieves information from user-uploaded documents.
+
+    This tool takes a single argument, `query`, which is the query to search for in the user's documents.
+    The tool returns a string containing the relevant text from the user's documents.
+
+    :param user_id: The ID of the user to create the tool for.
+    :return: A StructuredTool that retrieves information from user-uploaded documents for the given user.
+    """
     async def user_specific(query: str) -> str:
         return await retrieve_info(query=query, user_id=user_id)
 

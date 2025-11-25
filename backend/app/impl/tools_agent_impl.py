@@ -12,7 +12,7 @@ logger = logging.getLogger("Taskera AI")
 
 llm = ChatGoogleGenerativeAI(
     api_key=settings.gemini_api_key,
-    model="gemini-2.5-flash-lite",
+    model="gemini-2.0-flash-lite-preview-02-05",
     temperature=0,
     max_retries=0  
 )
