@@ -3,7 +3,7 @@ import re
 import asyncio
 import uvicorn
 import requests
-import datetime  # <--- ADDED THIS
+import datetime  
 from contextvars import ContextVar
 from typing import Optional, Any, Dict, List
 
@@ -48,7 +48,6 @@ from app.services.file_handler import delete_specific_user_file, delete_all_user
 from app.services.rag_service import delete_user_vectorstore
 from app.impl.google_tools_impl import list_calendar_events_impl, create_calendar_event_impl
 
-# FIX: Allow extra scopes like 'openid' to prevent crashes
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
 limiter = Limiter(key_func=get_remote_address)
@@ -325,7 +324,6 @@ async def http_chat_endpoint(
         user_checkpointer = get_user_checkpointer(user_id)
         config = {"configurable": {"thread_id": user_id}}
         
-        # 1. Prepare OCR Context
         ocr_context = ""
         if files:
             user_path = os.path.join(UPLOAD_PATH, user_id)
@@ -344,20 +342,17 @@ async def http_chat_endpoint(
                     await create_rag_tool_impl(user_id)
                     ocr_context += f"\n[Document {file.filename} Indexed for RAG]"
 
-        # 2. CALCULATE CURRENT DATE & TIME
         now = datetime.datetime.now()
         current_date_str = now.strftime("%Y-%m-%d")
         current_day = now.strftime("%A")
         
-        # 3. FOOLPROOF CONTEXT INJECTION
-        # We append the date and email to the user's message so the Agent CANNOT ignore it.
+        
         user_email_context = email if email else "unknown (Ask User)"
         
         system_context = f"\n\n[SYSTEM CONTEXT: Today is {current_day}, {current_date_str}. User Email is: {user_email_context}]"
         
         full_query = query + ocr_context + system_context
 
-        # 4. Pass to Agent
         input_message = {
             "messages": [HumanMessage(content=full_query)], 
             "user_id": user_id,

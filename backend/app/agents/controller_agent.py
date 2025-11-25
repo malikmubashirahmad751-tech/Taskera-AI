@@ -199,7 +199,6 @@ Complete the task.
 
     except ResourceExhausted:
         logger.error(f"Google API Quota Exceeded for user {user_id}")
-        # --- FIX: Return AIMessage object ---
         return {
             "messages": [
                 AIMessage(content=" I am currently unavailable because the AI usage limit has been reached. Please try again in a minute or switch to a new API key.")
@@ -207,10 +206,9 @@ Complete the task.
         }
     except Exception as e:
         logger.error(f"Unexpected Agent Error: {e}")
-        # --- FIX: Return AIMessage object ---
         return {
             "messages": [
-                AIMessage(content="❌ An internal error occurred while processing your request. Please check the system logs.")
+                AIMessage(content=" An internal error occurred while processing your request. Please check the system logs.")
             ]
         }
 
