@@ -1,0 +1,44 @@
+.env
+.venv
+Dockerfile 
+.dockerignore
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/.env
+frontend/.next/
+frontend/build/
+
+# Python / Backend
+backend/venv/
+backend/.venv/
+backend/.env
+backend/__pycache__/
+*.pyc
+
+# Logs
+logs/
+backend/logs/
+backend/.logs
+*.log
+
+# Databases
+*.sqlite3
+backend/db/
+backend/chroma_db/
+
+# OS
+.DS_Store
+
+Frontend/node_modules/
+Frontend/.env
+Frontend/.next/
+Frontend/build/
+
+# Python / Backend
+Backend/venv/
+Backend/.venv/
+Backend/.env
+Backend/__pycache__/
+
+.git

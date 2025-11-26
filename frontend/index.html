@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskera AI</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <link rel="stylesheet" href="src/css/style.css">
+</head>
+<body class="h-full bg-zinc-950 text-zinc-100 selection:bg-fuchsia-500/30">
+
+  <input type="file" id="fileUploadInput" class="hidden" multiple>
+
+  <div class="flex h-full overflow-hidden relative">
+    
+    <nav id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-zinc-900/95 backdrop-blur-xl border-r border-zinc-800 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col h-full">
+      
+      <div class="flex items-center space-x-3 p-6 h-20 border-b border-zinc-800/50">
+        <img src="assets/images/logo.png" alt="Taskera AI Logo" class="w-8 h-8 rounded-lg shadow-lg shadow-fuchsia-900/20">
+        <span class="text-xl font-semibold tracking-tight text-white">Taskera AI</span>
+      </div>
+
+      <div class="px-5 pt-6 pb-2">
+        <button id="newSessionBtn" class="group w-full flex items-center justify-center space-x-2 bg-white hover:bg-zinc-200 text-zinc-900 py-3 px-4 rounded-xl transition-all duration-200 font-medium shadow-lg shadow-white/5 border border-transparent hover:scale-[1.02]">
+          <svg class="w-5 h-5 text-zinc-600 group-hover:text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+          <span>New Chat</span>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto custom-scrollbar px-5 py-4 space-y-6">
+        <div id="fileUploadStatus" class="text-xs text-zinc-400"></div>
+
+        <div>
+            <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-3 px-1">Capabilities</p>
+            <div class="space-y-1">
+                <div class="flex items-center p-2 rounded-lg bg-zinc-800/30 border border-zinc-800/50 text-xs text-zinc-300">
+                    <svg class="w-4 h-4 mr-2 text-fuchsia-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    Document Analysis
+                </div>
+                <div class="flex items-center p-2 rounded-lg bg-zinc-800/30 border border-zinc-800/50 text-xs text-zinc-300">
+                    <svg class="w-4 h-4 mr-2 text-fuchsia-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    Web Search & News
+                </div>
+                <div class="flex items-center p-2 rounded-lg bg-zinc-800/30 border border-zinc-800/50 text-xs text-zinc-300">
+                    <svg class="w-4 h-4 mr-2 text-fuchsia-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Calendar Management
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="p-5 border-t border-zinc-800 bg-zinc-900/50">
+        
+        <div id="userProfileSection" class="hidden space-y-3">
+             <div class="flex items-center space-x-3 p-2 rounded-xl bg-zinc-800/50 border border-zinc-700/50">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-fuchsia-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">U</div>
+                <div class="flex-1 min-w-0">
+                    <p id="userEmailDisplay" class="text-xs text-white truncate font-medium">user@example.com</p>
+                    <p class="text-[10px] text-green-400">Pro Plan</p>
+                </div>
+             </div>
+             <button id="logoutBtn" class="w-full flex items-center justify-center text-xs text-zinc-400 hover:text-white border border-zinc-700 hover:border-zinc-600 rounded-lg py-2 transition-colors">
+                Sign Out
+             </button>
+        </div>
+
+        <div id="guestAuthSection" class="space-y-3">
+            <div class="p-3 rounded-xl bg-zinc-800/30 border border-zinc-800 text-center">
+                <p class="text-xs text-zinc-400 mb-2">Sign in to save your chat history</p>
+                <button id="openLoginModalBtn" class="w-full bg-fuchsia-600/10 hover:bg-fuchsia-600/20 text-fuchsia-400 text-xs font-semibold py-2 rounded-lg transition-colors border border-fuchsia-600/20">
+                    Log In / Sign Up
+                </button>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between mt-4 px-1">
+             <span class="text-[10px] text-zinc-600">ID:</span>
+             <span id="currentUserId" class="text-[10px] font-mono text-zinc-500 max-w-[120px] truncate">Guest</span>
+        </div>
+      </div>
+    </nav>
+
+    <main class="flex-1 flex flex-col h-full relative bg-zinc-950 md:ml-72 transition-all duration-300">
+      
+      <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-fuchsia-900/20 via-zinc-900/0 to-zinc-900/0 pointer-events-none"></div>
+
+      <header class="flex items-center justify-between h-16 p-4 md:hidden border-b border-zinc-800 bg-zinc-900/80 backdrop-blur-md z-20 sticky top-0">
+        <button id="menuButton" class="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors">
+          <svg id="menuIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          <svg id="closeIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <span class="text-sm font-semibold text-white">Taskera AI</span>
+        <div class="w-8"></div>
+      </header>
+
+      <div id="chatLog" class="flex-1 overflow-y-auto custom-scrollbar p-4 pt-6 md:p-8 md:pt-8 relative z-10 scroll-smooth">
+        
+        <div id="welcome-screen" class="h-full flex flex-col items-center justify-center p-4 animate-fade-in">
+            <div class="w-20 h-20 bg-zinc-900 rounded-3xl flex items-center justify-center shadow-2xl border border-zinc-800 mb-8 relative">
+                <img src="assets/images/logo.png" alt="Taskera AI Logo" class="w-12 h-12 rounded-xl">
+            </div>
+            
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-3 tracking-tight text-center">How can I help?</h2>
+            <p class="text-zinc-400 text-center max-w-md mb-10 text-sm md:text-base">I can analyze documents, search the live web, manage your calendar, and write code.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+                <button class="suggestion-card text-left p-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-2xl transition-all group shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-sm font-semibold text-zinc-200 block mb-1 group-hover:text-fuchsia-400 transition-colors">Analyze Documents</span>
+                            <span class="text-xs text-zinc-500">Upload a PDF to summarize it</span>
+                        </div>
+                        <svg class="w-5 h-5 text-zinc-700 group-hover:text-fuchsia-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                </button>
+                <button class="suggestion-card text-left p-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-2xl transition-all group shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-sm font-semibold text-zinc-200 block mb-1 group-hover:text-fuchsia-400 transition-colors">Web Search</span>
+                            <span class="text-xs text-zinc-500">Find latest news & tech trends</span>
+                        </div>
+                        <svg class="w-5 h-5 text-zinc-700 group-hover:text-fuchsia-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    </div>
+                </button>
+                <button class="suggestion-card text-left p-4 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-600 rounded-2xl transition-all group shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="text-sm font-semibold text-zinc-200 block mb-1 group-hover:text-fuchsia-400 transition-colors">Schedule Meeting</span>
+                            <span class="text-xs text-zinc-500">Add event to Google Calendar</span>
+                        </div>
+                        <svg class="w-5 h-5 text-zinc-700 group-hover:text-fuchsia-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+      </div>
+
+      <div class="w-full p-4 md:p-6 pb-6 bg-gradient-to-t from-zinc-950 via-zinc-950 to-transparent z-20">
+        
+        <div id="filePreviewContainer" class="flex flex-wrap gap-2 mb-3 px-1"></div>
+        
+        <div class="max-w-4xl mx-auto">
+            <form id="chatForm" class="relative flex items-end p-2 bg-zinc-900/80 backdrop-blur-md border border-zinc-700/50 rounded-3xl shadow-2xl focus-within:ring-2 focus-within:ring-fuchsia-500/20 focus-within:border-fuchsia-500/50 transition-all">
+            
+            <button type="button" id="chatUploadBtn" class="p-3.5 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-2xl transition-all mr-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.414a4 4 0 00-5.656-5.656l-6.415 6.415a6 6 0 108.486 8.486L20.5 13"></path></svg>
+            </button>
+            
+            <input type="text" id="userInput" placeholder="Message Taskera..." autocomplete="off"
+                    class="flex-1 bg-transparent border-none text-white placeholder-zinc-500 focus:ring-0 py-4 px-2 text-sm font-medium max-h-32 overflow-y-auto">
+            
+            <button type="submit" id="sendButton" class="p-3 bg-white text-zinc-900 rounded-2xl hover:bg-zinc-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg ml-1 mb-0.5">
+                <svg class="w-5 h-5 transform rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path>
+                </svg>
+            </button>
+            </form>
+            <p class="text-center text-[10px] text-zinc-600 mt-3 font-medium">Taskera AI can make mistakes. Verify important info.</p>
+        </div>
+      </div>
+    </main>
+
+    <div id="sidebarOverlay" class="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm hidden md:hidden transition-opacity"></div>
+
+    <div id="authModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/90 backdrop-blur-sm opacity-0 transition-opacity duration-300">
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl w-full max-w-sm p-8 shadow-2xl relative transform transition-all scale-95 opacity-0 modal-content">
+        <button id="closeAuthModal" class="absolute top-5 right-5 text-zinc-500 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+
+        <div class="text-center mb-8">
+            <div class="w-16 h-16 bg-zinc-800 rounded-2xl flex items-center justify-center mx-auto mb-5 border border-zinc-700">
+                 <img src="assets/images/logo.png" alt="Taskera AI Logo" class="w-10 h-10 rounded-lg">
+            </div>
+            <h2 id="authModalTitle" class="text-2xl font-bold text-white mb-2">Sign In</h2>
+            <p class="text-sm text-zinc-400">Welcome back to Taskera AI</p>
+        </div>
+
+        <form id="authForm" class="space-y-4">
+            <div>
+                <input type="email" id="authEmail" placeholder="Email Address" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-white focus:border-fuchsia-600 focus:ring-1 focus:ring-fuchsia-600 outline-none transition-colors text-sm placeholder-zinc-600">
+            </div>
+            <div>
+                <input type="password" id="authPassword" placeholder="Password" required class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3.5 text-white focus:border-fuchsia-600 focus:ring-1 focus:ring-fuchsia-600 outline-none transition-colors text-sm placeholder-zinc-600">
+            </div>
+            
+            <div id="authErrorMsg" class="text-red-400 text-xs text-center hidden p-3 bg-red-900/10 border border-red-900/20 rounded-lg"></div>
+
+            <button type="submit" id="authSubmitBtn" class="w-full bg-white hover:bg-zinc-200 text-zinc-900 font-bold py-3.5 rounded-xl transition-all shadow-lg mt-2">
+                Sign In
+            </button>
+        </form>
+
+        <div class="mt-6 pt-6 border-t border-zinc-800 text-center">
+             <a href="http://127.0.0.1:8000/auth/google?user_id=google_login" class="w-full flex items-center justify-center space-x-2 bg-white hover:bg-gray-100 text-gray-900 font-medium py-2.5 rounded-lg transition-colors border border-gray-300">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
+                <span>Continue with Google</span>
+             </a>
+            
+            <p class="text-sm text-zinc-500">
+                <span id="authSwitchText">Don't have an account?</span> 
+                <button id="authSwitchBtn" class="text-fuchsia-400 hover:text-fuchsia-300 font-medium ml-1 transition-colors">Sign Up</button>
+            </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="src/js/main.js" defer></script>
+</body>
+</html>
