@@ -2,6 +2,9 @@ import os
 import re
 import asyncio
 import uvicorn
+import requests
+import datetime  
+from contextvars import ContextVar
 from typing import Optional, Any, Dict, List
 
 from fastapi import (
@@ -25,11 +28,13 @@ from slowapi.errors import RateLimitExceeded
 from app.core.config import settings
 from app.core.logger import logger
 from app.core.database import supabase
-from app.services.scheduler import start_scheduler, shutdown_scheduler
-from app.core.memory_manager import get_user_checkpointer, update_session_on_response, clear_user_session
-from app.agents.controller_agent import app as agent_app
-from app.mcp_client import MCPError, shutdown_mcp_client
 from app.core.crud import save_refresh_token
+from app.services.scheduler import start_scheduler, shutdown_scheduler
+from app.core.memory_manager import get_user_checkpointer, update_session_on_response
+from app.agents.controller_agent import app as agent_graph
+from app.mcp_client import shutdown_mcp_client 
+
+from app.core.context import user_id_context
 
 from app.impl.tools_agent_impl import (
     duckduckgo_search_wrapper, wikipedia_query_wrapper, weather_search,
@@ -41,7 +46,10 @@ from app.impl.knowledge_agent_impl import create_rag_tool_impl, retrieve_info_im
 from app.impl.services_agent_impl import schedule_research_task_impl, manage_calendar_events_impl
 from app.services.file_handler import delete_specific_user_file, delete_all_user_files
 from app.services.rag_service import delete_user_vectorstore
-from app.impl.google_tools_impl import list_calendar_events_impl, create_calendar_event_impl
+from app.impl.google_tools_impl import (list_calendar_events_impl, stage_calendar_event_impl,
+    commit_calendar_event_impl)
+
+os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
 limiter = Limiter(key_func=get_remote_address)
 
@@ -66,8 +74,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-SECRET_KEY = os.getenv("CSRF_SESSION_SECRET", "unsafe-local-secret-key-change-me")
-CSRF_SECRET = os.getenv("CSRF_TOKEN_SECRET", "unsafe-local-csrf-secret-change-me")
+SECRET_KEY = os.getenv("CSRF_SESSION_SECRET", "unsafe-local-secret")
+CSRF_SECRET = os.getenv("CSRF_TOKEN_SECRET", "unsafe-local-csrf")
 
 app.add_middleware(
     CSRFMiddleware,
@@ -79,6 +87,7 @@ app.add_middleware(
         re.compile(r"^/auth/google"), 
         re.compile(r"^/auth/signup"), 
         re.compile(r"^/auth/login"), 
+        re.compile(r"^/mcp"), 
     ])
 
 app.add_middleware(
@@ -91,6 +100,7 @@ app.add_middleware(
 UPLOAD_PATH = "user_files"
 IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".bmp", ".tiff", ".gif"}
 
+
 class AuthCredentials(BaseModel):
     email: str = Field(..., pattern=r"^\S+@\S+\.\S+$")
     password: str = Field(..., min_length=6)
@@ -98,58 +108,28 @@ class AuthCredentials(BaseModel):
 @app.post("/auth/signup")
 @limiter.limit("5/minute")
 async def auth_signup(creds: AuthCredentials, request: Request):
-    """
-    Creates a new user in Supabase.
-    """
-    if not supabase:
-        raise HTTPException(status_code=503, detail="Database not connected.")
-    
+    if not supabase: raise HTTPException(503, "Database not connected.")
     try:
-        auth_response = supabase.auth.sign_up({
-            "email": creds.email,
-            "password": creds.password,
-        })
+        auth_response = supabase.auth.sign_up({"email": creds.email, "password": creds.password})
+        if not auth_response.user: raise HTTPException(400, "Signup failed.")
         
-        if not auth_response.user:
-             raise HTTPException(status_code=400, detail="Signup failed. User already exists or invalid data.")
-
         user_id = auth_response.user.id
-        
         supabase.table("usage_quotas").upsert({
-            "identifier": user_id,
-            "is_registered": True,
-            "request_count": 0,
-            "last_request_at": "now()"
+            "identifier": user_id, "is_registered": True, "request_count": 0, "last_request_at": "now()"
         }).execute()
 
-        return {
-            "message": "Signup successful", 
-            "user_id": user_id, 
-            "email": creds.email
-        }
-        
+        return {"message": "Signup successful", "user_id": user_id, "email": creds.email}
     except Exception as e:
         logger.error(f"Signup Error: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(400, detail=str(e))
 
 @app.post("/auth/login")
 @limiter.limit("10/minute")
 async def auth_login(creds: AuthCredentials, request: Request):
-    """
-    Logs in a user and returns their real User ID (UUID).
-    """
-    if not supabase:
-        raise HTTPException(status_code=503, detail="Database not connected.")
-        
+    if not supabase: raise HTTPException(503, "Database not connected.")
     try:
-        auth_response = supabase.auth.sign_in_with_password({
-            "email": creds.email,
-            "password": creds.password,
-        })
-        
-        if not auth_response.user:
-            raise HTTPException(status_code=401, detail="Invalid credentials.")
-
+        auth_response = supabase.auth.sign_in_with_password({"email": creds.email, "password": creds.password})
+        if not auth_response.user: raise HTTPException(401, "Invalid credentials.")
         return {
             "message": "Login successful",
             "access_token": auth_response.session.access_token,
@@ -157,64 +137,98 @@ async def auth_login(creds: AuthCredentials, request: Request):
             "email": auth_response.user.email
         }
     except Exception as e:
-        logger.warning(f"Login failed for {creds.email}: {e}")
-        raise HTTPException(status_code=401, detail="Invalid email or password.")
-
-
+        logger.warning(f"Login failed: {e}")
+        raise HTTPException(401, "Invalid email or password.")
 
 async def check_usage_quota(request: Request, user_id: str = Form(...)):
-    """
-    Enforces 10 request limit for 'guest' users.
-    Registered users (UUIDs) bypass this check.
-    """
-    if not supabase:
-        return user_id
-
-    
-    is_guest_session = user_id.startswith("guest") or user_id == "unknown" or user_id == "undefined"
-    
-    client_ip = request.client.host
-    identifier = client_ip if is_guest_session else user_id
+    if not supabase: return user_id
+    is_guest = user_id.startswith("guest") or user_id in ["unknown", "undefined"]
+    identifier = request.client.host if is_guest else user_id
 
     try:
-        response = supabase.table("usage_quotas").select("*").eq("identifier", identifier).execute()
+        res = supabase.table("usage_quotas").select("*").eq("identifier", identifier).execute()
+        current_count = res.data[0].get("request_count", 0) if res.data else 0
+        is_registered = res.data[0].get("is_registered", False) if res.data else False
         
-        current_count = 0
-        is_registered = False
-        
-        if response.data and isinstance(response.data, dict):
-            record = response.data.get(0)
-            if record:
-                current_count = record.get("request_count", 0)
-                is_registered = record.get("is_registered", False)
-        
-        FREE_LIMIT = 10
-        if is_guest_session and not is_registered and current_count >= FREE_LIMIT:
-            logger.warning(f"[Quota] Limit reached for guest IP {client_ip}")
-            raise HTTPException(
-                status_code=402, 
-                detail="Free trial ended. Please create an account to continue."
-            )
+        if is_guest and not is_registered and current_count >= 10:
+            raise HTTPException(402, "Free trial ended. Please create an account.")
 
-        if response.data:
-            supabase.table("usage_quotas").update({
-                "request_count": current_count + 1,
-                "last_request_at": "now()"
-            }).eq("identifier", identifier).execute()
-        else:
-            supabase.table("usage_quotas").insert({
-                "identifier": identifier,
-                "request_count": 1,
-                "is_registered": not is_guest_session
-            }).execute()
-            
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        logger.error(f"[Quota] Error checking quota: {e}")
-        pass
-
+        supabase.table("usage_quotas").upsert({
+            "identifier": identifier, 
+            "request_count": current_count + 1, 
+            "is_registered": not is_guest,
+            "last_request_at": "now()"
+        }).execute()
+    except HTTPException as he: raise he
+    except Exception: pass
     return user_id
+
+
+@app.get("/auth/google")
+@limiter.limit("5/minute")
+async def auth_google_start(request: Request, user_id: str):
+    if not settings.GOOGLE_CLIENT_ID: raise HTTPException(500, "Google Auth not configured")
+    flow = Flow.from_client_config(
+        client_config={
+            "web": {
+                "client_id": settings.GOOGLE_CLIENT_ID,
+                "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+            }
+        },
+        scopes=[
+            "https://www.googleapis.com/auth/calendar",
+            "https://www.googleapis.com/auth/userinfo.email",
+            "https://www.googleapis.com/auth/userinfo.profile"
+        ],
+        redirect_uri=settings.GOOGLE_REDIRECT_URI,
+    )
+    url, _ = flow.authorization_url(access_type="offline", prompt="consent", state=user_id)
+    return RedirectResponse(url)
+
+@app.get("/auth/google/callback")
+async def auth_google_callback(request: Request, code: str, state: str):
+    try:
+        flow = Flow.from_client_config(
+            client_config={
+                "web": {
+                    "client_id": settings.GOOGLE_CLIENT_ID,
+                    "client_secret": settings.GOOGLE_CLIENT_SECRET,
+                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                    "token_uri": "https://oauth2.googleapis.com/token",
+                }
+            },
+            scopes=[
+                "https://www.googleapis.com/auth/calendar",
+                "https://www.googleapis.com/auth/userinfo.email",
+                "https://www.googleapis.com/auth/userinfo.profile"
+            ],
+            redirect_uri=settings.GOOGLE_REDIRECT_URI,
+        )
+        flow.fetch_token(code=code)
+        creds = flow.credentials
+        
+        user_info = requests.get(
+            "https://www.googleapis.com/oauth2/v2/userinfo",
+            headers={"Authorization": f"Bearer {creds.token}"}
+        ).json()
+        
+        email = user_info.get("email", "google_user")
+        real_user_id = user_info.get("id", state) 
+        
+        if creds.refresh_token:
+            save_refresh_token(real_user_id, creds.refresh_token)
+            logger.info(f"Saved refresh token for user: {real_user_id}")
+        
+        frontend_url = "http://127.0.0.1:5500/frontend/index.html"
+        params = f"?google_auth=success&access_token={creds.token}&email={email}&user_id={real_user_id}"
+        
+        return RedirectResponse(f"{frontend_url}{params}")
+
+    except Exception as e:
+        logger.error(f"Auth Callback Error: {e}")
+        return RedirectResponse("http://127.0.0.1:5500/frontend/index.html?google_auth=error")
 
 
 class MCPRequest(BaseModel):
@@ -231,7 +245,8 @@ class MCPResponse(BaseModel):
 
 TOOL_REGISTRY = {
     "google_calendar_list": list_calendar_events_impl,
-    "google_calendar_create": create_calendar_event_impl, 
+    "google_calendar_stage": stage_calendar_event_impl,  
+    "google_calendar_commit": commit_calendar_event_impl, 
     "web_search": duckduckgo_search_wrapper,
     "wikipedia_search": wikipedia_query_wrapper,
     "weather_search": weather_search,
@@ -250,68 +265,6 @@ TOOL_REGISTRY = {
     "delete_user_vectorstore": delete_user_vectorstore,
 }
 
-
-@app.get("/csrf-token")
-def get_csrf_token(request: Request):
-    token = request.scope.get("csrf_token")
-    return {"csrf_token": token}
-
-@app.get("/")
-@limiter.limit("60/minute")
-def read_root(request: Request):
-    return {"message": "Taskera AI Unified Server is running."}
-
-@app.get("/auth/google")
-@limiter.limit("5/minute")
-async def auth_google_start(request: Request, user_id: str):
-    if not settings.GOOGLE_CLIENT_ID:
-        raise HTTPException(status_code=500, detail="Google Auth is not configured.")
-    
-    flow = Flow.from_client_config(
-        client_config={
-            "web": {
-                "client_id": settings.GOOGLE_CLIENT_ID,
-                "client_secret": settings.GOOGLE_CLIENT_SECRET,
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-            }
-        },
-        scopes=["https://www.googleapis.com/auth/calendar"],
-        redirect_uri=settings.GOOGLE_REDIRECT_URI,
-    )
-    authorization_url, state = flow.authorization_url(
-        access_type="offline", prompt="consent", state=user_id  
-    )
-    return RedirectResponse(authorization_url)
-
-@app.get("/auth/google/callback")
-async def auth_google_callback(request: Request, code: str, state: str):
-    user_id = state 
-    try:
-        flow = Flow.from_client_config(
-            client_config={
-                "web": {
-                    "client_id": settings.GOOGLE_CLIENT_ID,
-                    "client_secret": settings.GOOGLE_CLIENT_SECRET,
-                    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                    "token_uri": "https://oauth2.googleapis.com/token",
-                }
-            },
-            scopes=["https://www.googleapis.com/auth/calendar"],
-            redirect_uri=settings.GOOGLE_REDIRECT_URI,
-        )
-        flow.fetch_token(code=code)
-        credentials = flow.credentials
-        
-        if credentials.refresh_token:
-            save_refresh_token(user_id_string=user_id, token=credentials.refresh_token)
-            
-        return RedirectResponse("http://localhost:5500?auth=success")
-            
-    except Exception as e:
-        logger.error(f"Auth Callback Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 @app.post("/mcp", response_model=MCPResponse)
 @limiter.limit("60/minute") 
 async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
@@ -319,17 +272,27 @@ async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
     params = mcp_req.params or {}
 
     if method_name not in TOOL_REGISTRY:
-        return MCPResponse(error={"code": -32601, "message": "Method not found"}, id=mcp_req.id)
+        return MCPResponse(error={"code": -32601, "message": f"Method '{method_name}' not found"}, id=mcp_req.id)
+    
+    provided_user_id = params.get("user_id")
+    token = None
+    if provided_user_id:
+        token = user_id_context.set(provided_user_id)
+        
     try:
         func = TOOL_REGISTRY[method_name]
         if asyncio.iscoroutinefunction(func):
             result = await func(**params)
         else:
             result = func(**params)
+            
         return MCPResponse(result=result, id=mcp_req.id)
     except Exception as e:
-        logger.error(f"MCP Error: {e}")
+        logger.error(f"MCP Execution Error ({method_name}): {e}")
         return MCPResponse(error={"code": -32000, "message": str(e)}, id=mcp_req.id)
+    finally:
+        if token:
+            user_id_context.reset(token)
 
 class SecureChatInput(BaseModel):
     user_id: str = Field(..., min_length=1, max_length=50)
@@ -348,94 +311,91 @@ async def http_chat_endpoint(
     request: Request, 
     query: str = Form(""),
     user_id: str = Depends(check_usage_quota), 
+    email: Optional[str] = Form(None),
     files: List[UploadFile] = File([])
 ):
+    token = user_id_context.set(user_id)
     try:
-        safe_input = SecureChatInput(user_id=user_id, query=query)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        try:
+            safe_input = SecureChatInput(user_id=user_id, query=query)
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
 
-    logger.info(f"[Chat] Request from {safe_input.user_id}")
-    
-    user_checkpointer = get_user_checkpointer(user_id)
-    config = {"configurable": {"thread_id": user_id}}
-    
-    ocr_texts = []
-    doc_names = []
-    image_names = []
-    has_docs_for_rag = False
-
-    if files:
-        user_upload_path = os.path.join(UPLOAD_PATH, user_id)
-        os.makedirs(user_upload_path, exist_ok=True)
-
-        for file in files:
-            file_path = os.path.join(user_upload_path, file.filename)
-            with open(file_path, "wb") as f:
-                f.write(await file.read())
-
-            ext = os.path.splitext(file.filename)[1].lower()
-            if ext in IMAGE_EXTENSIONS:
-                image_names.append(file.filename)
-                try:
-                    txt = image_text_extractor_impl(user_id, file.filename)
-                    ocr_texts.append(f"--- Text from '{file.filename}' ---\n{txt}\n")
-                except Exception as e:
-                    ocr_texts.append(f"OCR Error: {e}")
-            else:
-                doc_names.append(file.filename)
-                has_docs_for_rag = True
-    
-    if has_docs_for_rag:
-        await create_rag_tool_impl(user_id=user_id)
-
-    system_prompt_parts = []
-    if doc_names:
-        system_prompt_parts.append(f"User uploaded {len(doc_names)} docs: {', '.join(doc_names)}. I have indexed them.")
-    if image_names:
-        system_prompt_parts.append(f"User uploaded {len(image_names)} images. OCR Results:\n{''.join(ocr_texts)}")
-
-    if not system_prompt_parts and not query:
-        raise HTTPException(status_code=400, detail="Empty request.")
-
-    full_prompt = "\n\n".join(system_prompt_parts) + f"\n\nUser: {query}"
-
-    try:
-        input_message = {"messages": [HumanMessage(content=full_prompt)], "user_id": user_id}
-        final_state = await agent_app.with_config(checkpointer=user_checkpointer).ainvoke(input_message, config)
+        logger.info(f"[Chat] Request from {safe_input.user_id}")
         
-        if final_state.get('messages'):
-            raw_content = final_state['messages'][-1].content
-            if isinstance(raw_content, list):
-                answer = " ".join([str(x) for x in raw_content])
-            else:
-                answer = str(raw_content)
-            
-            if not answer.strip():
-                answer = "Task completed (Action performed)."
+        user_checkpointer = get_user_checkpointer(user_id)
+        config = {"configurable": {"thread_id": user_id}}
+        
+        ocr_context = ""
+        if files:
+            user_path = os.path.join(UPLOAD_PATH, user_id)
+            os.makedirs(user_path, exist_ok=True)
+            for file in files:
+                path = os.path.join(user_path, file.filename)
+                with open(path, "wb") as f: f.write(await file.read())
+                
+                if file.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    try: 
+                        txt = image_text_extractor_impl(user_id, file.filename)
+                        ocr_context += f"\n[Image {file.filename} Content]: {txt}"
+                    except Exception as e: 
+                        ocr_context += f" [OCR Error: {e}]"
+                else:
+                    await create_rag_tool_impl(user_id)
+                    ocr_context += f"\n[Document {file.filename} Indexed for RAG]"
 
-            update_session_on_response(user_id, answer)
+        now = datetime.datetime.now()
+        current_date_str = now.strftime("%Y-%m-%d")
+        current_day = now.strftime("%A")
+        
+        
+        user_email_context = email if email else "unknown (Ask User)"
+        
+        system_context = f"\n\n[SYSTEM CONTEXT: Today is {current_day}, {current_date_str}. User Email is: {user_email_context}]"
+        
+        full_query = query + ocr_context + system_context
+
+        input_message = {
+            "messages": [HumanMessage(content=full_query)], 
+            "user_id": user_id,
+            "user_email": email or "unknown"
+        }
+        
+        final_state = await agent_graph.with_config(checkpointer=user_checkpointer).ainvoke(input_message, config)
+        
+        if final_state.get("messages"):
+            raw = final_state['messages'][-1].content
+            answer = " ".join([str(x) for x in raw]) if isinstance(raw, list) else str(raw)
+            if not answer.strip(): answer = "Task completed (Action performed)."
             
-            return {
-                "answer": answer, 
-                "response": answer, 
-                "user_id": user_id,
-            }
-        else:
-            raise HTTPException(status_code=500, detail="Agent produced no output.")
+            update_session_on_response(user_id, answer)
+            return {"answer": answer, "user_id": user_id}
+        
+        raise HTTPException(500, "Agent produced no output.")
 
     except Exception as e:
         logger.exception(f"Agent Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(500, detail=str(e))
+    finally:
+        user_id_context.reset(token)
+
 
 @app.delete("/users/{user_id}/data")
 def delete_user_data_endpoint(request: Request, user_id: str):
     try:
         delete_all_user_files(user_id)
         delete_user_vectorstore(user_id)
-        return {"message": "Data cleared."}
+        return {"message": "User data cleared."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/csrf-token")
+def get_csrf_token(request: Request):
+    return {"csrf_token": request.scope.get("csrf_token")}
+
+@app.get("/")
+def read_root():
+    return {"message": "Taskera AI Unified Server Online"}
 
 @app.on_event("startup")
 async def startup_event():

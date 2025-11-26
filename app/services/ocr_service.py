@@ -21,7 +21,18 @@ class OcrToolArgs(BaseModel):
 
 def create_ocr_tool(user_id: str) -> StructuredTool:
 
+    """
+    Creates a StructuredTool that extracts text from an image file for a given user.
+
+    This tool takes a single argument, `file_name`, which is the filename of the image
+    file to extract text from. The tool returns a string containing the extracted text.
+
+    :param user_id: The ID of the user to create the tool for.
+    :return: A StructuredTool that extracts text from an image file for the given user.
+    """
     async def user_specific(file_name: str) -> str:
+        
+        
         return await _ocr_proxy(user_id=user_id, file_name=file_name)
 
     return StructuredTool.from_function(

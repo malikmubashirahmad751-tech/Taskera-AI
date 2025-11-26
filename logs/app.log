@@ -5375,3 +5375,920 @@ During task with name 'agent' and id '04d32fcc-f218-1480-54fe-df63bd836eff'
 2025-11-21 06:19:04,519 [INFO] Taskera AI : [HTTP API-RESPONSE] Sending to frontend: The tech industry is constantly evolving, with emerging technologies like generative AI, 5G, and sus...
 2025-11-21 06:19:30,127 [INFO] apscheduler.scheduler : Scheduler has been shut down
 2025-11-21 06:19:30,128 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-24 02:26:21,939 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 02:26:29,443 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 02:26:30,052 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 02:32:02,242 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 02:32:05,509 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 02:32:05,632 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 03:19:07,498 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 03:19:13,981 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 03:19:14,527 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 03:19:16,027 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-24 03:19:18,125 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-24 03:19:18,125 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-24 03:19:18,126 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-24 03:19:18,127 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-24 03:20:10,392 [INFO] Taskera AI : [Chat] Request from guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:10,393 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:10,396 [INFO] Taskera AI : Agent node executing for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:10,397 [INFO] Taskera AI : Created RAG tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:10,397 [INFO] Taskera AI : Created OCR tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:10,398 [INFO] Taskera AI : Created Google Calendar tools for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:20:13,340 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:28:58,532 [INFO] Taskera AI : [Chat] Request from guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:28:58,533 [INFO] Taskera AI : [Session] Session expired for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50. Resetting checkpointer.
+2025-11-24 03:28:58,536 [INFO] Taskera AI : Agent node executing for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:28:58,536 [INFO] Taskera AI : Created RAG tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:28:58,536 [INFO] Taskera AI : Created OCR tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:28:58,537 [INFO] Taskera AI : Created Google Calendar tools for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:00,995 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:17,239 [INFO] Taskera AI : [Chat] Request from guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:17,240 [INFO] Taskera AI : Agent node executing for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:17,241 [INFO] Taskera AI : Created RAG tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:17,242 [INFO] Taskera AI : Created OCR tool for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:17,242 [INFO] Taskera AI : Created Google Calendar tools for user=guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:29:18,540 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_38c4ea8a-129d-4651-9853-b629b3321d50
+2025-11-24 03:30:06,227 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-24 03:30:06,259 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-24 03:40:47,794 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 03:40:51,334 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 03:40:51,456 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 03:40:51,864 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-24 03:40:52,618 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-24 03:40:52,619 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-24 03:40:52,620 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-24 03:40:52,621 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-24 03:46:46,455 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 03:46:52,880 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 03:46:53,125 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 03:46:53,817 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-24 03:46:55,259 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-24 03:46:55,260 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-24 03:46:55,260 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-24 03:46:55,261 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-24 03:47:37,094 [INFO] Taskera AI : [Chat] Request from bash-dev
+2025-11-24 03:47:37,094 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: bash-dev
+2025-11-24 03:47:37,097 [INFO] Taskera AI : Agent node executing for user: bash-dev
+2025-11-24 03:47:37,098 [INFO] Taskera AI : Created RAG tool for user=bash-dev
+2025-11-24 03:47:37,099 [INFO] Taskera AI : Created OCR tool for user=bash-dev
+2025-11-24 03:47:37,099 [INFO] Taskera AI : Created Google Calendar tools for user=bash-dev
+2025-11-24 03:47:38,523 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: bash-dev
+2025-11-24 03:53:26,422 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:26,423 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:26,425 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:26,425 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:26,426 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:26,426 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:27,532 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:40,763 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:40,765 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:40,765 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:40,766 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:40,767 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:53:41,542 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:54:27,347 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 03:54:27,349 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8'.
+2025-11-24 03:54:28,629 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: WebProg_Notes.pdf
+2025-11-24 03:54:30,187 [INFO] Taskera AI : [RAG-Load] Valid text detected (5725 chars). Skipping OCR.
+2025-11-24 03:54:32,831 [INFO] Taskera AI : [MCP-RAG] Indexed 8 chunks for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8'.
+2025-11-24 04:01:42,896 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:01:42,896 [INFO] Taskera AI : [Session] Session expired for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8. Resetting checkpointer.
+2025-11-24 04:01:42,899 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:01:42,900 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:01:42,900 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:01:42,901 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:01:46,066 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:17,230 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:17,230 [INFO] Taskera AI : [Session] Session expired for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8. Resetting checkpointer.
+2025-11-24 04:07:17,232 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:17,233 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:17,235 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:17,236 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:07:19,884 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:04,010 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:04,012 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:04,014 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:04,015 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:04,015 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:18,872 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:18,875 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:18,875 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:18,876 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:18,876 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:20,326 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:20,326 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:20,327 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:31,202 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:31,202 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:31,203 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:31,203 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:48,001 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:48,003 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:48,003 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:48,004 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:48,004 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:11:49,493 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:16:55,267 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-24 04:16:55 PST)" (scheduled at 2025-11-24 04:16:55.259485-08:00)
+2025-11-24 04:16:55,268 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-24 04:46:55 PST)" executed successfully
+2025-11-24 04:31:47,606 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:47,606 [INFO] Taskera AI : [Session] Session expired for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8. Resetting checkpointer.
+2025-11-24 04:31:47,608 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8' from file 'Screenshot (64).png'
+2025-11-24 04:31:49,350 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Screenshot (64).png' for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8'.
+2025-11-24 04:31:49,353 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:49,353 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:49,354 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:49,354 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:50,734 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:50,734 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:50,735 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:50,738 [INFO] Taskera AI : [OCR Proxy] user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8, file=Screenshot (64).png
+2025-11-24 04:31:50,746 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8' from file 'Screenshot (64).png'
+2025-11-24 04:31:51,640 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Screenshot (64).png' for user 'guest_ce6b52ff-f109-4e63-8870-e9ca407384d8'.
+2025-11-24 04:31:51,647 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:51,647 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:51,647 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:31:51,648 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:10,196 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:10,198 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:10,198 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:10,199 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:10,199 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,768 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,769 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,769 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,772 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,773 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,774 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:34:11,774 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:10,814 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:10,816 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:10,817 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:10,817 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:10,818 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,033 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,033 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,034 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,384 [WARNING] Taskera AI : [CRUD] No refresh token found for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,384 [WARNING] Taskera AI : [Google Impl] No refresh token found for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,388 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,389 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,389 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:37:12,390 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:51,368 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:51,370 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:51,371 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:51,371 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:51,372 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:54,658 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:54,658 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:54,659 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:55,123 [INFO] ddgs.ddgs : Error in engine bing: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=Web%20Search): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-24 04:41:55,706 [INFO] primp : response: https://www.bing.com/search?q=Web+Search&pq=Web+Search&cc=wt&filters=ex1%3A%22ez5_20051_20416%22 200
+2025-11-24 04:41:56,181 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:56,182 [INFO] Taskera AI : Created RAG tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:56,182 [INFO] Taskera AI : Created OCR tool for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:56,183 [INFO] Taskera AI : Created Google Calendar tools for user=guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:41:58,668 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 04:46:55,266 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-24 05:16:55 PST)" (scheduled at 2025-11-24 04:46:55.259485-08:00)
+2025-11-24 04:46:55,267 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-24 05:16:55 PST)" executed successfully
+2025-11-24 05:06:04,955 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-24 05:06:04,956 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-24 05:07:55,764 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 05:24:58,198 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 06:51:33,563 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 07:01:37,275 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 07:04:47,087 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 07:04:50,844 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 07:04:50,969 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 07:04:51,384 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-24 07:04:52,105 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-24 07:04:52,106 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-24 07:04:52,106 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-24 07:04:52,107 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-24 07:05:16,713 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:05:16,713 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:05:16,714 [ERROR] Taskera AI : Agent Error: name 'agent_app' is not defined
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 365, in http_chat_endpoint
+    final_state = await agent_app.with_config(checkpointer=user_checkpointer).ainvoke(input_message, config)
+                        ^^^^^^^^^
+NameError: name 'agent_app' is not defined. Did you mean: 'agent_graph'?
+2025-11-24 07:08:58,460 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-24 07:08:58,461 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-24 07:09:06,139 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 07:10:29,824 [INFO] Taskera AI : Supabase client created successfully
+2025-11-24 07:10:33,554 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-24 07:10:33,836 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-24 07:10:34,306 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-24 07:10:34,986 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-24 07:10:34,987 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-24 07:10:34,987 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-24 07:10:34,988 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-24 07:10:46,527 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:10:46,527 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:10:46,530 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:10:48,953 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:11:24,786 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:11:24,788 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:11:25,818 [INFO] Taskera AI : Fetching news for: cricket
+2025-11-24 07:11:26,116 [INFO] ddgs.ddgs : Error in engine yahoo: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=latest%20news%20about%20cricket): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-24 07:11:30,982 [INFO] ddgs.ddgs : Error in engine duckduckgo: TimeoutException("Request timed out: RuntimeError('error sending request for url (https://search.yahoo.com/search;_ylt=VyLoQis_Gi89etL3wYfyo-lq;_ylu=TwrcOKdqIEcLRbU7x1lqcCduzL-x5l4OyKB1B1qJn360knA?p=latest+news+about+cricket&btf=y): operation timed out\\n\\nCaused by:\\n    operation timed out')")
+2025-11-24 07:11:30,987 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:08,972 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:08,974 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:10,550 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:37,801 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:37,803 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:12:39,893 [INFO] Taskera AI : Fetching news for: latest cricket matches Pakistan
+2025-11-24 07:12:39,982 [INFO] ddgs.ddgs : Error in engine yandex: DDGSException("RuntimeError: RuntimeError('error sending request for url (https://wt.wikipedia.org/w/api.php?action=opensearch&profile=fuzzy&limit=1&search=latest%20news%20about%20latest%20cricket%20matches%20Pakistan): client error (Connect)\\n\\nCaused by:\\n    0: client error (Connect)\\n    1: dns error: No such host is known. (os error 11001)\\n    2: No such host is known. (os error 11001)')")
+2025-11-24 07:12:41,289 [INFO] primp : response: https://yandex.com/search/site/?text=latest+news+about+latest+cricket+matches+Pakistan&web=1&searchid=3424223 200
+2025-11-24 07:12:41,427 [INFO] primp : response: https://www.mojeek.com/search?q=latest+news+about+latest+cricket+matches+Pakistan 200
+2025-11-24 07:12:41,690 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:14:11,131 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:14:11,134 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:14:12,769 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:15:33,392 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:15:33,394 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:17:13,855 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:17:13,857 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:17:15,850 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:18:02,914 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:18:02,916 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:18:04,746 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-24 07:21:48,794 [ERROR] Taskera AI : Signup Error: The read operation timed out
+2025-11-24 07:22:32,573 [WARNING] Taskera AI : Login failed: Email not confirmed
+2025-11-24 07:22:42,528 [WARNING] Taskera AI : Login failed: Email not confirmed
+2025-11-24 07:22:56,878 [WARNING] Taskera AI : Login failed: Email not confirmed
+2025-11-24 07:25:22,929 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-24 07:25:22,930 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 00:50:22,862 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 00:55:44,569 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 00:57:07,712 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:01:45,820 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:13:17,313 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:18:12,777 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:20:21,583 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:22:32,733 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:24:27,888 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:38:34,945 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:46:42,243 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 01:46:45,840 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 01:46:46,057 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 01:46:46,682 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 01:46:47,603 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 01:46:47,604 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 01:46:47,604 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 01:46:47,605 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 01:47:34,500 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:34,501 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:34,506 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:39,518 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:55,279 [INFO] Taskera AI : [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:55,282 [INFO] Taskera AI : Agent node executing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:47:56,762 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-25 01:48:21,184 [INFO] Taskera AI : [Chat] Request from guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:21,184 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:21,186 [INFO] Taskera AI : Agent node executing for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:22,565 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:46,343 [INFO] Taskera AI : [Chat] Request from guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:46,346 [INFO] Taskera AI : Agent node executing for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:48:48,143 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 01:50:10,220 [ERROR] Taskera AI : [CRUD] Save token error: {'message': "Could not find the 'updated_at' column of 'users' in the schema cache", 'code': 'PGRST204', 'hint': None, 'details': None}
+2025-11-25 01:50:31,342 [INFO] Taskera AI : [Chat] Request from guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 01:50:31,342 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 01:50:31,344 [INFO] Taskera AI : Agent node executing for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 01:50:32,270 [ERROR] Taskera AI : Agent Error: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 413, in http_chat_endpoint
+    final_state = await agent_graph.with_config(checkpointer=user_checkpointer).ainvoke(input_message, config)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\main.py", line 3137, in ainvoke
+    async for chunk in self.astream(
+    ...<29 lines>...
+            chunks.append(chunk)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\main.py", line 2956, in astream
+    async for _ in runner.atick(
+    ...<13 lines>...
+            yield o
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\_retry.py", line 137, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\config.py", line 603, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\config.py", line 594, in wrapper
+    return func(*args, **kwargs)
+  File "D:\TASKERA_AI\backend\app\agents\controller_agent.py", line 187, in agent_node
+    response = chain.invoke({"messages": messages})
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\base.py", line 3129, in invoke
+    input_ = context.run(step.invoke, input_, config)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\base.py", line 5534, in invoke
+    return self.bound.invoke(
+           ~~~~~~~~~~~~~~~~~^
+        input,
+        ^^^^^^
+        self._merge_configs(config),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **{**self.kwargs, **kwargs},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_google_genai\chat_models.py", line 2119, in invoke
+    return super().invoke(input, config, stop=stop, **kwargs)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\language_models\chat_models.py", line 398, in invoke
+    self.generate_prompt(
+    ~~~~~~~~~~~~~~~~~~~~^
+        [self._convert_input(input)],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<6 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    ).generations[0][0],
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1117, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\language_models\chat_models.py", line 927, in generate
+    self._generate_with_cache(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        m,
+        ^^
+    ...<2 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\language_models\chat_models.py", line 1221, in _generate_with_cache
+    result = self._generate(
+        messages, stop=stop, run_manager=run_manager, **kwargs
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_google_genai\chat_models.py", line 2270, in _generate
+    response: GenerateContentResponse = _chat_with_retry(
+                                        ~~~~~~~~~~~~~~~~^
+        request=request,
+        ^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        metadata=self.default_metadata,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_google_genai\chat_models.py", line 258, in _chat_with_retry
+    return _chat_with_retry(**params)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 338, in wrapped_f
+    return copy(f, *args, **kw)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 477, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 378, in iter
+    result = action(retry_state)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 420, in exc_check
+    raise retry_exc.reraise()
+          ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 187, in reraise
+    raise self.last_attempt.result()
+          ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\PC_Clash\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 449, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\PC_Clash\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\_base.py", line 401, in __get_result
+    raise self._exception
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\tenacity\__init__.py", line 480, in __call__
+    result = fn(*args, **kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_google_genai\chat_models.py", line 232, in _chat_with_retry
+    return generation_method(**kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\ai\generativelanguage_v1beta\services\generative_service\client.py", line 869, in generate_content
+    response = rpc(
+        request,
+    ...<2 lines>...
+        metadata=metadata,
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\gapic_v1\method.py", line 131, in __call__
+    return wrapped_func(*args, **kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\retry\retry_unary.py", line 294, in retry_wrapped_func
+    return retry_target(
+        target,
+    ...<3 lines>...
+        on_error=on_error,
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\retry\retry_unary.py", line 156, in retry_target
+    next_sleep = _retry_error_helper(
+        exc,
+    ...<6 lines>...
+        timeout,
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\retry\retry_base.py", line 214, in _retry_error_helper
+    raise final_exc from source_exc
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\retry\retry_unary.py", line 147, in retry_target
+    result = target()
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\timeout.py", line 130, in func_with_timeout
+    return func(*args, **kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\google\api_core\grpc_helpers.py", line 77, in error_remapped_callable
+    raise exceptions.from_grpc_error(exc) from exc
+google.api_core.exceptions.ResourceExhausted: 429 Resource exhausted. Please try again later. Please refer to https://cloud.google.com/vertex-ai/generative-ai/docs/error-code-429 for more details.
+During task with name 'agent' and id 'b33e5d4a-cb08-cc3b-d4f8-c1e48a617847'
+2025-11-25 02:05:34,778 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 02:05:34,779 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 02:07:17,213 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 02:07:22,103 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 02:07:22,221 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 02:07:22,582 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 02:07:23,209 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 02:07:23,210 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 02:07:23,210 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 02:07:23,211 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 02:09:45,927 [INFO] Taskera AI : [Chat] Request from guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:09:45,927 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:09:45,930 [INFO] Taskera AI : Agent node executing for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:09:48,752 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:10:08,950 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 02:10:26,218 [INFO] Taskera AI : [Chat] Request from guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:10:26,220 [INFO] Taskera AI : Agent node executing for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:10:27,649 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:12:08,349 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 02:13:33,293 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 02:22:25,465 [INFO] Taskera AI : [Chat] Request from guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:22:25,465 [INFO] Taskera AI : [Session] Session expired for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9. Resetting checkpointer.
+2025-11-25 02:22:25,467 [INFO] Taskera AI : Agent node executing for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:22:27,161 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:23:28,007 [INFO] Taskera AI : [Chat] Request from guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:23:28,009 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user 'guest_05d215a3-cf29-47cf-94fe-7b317819f2f9' from file 'Date Sheet.jpeg'
+2025-11-25 02:23:29,403 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'Date Sheet.jpeg' for user 'guest_05d215a3-cf29-47cf-94fe-7b317819f2f9'.
+2025-11-25 02:23:29,405 [INFO] Taskera AI : Agent node executing for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:23:32,414 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_05d215a3-cf29-47cf-94fe-7b317819f2f9
+2025-11-25 02:24:08,083 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 02:30:52,483 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 02:30:52,484 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 02:31:35,475 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 02:31:38,517 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 02:31:38,629 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 02:31:38,968 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 02:31:39,594 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 02:31:39,594 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 02:31:39,595 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 02:31:39,596 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 02:32:16,909 [INFO] Taskera AI : [Chat] Request from guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 02:32:16,909 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 02:32:16,912 [INFO] Taskera AI : Agent node executing for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 02:32:19,966 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: guest_c26d0a82-b1c9-4c84-8feb-a8c64169dd28
+2025-11-25 02:33:21,832 [ERROR] Taskera AI : Auth Callback Error: Scope has changed from "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar" to "https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/calendar".
+2025-11-25 02:39:40,991 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 02:39:40,992 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 02:40:44,656 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 02:40:47,655 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 02:40:47,765 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 02:40:48,106 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 02:40:48,728 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 02:40:48,729 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 02:40:48,729 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 02:40:48,730 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 02:41:58,965 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 02:42:08,990 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:42:08,990 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 02:42:08,993 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 02:42:11,288 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 02:43:11,840 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:43:11,843 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 02:43:13,331 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 02:44:33,887 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:44:33,889 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 02:44:35,203 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 02:44:45,455 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:44:45,457 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 02:44:46,920 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 02:45:00,148 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:45:00,150 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 02:45:01,519 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 02:45:17,285 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 02:45:17,289 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:10:48,739 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 03:10:48 PST)" (scheduled at 2025-11-25 03:10:48.728502-08:00)
+2025-11-25 03:10:48,740 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 03:40:48 PST)" executed successfully
+2025-11-25 03:27:18,844 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 03:27:18,845 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 03:27:26,362 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 03:27:30,144 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 03:27:30,264 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 03:27:30,643 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 03:27:31,379 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 03:27:31,380 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 03:27:31,380 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 03:27:31,381 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 03:28:02,355 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:28:02,356 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 03:28:02,359 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:28:04,972 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:28:40,734 [INFO] Taskera AI : [CRUD] Saved Google token for google_login
+2025-11-25 03:28:47,569 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:28:47,572 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:28:49,424 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:35:46,787 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 03:35:46,788 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 03:35:54,743 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 03:35:58,460 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 03:35:58,578 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 03:35:58,956 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 03:35:59,656 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 03:35:59,657 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 03:35:59,658 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 03:35:59,659 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 03:36:51,601 [INFO] Taskera AI : [CRUD] Saved Google token for 114735889560025246923
+2025-11-25 03:36:51,601 [INFO] Taskera AI : Saved refresh token for user: 114735889560025246923
+2025-11-25 03:36:58,763 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:36:58,763 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 03:36:58,767 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:37:01,041 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 03:37:06,801 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:37:06,804 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:37:10,452 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 03:37:12,028 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:43:48,543 [WARNING] Taskera AI : Login failed: Invalid login credentials
+2025-11-25 03:44:11,779 [WARNING] Taskera AI : Login failed: Invalid login credentials
+2025-11-25 03:45:19,506 [WARNING] Taskera AI : Login failed: Email not confirmed
+2025-11-25 03:46:00,142 [INFO] Taskera AI : [Chat] Request from 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:46:00,144 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:46:00,146 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:46:06,421 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:47:09,993 [INFO] Taskera AI : [Chat] Request from 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:47:09,995 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:47:11,242 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:56:53,726 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 03:56:53,727 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 03:57:13,070 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 03:57:18,281 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 03:57:18,402 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 03:57:18,792 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 03:57:19,509 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 03:57:19,509 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 03:57:19,510 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 03:57:19,511 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 03:57:35,854 [INFO] Taskera AI : [Chat] Request from 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:35,855 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:35,858 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:38,035 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:50,103 [INFO] Taskera AI : [Chat] Request from 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:50,105 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:57:52,263 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:58:28,303 [INFO] Taskera AI : [Chat] Request from 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:58:28,307 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:58:30,448 [INFO] Taskera AI : Agent node executing for user: 88e5d43d-3c74-4e16-8806-8f7d783ffe04
+2025-11-25 03:59:15,563 [ERROR] Taskera AI : [CRUD] User fetch error: {'message': 'new row violates row-level security policy for table "users"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-25 03:59:15,909 [ERROR] Taskera AI : [CRUD] Save token error: {'message': 'new row violates row-level security policy for table "users"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-25 03:59:15,910 [INFO] Taskera AI : Saved refresh token for user: 114735889560025246923
+2025-11-25 03:59:40,104 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:59:40,105 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 03:59:40,108 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 03:59:41,870 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 03:59:50,113 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 03:59:50,115 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:01:02,051 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:01:02,053 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:01:03,446 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 04:01:51,978 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:01:51,980 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:01:53,455 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 04:06:11,603 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 04:06:11,604 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 04:35:36,865 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 04:35:40,071 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 04:35:40,201 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 04:35:40,560 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 04:35:41,219 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 04:35:41,220 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 04:35:41,220 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 04:35:41,221 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 04:36:13,522 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:36:13,523 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 04:36:13,526 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:36:15,525 [ERROR] Taskera AI : Google API Quota Exceeded for user 114735889560025246923
+2025-11-25 04:36:15,528 [ERROR] Taskera AI : Agent Error: 'tuple' object has no attribute 'content'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 370, in http_chat_endpoint
+    raw = final_state['messages'][-1].content
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'tuple' object has no attribute 'content'
+2025-11-25 04:47:59,711 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 04:47:59,712 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 04:49:18,207 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 04:49:22,281 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 04:49:22,442 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 04:49:22,850 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 04:49:23,714 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 04:49:23,715 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 04:49:23,715 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 04:49:23,716 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 04:49:42,886 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:49:42,886 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 04:49:42,890 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:49:47,051 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 04:50:10,052 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:50:10,054 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:50:44,476 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:50:44,479 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:50:46,340 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 04:51:52,635 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:51:52,637 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:51:55,817 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 04:51:57,114 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:52:20,863 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 04:52:20,865 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 04:52:22,035 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:03:25,087 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 05:03:25,089 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 05:03:35,564 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 05:03:38,706 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 05:03:38,828 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 05:03:39,177 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 05:03:40,155 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 05:03:40,156 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 05:03:40,157 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 05:03:40,158 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 05:04:11,056 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:04:11,057 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 05:04:11,060 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:04:24,436 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:04:42,814 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:04:42,816 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:04:56,060 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:04:56,062 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:05:11,355 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:05:11,357 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:05:13,029 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:05:34,417 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:05:34,419 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:05:48,306 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:05:48,308 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:05:55,014 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:08:36,798 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 05:08:36,799 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 05:08:48,774 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 05:08:51,809 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 05:08:51,925 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 05:08:52,267 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 05:08:52,903 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 05:08:52,903 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 05:08:52,904 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 05:08:52,904 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 05:09:08,512 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:09:08,512 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 05:09:08,515 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:09:12,213 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:09:49,100 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:09:49,102 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:09:50,723 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:10:02,283 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:10:02,285 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:10:05,976 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 05:10:07,478 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:10:51,853 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:10:51,855 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:11:03,098 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:11:03,100 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:11:04,931 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:11:30,041 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:11:30,044 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:12:32,886 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:12:32,888 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:12:34,530 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:12:56,949 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:12:56,951 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:13:00,053 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:13:07,712 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:13:07,714 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:13:11,462 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 05:13:12,868 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:25:23,453 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:25:23,456 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:25:26,067 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:26:25,660 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:26:25,663 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:26:27,004 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:26:43,556 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:26:43,558 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:26:45,236 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:26:57,635 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:26:57,637 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:27:11,364 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:27:11,366 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:27:26,857 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:27:26,859 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:27:28,038 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:27:40,889 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:27:40,891 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:27:42,542 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 05:27:48,363 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 05:27:48,366 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:27:51,954 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 05:27:53,542 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 05:38:52,914 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 05:38:52 PST)" (scheduled at 2025-11-25 05:38:52.902967-08:00)
+2025-11-25 05:38:52,914 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 06:08:52 PST)" executed successfully
+2025-11-25 05:42:36,750 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 05:42:36,751 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-25 22:27:01,995 [INFO] Taskera AI : Supabase client created successfully
+2025-11-25 22:27:09,001 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-25 22:27:09,305 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-25 22:27:10,108 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-25 22:27:12,165 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-25 22:27:12,166 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-25 22:27:12,169 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-25 22:27:12,171 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-25 22:28:57,677 [INFO] Taskera AI : [CRUD] Saved Google token for 114735889560025246923
+2025-11-25 22:28:57,683 [INFO] Taskera AI : Saved refresh token for user: 114735889560025246923
+2025-11-25 22:29:03,064 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:29:03,065 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-25 22:29:03,068 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:29:04,892 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:31:07,260 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:31:07,262 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:31:09,588 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:31:48,265 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:31:48,267 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:32:09,080 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:32:09,084 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:32:10,507 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:32:47,712 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:32:47,714 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:33:01,594 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:33:01,596 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:33:02,897 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:33:22,163 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:33:22,164 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:33:27,537 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:35:31,926 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:35:31,928 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:35:33,253 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 22:35:42,711 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 22:35:42,714 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:35:46,117 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-25 22:35:47,799 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 22:57:12,182 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 22:57:12 PST)" (scheduled at 2025-11-25 22:57:12.165532-08:00)
+2025-11-25 22:57:12,183 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-25 23:27:12 PST)" executed successfully
+2025-11-25 23:10:14,833 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-25 23:10:14,835 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-25 23:10:18,316 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-25 23:17:33,785 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-25 23:17:33,786 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-26 00:46:15,556 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 00:46:20,630 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-26 00:46:20,834 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 00:46:21,256 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 00:46:22,084 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-26 00:46:22,085 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-26 00:46:22,085 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-26 00:46:22,089 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-26 00:47:19,529 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 00:47:19,529 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-26 00:47:19,533 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 00:47:22,438 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 00:49:31,001 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 00:49:31,003 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 00:49:32,475 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 00:49:33,676 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 00:49:43,237 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 00:49:43,239 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 00:49:44,574 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 01:16:22,093 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 01:16:22 PST)" (scheduled at 2025-11-26 01:16:22.083871-08:00)
+2025-11-26 01:16:22,094 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 01:46:22 PST)" executed successfully
+2025-11-26 01:31:03,825 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-26 01:31:03,826 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-26 01:31:27,325 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 01:33:04,954 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 01:33:08,046 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-26 01:33:08,156 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 01:33:08,527 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 01:33:09,348 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-26 01:33:09,352 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-26 01:33:09,356 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-26 01:33:09,374 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-26 01:33:38,310 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 01:33:38,310 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-26 01:33:38,313 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 01:33:39,942 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 01:33:42,159 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 01:33:42,161 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 01:33:47,619 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 01:33:48,821 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 01:33:53,458 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 01:33:53,461 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 01:33:59,875 [ERROR] Taskera AI : Agent Error: commit_calendar_event_impl() got an unexpected keyword argument 'confirm'
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 364, in http_chat_endpoint
+    final_state = await agent_graph.with_config(checkpointer=user_checkpointer).ainvoke(input_message, config)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\main.py", line 3137, in ainvoke
+    async for chunk in self.astream(
+    ...<29 lines>...
+            chunks.append(chunk)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\main.py", line 2956, in astream
+    async for _ in runner.atick(
+    ...<13 lines>...
+            yield o
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\_runner.py", line 304, in atick
+    await arun_with_retry(
+    ...<15 lines>...
+    )
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\pregel\_retry.py", line 137, in arun_with_retry
+    return await task.proc.ainvoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\_internal\_runnable.py", line 705, in ainvoke
+    input = await asyncio.create_task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        step.ainvoke(input, config, **kwargs), context=context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\_internal\_runnable.py", line 473, in ainvoke
+    ret = await self.afunc(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 832, in _afunc
+    outputs = await asyncio.gather(*coros)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 1163, in _arun_one
+    return await self._execute_tool_async(tool_request, input_type, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 1112, in _execute_tool_async
+    content = _handle_tool_error(e, flag=self._handle_tool_errors)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 424, in _handle_tool_error
+    content = flag(e)  # type: ignore [assignment, call-arg]
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 381, in _default_handle_tool_errors
+    raise e
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langgraph\prebuilt\tool_node.py", line 1069, in _execute_tool_async
+    response = await tool.ainvoke(call_args, config)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\tools\structured.py", line 64, in ainvoke
+    return await run_in_executor(config, self.invoke, input, config, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\config.py", line 603, in run_in_executor
+    return await asyncio.get_running_loop().run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )
+    ^
+  File "C:\Users\PC_Clash\AppData\Local\Programs\Python\Python313\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\runnables\config.py", line 594, in wrapper
+    return func(*args, **kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\tools\base.py", line 605, in invoke
+    return self.run(tool_input, **kwargs)
+           ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\tools\base.py", line 932, in run
+    raise error_to_raise
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\tools\base.py", line 898, in run
+    response = context.run(self._run, *tool_args, **tool_kwargs)
+  File "C:\Users\PC_Clash\AppData\Local\pypoetry\Cache\virtualenvs\taskera-ai-project-lLhfSjPr-py3.13\Lib\site-packages\langchain_core\tools\structured.py", line 93, in _run
+    return self.func(*args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+TypeError: commit_calendar_event_impl() got an unexpected keyword argument 'confirm'
+During task with name 'tools' and id '94d4c29c-b9f6-f817-32ed-1f9a4b84cc89'
+2025-11-26 02:03:09,350 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 02:03:09 PST)" (scheduled at 2025-11-26 02:03:09.348406-08:00)
+2025-11-26 02:03:09,351 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 02:33:09 PST)" executed successfully
+2025-11-26 02:24:42,436 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-26 02:24:42,437 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-26 02:24:55,209 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 02:24:58,882 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-26 02:24:59,013 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 02:24:59,502 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 02:25:00,187 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-26 02:25:00,188 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-26 02:25:00,188 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-26 02:25:00,189 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-26 02:25:15,788 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:25:15,789 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-26 02:25:15,793 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:25:18,521 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 02:25:52,884 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:25:52,886 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:25:54,384 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:25:58,292 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 02:26:05,743 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:26:05,745 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:26:08,551 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-26 02:26:10,265 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:30:48,434 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:30:48,436 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:30:50,570 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:30:51,537 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 02:31:10,367 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:31:10,369 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:31:13,339 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-26 02:31:14,983 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:44:48,653 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-26 02:44:48,654 [INFO] Taskera AI : [Scheduler] Stopped cleanly.

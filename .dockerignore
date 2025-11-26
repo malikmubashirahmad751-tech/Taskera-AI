@@ -26,6 +26,7 @@ models/
 
 # Environment Config
 .env
+.venv
 
 # Docker itself
 Dockerfile
