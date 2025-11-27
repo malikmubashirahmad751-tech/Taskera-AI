@@ -1,54 +1,83 @@
-import pytesseract
-from PIL import Image
 import os
-import logging
-
-logger = logging.getLogger(__name__)
-
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-UPLOAD_DIRECTORY = os.path.join(BASE_DIR, "user_files")
-os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
+from pathlib import Path
 
 try:
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-    pytesseract.get_tesseract_version()
-    logger.info("Tesseract OCR engine found at default Windows path.")
-except Exception:
-    logger.info("Tesseract not found at 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'. Assuming it's in system PATH.")
+    import pytesseract
+    from PIL import Image
+    TESSERACT_AVAILABLE = True
+except ImportError:
+    TESSERACT_AVAILABLE = False
 
+from app.core.config import get_settings
+from app.core.logger import logger
 
+settings = get_settings()
+
+if TESSERACT_AVAILABLE:
+    try:
+        if os.name == 'nt':
+            tesseract_path = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+            if os.path.exists(tesseract_path):
+                pytesseract.pytesseract.tesseract_cmd = tesseract_path
+        
+        pytesseract.get_tesseract_version()
+        logger.info("Tesseract OCR available")
+        
+    except Exception as e:
+        logger.warning(f"Tesseract verification failed: {e}")
+        TESSERACT_AVAILABLE = False
+
+UPLOAD_DIRECTORY = settings.UPLOAD_PATH
 
 def image_text_extractor_impl(user_id: str, file_name: str) -> str:
     """
-    (IMPL) Extracts text from an image file.
-    This is called by the MCP server.
+    Extract text from an image file using OCR
     """
-    logger.info(f"[MCP-OCR] Attempting to extract text for user '{user_id}' from file '{file_name}'")
+    if not TESSERACT_AVAILABLE:
+        return (
+            "OCR service unavailable. "
+            "Please install Tesseract OCR (https://github.com/tesseract-ocr/tesseract)"
+        )
+    
+    logger.info(f"[OCR] Extracting text from '{file_name}' for user '{user_id}'")
+    
     try:
-        user_specific_dir = os.path.join(UPLOAD_DIRECTORY, user_id)
-        full_path = os.path.join(user_specific_dir, os.path.basename(file_name))
+        user_dir = os.path.join(UPLOAD_DIRECTORY, user_id)
+        file_path = os.path.join(user_dir, file_name)
         
-        if not os.path.abspath(full_path).startswith(os.path.abspath(UPLOAD_DIRECTORY)):
-            logger.warning(f"Security Warning: Attempted file access outside permitted directory. User: '{user_id}', Path: '{full_path}'")
-            return "Error: File access forbidden."
-
-        if not os.path.exists(full_path):
-            logger.warning(f"File not found for user '{user_id}' at path: '{full_path}'")
-            return f"Error: File not found at '{full_path}'."
-
-        img = Image.open(full_path)
-        extracted_text = pytesseract.image_to_string(img)
+        file_path_abs = os.path.abspath(file_path)
+        upload_dir_abs = os.path.abspath(UPLOAD_DIRECTORY)
+        
+        if not file_path_abs.startswith(upload_dir_abs):
+            logger.warning(f"[OCR] Path traversal attempt: {file_path}")
+            return "Error: Invalid file path"
+        
+        if not os.path.exists(file_path_abs):
+            logger.warning(f"[OCR] File not found: {file_path}")
+            return f"File not found: {file_name}"
+        
+        valid_extensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff']
+        file_ext = Path(file_name).suffix.lower()
+        
+        if file_ext not in valid_extensions:
+            return f"Invalid image format. Supported: {', '.join(valid_extensions)}"
+        
+        img = Image.open(file_path_abs)
+        
+        extracted_text = pytesseract.image_to_string(img, lang='eng')
         
         if not extracted_text.strip():
-            logger.info(f"No readable text found in image '{file_name}' for user '{user_id}'.")
-            return f"No readable text was found in the image '{file_name}'."
+            logger.info(f"[OCR] No text found in '{file_name}'")
+            return f"No readable text found in the image '{file_name}'"
         
-        logger.info(f"Successfully extracted text from '{file_name}' for user '{user_id}'.")
-        return f"Extracted text from '{file_name}':\n\n{extracted_text.strip()}"
-
+        logger.info(f"[OCR] Successfully extracted text from '{file_name}' ({len(extracted_text)} chars)")
+        
+        return f"**Extracted text from '{file_name}':**\n\n{extracted_text.strip()}"
+        
     except pytesseract.TesseractNotFoundError:
-        logger.error("Tesseract OCR engine not found. Ensure it's installed and in your system PATH.", exc_info=True)
-        return "Error: Tesseract OCR engine not found on the server."
+        logger.error("[OCR] Tesseract not found")
+        return "OCR engine not found. Please install Tesseract OCR."
+        
     except Exception as e:
-        logger.error(f"Unexpected error processing image '{file_name}' for user '{user_id}'. Error: {e}", exc_info=True)
-        return f"An unexpected error occurred: {str(e)}"
+        logger.error(f"[OCR] Error processing '{file_name}': {e}", exc_info=True)
+        return f"Error processing image: {str(e)}"

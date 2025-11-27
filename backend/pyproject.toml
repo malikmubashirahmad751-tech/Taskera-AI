@@ -61,6 +61,8 @@ starlette-csrf = "^3.0.0"
 itsdangerous = "^2.2.0"
 numexpr = "^2.10.0"
 langchain-core = "^1.1.0"
+aiosqlite = "^0.21.0"
+langgraph-checkpoint-sqlite = "^3.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

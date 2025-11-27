@@ -1,31 +1,41 @@
+import json
+import dateparser
+from datetime import datetime, timezone
+from typing import List, Tuple, Optional, Any, Dict
+
 import google.oauth2.credentials
 import google.auth.transport.requests
 from googleapiclient.discovery import build
-from datetime import datetime, timezone
-from typing import List, Tuple, Optional, Any
+from googleapiclient.errors import HttpError
 
 from app.core.logger import logger
-from app.core.config import settings
+from app.core.config import get_settings
 from app.core.crud import get_refresh_token
 from app.core.context import get_current_user_id
 
+settings = get_settings()
+
+_EVENT_DRAFTS: Dict[str, Dict] = {}
+
+def _save_draft(user_id: str, event_data: Dict):
+    _EVENT_DRAFTS[user_id] = event_data
+    logger.debug(f"[Google] Draft saved for {user_id}")
+
+def _get_draft(user_id: str) -> Optional[Dict]:
+    return _EVENT_DRAFTS.get(user_id)
+
+def _clear_draft(user_id: str):
+    if user_id in _EVENT_DRAFTS:
+        del _EVENT_DRAFTS[user_id]
+
 def _get_authenticated_service() -> Tuple[Optional[Any], Optional[str]]:
-    """
-    Returns an authenticated Google Calendar service object if the user is logged in.
-    If the user is not logged in, returns (None, "Authentication required. Please log in via Google.").
-
-    If an error occurs during authentication, returns (None, f"Google Authorization failed: {str(e)}. Please log in again.").
-
-    :return: A tuple containing an authenticated Google Calendar service object and an error message if applicable.
-    :rtype: Tuple[Optional[Any], Optional[str]]
-    """
     user_id = get_current_user_id()
-    if not user_id: return None, "System Error: No user context found."
-
+    if not user_id: return None, "System error: No user context found"
+    
     token = get_refresh_token(user_id)
     if not token:
-        return None, "Authentication required. Please log in via Google."
-
+        return None, "Google Calendar not connected. Please authenticate via the 'Continue with Google' button."
+    
     try:
         creds = google.oauth2.credentials.Credentials(
             token=None,
@@ -37,69 +47,151 @@ def _get_authenticated_service() -> Tuple[Optional[Any], Optional[str]]:
         )
         request = google.auth.transport.requests.Request()
         creds.refresh(request)
-        return build('calendar', 'v3', credentials=creds), None
+        service = build('calendar', 'v3', credentials=creds)
+        return service, None
     except Exception as e:
         logger.error(f"[Google] Auth failed for {user_id}: {e}")
-        return None, f"Google Authorization failed: {str(e)}. Please log in again."
+        return None, f"Authentication failed: {str(e)}"
+
 
 def list_calendar_events_impl(max_results: int = 5) -> str:
     """
-    Lists the user's upcoming events on their Google Calendar.
-
-    :param max_results: The maximum number of events to fetch. Defaults to 5.
-    :return: A string containing a list of the user's upcoming events.
-    :rtype: str
-    :raises Exception: If an error occurs while accessing the user's Google Calendar.
+    List upcoming events from user's Google Calendar.
+    Updated to return Event IDs for deletion logic.
     """
     service, error = _get_authenticated_service()
     if error: return error
-
+    
     try:
         now = datetime.now(timezone.utc).isoformat()
+        
         events_result = service.events().list(
-            calendarId='primary', timeMin=now,
-            maxResults=max_results, singleEvents=True, orderBy='startTime'
+            calendarId='primary',
+            timeMin=now,
+            maxResults=max_results,
+            singleEvents=True,
+            orderBy='startTime'
         ).execute()
         
         events = events_result.get('items', [])
-        if not events: return "No upcoming events found."
-
+        
+        if not events:
+            return "No upcoming events found on your calendar."
+        
         output = ["**Your Upcoming Events:**"]
         for event in events:
             start = event['start'].get('dateTime', event['start'].get('date'))
             summary = event.get('summary', 'No Title')
-            output.append(f"- {summary} at {start}")
+            event_id = event.get('id') 
+            
+            try:
+                dt = datetime.fromisoformat(start.replace('Z', '+00:00'))
+                formatted_time = dt.strftime('%A, %B %d at %I:%M %p')
+            except:
+                formatted_time = start
+            
+            event_str = f"- **{summary}** on {formatted_time} (ID: `{event_id}`)"
+            output.append(event_str)
+        
         return "\n".join(output)
+        
+    except HttpError as e:
+        logger.error(f"[Google] List error: {e}")
+        return f"Failed to fetch events: {e.reason}"
     except Exception as e:
+        logger.error(f"[Google] Unexpected error: {e}")
         return f"Error accessing calendar: {str(e)}"
 
-def create_calendar_event_impl(summary: str, start_time: str, end_time: str, description: str = "", attendees: List[str] = None) -> str:
-    """
-    Creates a new event on the user's Google Calendar.
+def stage_calendar_event_impl(
+    summary: str,
+    start_time: str,
+    end_time: str,
+    description: str = "",
+    attendees: List[str] = None
+) -> str:
+    """Stage (draft) a calendar event for user confirmation"""
+    user_id = get_current_user_id()
+    if not user_id: return "Error: Could not identify user context"
+    
+    try:
+        parse_settings = {'PREFER_DATES_FROM': 'future', 'RETURN_AS_TIMEZONE_AWARE': True}
+        start_dt = dateparser.parse(start_time, settings=parse_settings)
+        end_dt = dateparser.parse(end_time, settings=parse_settings)
+        
+        if not start_dt: return f"Invalid start time: '{start_time}'"
+        if not end_dt: return f"Invalid end time: '{end_time}'"
+        if end_dt <= start_dt: return "End time must be after start time"
+        
+        event_data = {
+            "summary": summary,
+            "description": description,
+            "start": start_dt.isoformat(),
+            "end": end_dt.isoformat(),
+            "attendees": attendees or []
+        }
+        
+        _save_draft(user_id, event_data)
+        
+        readable_start = start_dt.strftime('%A, %B %d at %I:%M %p')
+        readable_end = end_dt.strftime('%I:%M %p')
+        
+        return (
+            f"✓ Event drafted:\n**{summary}**\n"
+            f"Time: {readable_start} - {readable_end}\n"
+            f"Shall I create this event?"
+        )
+    except Exception as e:
+        logger.error(f"[Google] Stage error: {e}")
+        return f"Failed to stage event: {str(e)}"
 
-    :param summary: The title of the event.
-    :param start_time: The start time of the event in ISO format (YYYY-MM-DDTHH:MM:SSZ).
-    :param end_time: The end time of the event in ISO format (YYYY-MM-DDTHH:MM:SSZ).
-    :param description: The description of the event. Defaults to an empty string.
-    :param attendees: A list of attendee emails. Defaults to None.
-    :return: A string containing a success message and the event's HTML link if the event was created successfully, or an error message if an error occurred.
-    :rtype: str
-    :raises Exception: If an error occurs while accessing the user's Google Calendar.
+def commit_calendar_event_impl(confirm: str = "yes") -> str:
+    """Commit the staged event to Google Calendar"""
+    user_id = get_current_user_id()
+    event_data = _get_draft(user_id)
+    
+    if not event_data: return "No pending event found to confirm."
+    
+    service, error = _get_authenticated_service()
+    if error: return error
+    
+    try:
+        api_body = {
+            'summary': event_data['summary'],
+            'description': event_data.get('description', ''),
+            'start': {'dateTime': event_data['start'], 'timeZone': 'UTC'},
+            'end': {'dateTime': event_data['end'], 'timeZone': 'UTC'}
+        }
+        if event_data.get('attendees'):
+            api_body['attendees'] = [{'email': e} for e in event_data['attendees']]
+        
+        event = service.events().insert(calendarId='primary', body=api_body).execute()
+        _clear_draft(user_id)
+        
+        return f"Event created! View here: {event.get('htmlLink', '')}"
+    except Exception as e:
+        logger.error(f"[Google] Commit error: {e}")
+        return f"Failed to create event: {str(e)}"
+
+def delete_calendar_event_impl(event_id: str) -> str:
+    """
+    Delete an event from Google Calendar by ID.
     """
     service, error = _get_authenticated_service()
     if error: return error
-
+    
     try:
-        event_body = {
-            'summary': summary,
-            'description': description,
-            'start': {'dateTime': start_time, 'timeZone': 'UTC'},
-            'end': {'dateTime': end_time, 'timeZone': 'UTC'},
-        }
-        if attendees:
-            event_body['attendees'] = [{'email': a.strip()} for a in attendees]
-
-        event = service.events().insert(calendarId='primary', body=event_body).execute()
-        return f"Success! Event created: {event.get('htmlLink')}"
+        service.events().delete(calendarId='primary', eventId=event_id).execute()
+        logger.info(f"[Google] Event deleted: {event_id}")
+        return f"Successfully deleted event (ID: {event_id})."
+        
+    except HttpError as e:
+        if e.resp.status == 404:
+            return f"Event not found (ID: {event_id}). It may have already been deleted."
+        if e.resp.status == 410:
+            return "Event is already deleted."
+        
+        logger.error(f"[Google] Delete API error: {e}")
+        return f"Failed to delete event: {e.reason}"
     except Exception as e:
-        return f"Failed to schedule event: {str(e)}"
+        logger.error(f"[Google] Delete unexpected error: {e}")
+        return f"Error deleting event: {str(e)}"
