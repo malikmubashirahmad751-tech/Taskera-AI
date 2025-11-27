@@ -21,39 +21,32 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-# --- Core Imports ---
 from app.core.config import get_settings
 from app.core.logger import logger
 from app.core.database import db_manager, supabase
 from app.core.crud import UserCRUD, QuotaCRUD, save_refresh_token
 from app.core.context import user_id_context
 
-# --- NEW IMPORT: Google Auth Router ---
-# Ensure your separate file is named 'auth_routes.py' inside 'app/api/'
 from app.routes.google_auth import router as auth_router
 
 settings = get_settings()
 
-# --- Worker Pool ---
 process_executor = ThreadPoolExecutor(
     max_workers=4,
     thread_name_prefix="taskera_worker"
 )
 
-# --- Rate Limiting ---
 limiter = Limiter(
     key_func=get_remote_address,
     default_limits=[f"{settings.RATE_LIMIT_PER_MINUTE if hasattr(settings, 'RATE_LIMIT_PER_MINUTE') else 60}/minute"]
 )
 
-# --- Lifespan (Startup/Shutdown) ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan context manager for startup/shutdown"""
     logger.info("Starting Taskera AI Server")
     
     try:
-        # Lazy imports to avoid circular dependencies
         from app.services.scheduler import start_scheduler
         from app.core.memory_manager import initialize_memory
         from app.agents.controller_agent import workflow as agent_workflow
@@ -61,11 +54,9 @@ async def lifespan(app: FastAPI):
         start_scheduler()
         logger.info("Scheduler started")
         
-        # Initialize persistent memory
         checkpointer = await initialize_memory()
         logger.info("Memory system initialized")
         
-        # Compile graph WITH the checkpointer globally
         app.state.agent_graph = agent_workflow.compile(checkpointer=checkpointer)
         logger.info("Agent graph compiled")
         
@@ -98,7 +89,6 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Shutdown error: {e}")
 
-# --- FastAPI App Definition ---
 app = FastAPI(
     title="Taskera AI",
     description="Production-Ready AI Agent with Multi-Tool Integration",
@@ -111,11 +101,9 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# --- REGISTER ROUTERS ---
-# This adds /auth/google and /auth/google/callback from your separate file
+
 app.include_router(auth_router)
 
-# --- Middleware ---
 if settings.DEBUG:
     os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
@@ -157,7 +145,6 @@ app.add_middleware(
     ]
 )
 
-# --- Data Models ---
 
 class AuthCredentials(BaseModel):
     email: str = Field(..., pattern=r"^\S+@\S+\.\S+$")
@@ -195,7 +182,6 @@ class MCPResponse(BaseModel):
     id: Union[int, str]
 
 
-# --- Dependencies ---
 
 async def verify_quota(request: Request, user_id: str = Form(...)) -> str:
     """Verify user has not exceeded quota"""
@@ -226,7 +212,6 @@ async def verify_quota(request: Request, user_id: str = Form(...)) -> str:
     return user_id
 
 
-# --- System Routes ---
 
 @app.get("/")
 async def root():
@@ -250,9 +235,6 @@ async def get_csrf_token_endpoint(request: Request):
     token = request.scope.get("csrf_token", "")
     return {"csrf_token": token}
 
-
-# --- Auth Routes (Signup/Login) ---
-# Note: Google Auth is handled by app.include_router(auth_router)
 
 @app.post("/auth/signup")
 @limiter.limit("5/minute")
@@ -306,8 +288,6 @@ async def auth_login_endpoint(creds: AuthCredentials, request: Request):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid email or password")
 
 
-# --- Chat & File Handling ---
-
 async def handle_file_uploads(user_id: str, files: List[UploadFile]) -> str:
     """Handle file uploads, OCR, and RAG Indexing"""
     from app.impl.ocr_service_impl import image_text_extractor_impl
@@ -351,7 +331,6 @@ async def handle_file_uploads(user_id: str, files: List[UploadFile]) -> str:
                 logger.error(f"OCR error: {e}")
                 ocr_context += f"\n[OCR Error for {file.filename}]"
         else:
-            # Docs -> RAG Indexing
             try:
                 await loop.run_in_executor(
                     process_executor,
@@ -434,7 +413,6 @@ async def chat_endpoint(
         user_id_context.reset(token)
 
 
-# --- MCP Tool Endpoint ---
 
 @app.post("/mcp", response_model=MCPResponse)
 @limiter.limit("60/minute")

@@ -42,3 +42,6 @@ Backend/.env
 Backend/__pycache__/
 
 .git
+checkpoints.sqlite-wal
+checkpoints.sqlite-shm
+checkpoints.sqlite
