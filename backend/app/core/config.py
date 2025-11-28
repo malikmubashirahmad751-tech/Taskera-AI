@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     
     GOOGLE_CLIENT_ID: str = Field(..., min_length=1)
     GOOGLE_CLIENT_SECRET: str = Field(..., min_length=1)
-    GOOGLE_REDIRECT_URI: str = Field(default="http://localhost:8000/auth/google/callback")
+    GOOGLE_REDIRECT_URI: str = Field(default="http://localhost:7860/auth/google/callback")
     
     SUPABASE_URL: str = Field(..., min_length=1)
     SUPABASE_KEY: str = Field(..., min_length=1)
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str = Field(..., min_length=32)
     
     SERVER_HOST: str = Field(default="0.0.0.0")
-    SERVER_PORT: int = Field(default=8000)
+    SERVER_PORT: int = Field(default=7860)
     DEBUG: bool = Field(default=False)
     
     CORS_ORIGINS: list[str] = Field(

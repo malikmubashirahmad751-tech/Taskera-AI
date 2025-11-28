@@ -3,7 +3,7 @@ from typing import Any, Dict
 
 from app.core.logger import logger
 
-MCP_SERVER_URL = "http://127.0.0.1:8000/mcp"
+MCP_SERVER_URL = "http://127.0.0.1:7860/mcp"
 
 _client = httpx.AsyncClient(
     timeout=httpx.Timeout(60.0, connect=10.0),
