@@ -4,47 +4,48 @@ from langchain_core.tools import StructuredTool
 from app.mcp_client import call_mcp
 from app.core.logger import logger
 
-async def retrieve_info(query: str, *, user_id: str) -> str:
-    """
-    Retrieves relevant information from user-uploaded documents.
+class RagToolArgs(BaseModel):
+    """Arguments for RAG retrieval"""
+    query: str = Field(
+        ...,
+        description="The search query to find relevant information in user's documents"
+    )
+    user_id: str = Field(
+        ...,
+        description="User ID (required for retrieving user-specific documents)"
+    )
 
-    Args:
-        query (str): The query to search for in the documents.
-        user_id (str): The ID of the user to retrieve documents for.
-
-    Returns:
-        str: The relevant text from the user's documents, or an error message if the retrieval fails.
+async def retrieve_info_impl(query: str, user_id: str) -> str:
     """
-    logger.info(f"[RAG Proxy] user={user_id}, query={query}")
+    Retrieve information from user's uploaded documents using RAG.
+    This delegates to the MCP server for actual execution.
+    """
+    logger.info(f"[RAG] Retrieving for user={user_id}, query='{query}'")
+    
     try:
-        return await call_mcp("local_document_retriever", {
+        result = await call_mcp("local_document_retriever", {
             "query": query,
             "user_id": user_id
         })
+        return str(result)
+        
     except Exception as e:
-        logger.error(f"[RAG Proxy] MCP Error: {e}")
-        return f"RAG error: {e}"
+        logger.error(f"[RAG] Retrieval error: {e}")
+        return f"Error retrieving documents: {str(e)}"
 
-class RagToolArgs(BaseModel):
-    query: str = Field(description="Query to search in user documents.")
-
-def create_rag_tool(user_id: str) -> StructuredTool:
-
-    """
-    Creates a StructuredTool that retrieves information from user-uploaded documents.
-
-    This tool takes a single argument, `query`, which is the query to search for in the user's documents.
-    The tool returns a string containing the relevant text from the user's documents.
-
-    :param user_id: The ID of the user to create the tool for.
-    :return: A StructuredTool that retrieves information from user-uploaded documents for the given user.
-    """
-    async def user_specific(query: str) -> str:
-        return await retrieve_info(query=query, user_id=user_id)
-
+def _build_retriever_tool() -> StructuredTool:
+    """Build the RAG retriever tool"""
     return StructuredTool.from_function(
+        func=None,
+        coroutine=retrieve_info_impl,
         name="local_document_retriever",
-        coroutine=user_specific,
-        args_schema=RagToolArgs,
-        description="Retrieve information from user-uploaded documents."
+        description=(
+            "Search and retrieve relevant information from the user's uploaded documents. "
+            "Use this when the user asks about content from PDFs, Word docs, or text files they uploaded. "
+            "The system uses semantic search to find the most relevant passages."
+        ),
+        args_schema=RagToolArgs
     )
+
+
+local_document_retriever_tool = _build_retriever_tool()

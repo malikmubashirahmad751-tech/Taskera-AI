@@ -1,9 +1,6 @@
-# ==========================================
-# Stage 1: Builder (Compilers & Dependency Prep)
-# ==========================================
+
 FROM python:3.12-slim-bookworm as builder
 
-# Prevent Python buffering and set Poetry vars
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     POETRY_VERSION=1.8.2 \
@@ -11,29 +8,23 @@ ENV PYTHONUNBUFFERED=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
     PIP_NO_CACHE_DIR=off
 
-# Install build dependencies (gcc, python headers)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     build-essential \
     libffi-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Poetry
 RUN curl -sSL https://install.python-poetry.org | python3 -
 ENV PATH="/root/.local/bin:$PATH"
 
 WORKDIR /app
 
-# Copy dependency files first (levarging Docker cache)
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies (CPU versions via lock file)
-# --no-root: Don't install the project code yet, just libs
+
 RUN poetry install --no-root --no-ansi
 
-# ==========================================
-# Stage 2: Runtime (Production Image)
-# ==========================================
+
 FROM python:3.12-slim-bookworm as runtime
 
 ENV PYTHONUNBUFFERED=1 \
@@ -42,9 +33,7 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-# Install Runtime System Dependencies
-# 1. OCR (Tesseract) & PDF Tools (Poppler) - REQUIRED for your stack
-# 2. System Libs for Playwright/OpenCV
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     tesseract-ocr \
@@ -73,17 +62,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the virtual environment from the builder stage
 COPY --from=builder /app/.venv /app/.venv
 
-# Install Playwright Browsers (Chromium only to save space)
 RUN playwright install chromium
 
-# Copy application code
 COPY . .
 
-# Expose the API port
-EXPOSE 8000
-
-# Start the application
-CMD ["uvicorn", "app.mcp_server:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 7860
+CMD ["uvicorn", "app.mcp_server:app", "--host", "0.0.0.0", "--port", "7860"]

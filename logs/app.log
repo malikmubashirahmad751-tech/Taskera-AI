@@ -6292,3 +6292,561 @@ During task with name 'tools' and id '94d4c29c-b9f6-f817-32ed-1f9a4b84cc89'
 2025-11-26 02:31:14,983 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
 2025-11-26 02:44:48,653 [INFO] apscheduler.scheduler : Scheduler has been shut down
 2025-11-26 02:44:48,654 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-26 02:50:37,357 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 02:50:40,620 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-26 02:50:40,734 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 02:50:41,092 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 02:50:42,054 [INFO] apscheduler.scheduler : Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2025-11-26 02:50:42,055 [INFO] apscheduler.scheduler : Added job "run_expired_session_cleanup" to job store "default"
+2025-11-26 02:50:42,055 [INFO] apscheduler.scheduler : Scheduler started
+2025-11-26 02:50:42,056 [INFO] Taskera AI : [Scheduler] Started successfully with recurring cleanup job.
+2025-11-26 02:52:14,191 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 02:52:14,191 [INFO] Taskera AI : [Session] Creating new session and checkpointer for user_id: 114735889560025246923
+2025-11-26 02:52:14,194 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:52:19,923 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 02:52:21,289 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 03:20:42,076 [INFO] apscheduler.executors.default : Running job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 03:20:42 PST)" (scheduled at 2025-11-26 03:20:42.053924-08:00)
+2025-11-26 03:20:42,077 [INFO] apscheduler.executors.default : Job "run_expired_session_cleanup (trigger: interval[0:30:00], next run at: 2025-11-26 03:50:42 PST)" executed successfully
+2025-11-26 03:22:00,014 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 03:22:00,016 [INFO] Taskera AI : [Session] Session expired for user: 114735889560025246923. Resetting checkpointer.
+2025-11-26 03:22:00,021 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:22:03,337 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:22:04,825 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 03:22:08,793 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 03:22:08,795 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:22:12,333 [INFO] googleapiclient.discovery_cache : file_cache is only supported with oauth2client<4.0.0
+2025-11-26 03:22:15,281 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:25:29,822 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 03:25:29,824 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:25:31,105 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 03:25:36,754 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 03:25:36,756 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:25:38,761 [INFO] Taskera AI : [Session] AI asked a question -> shorter expiry (300s) for user: 114735889560025246923
+2025-11-26 03:26:06,296 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 03:26:06,298 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:26:07,525 [INFO] Taskera AI : Fetching weather for: Okara
+2025-11-26 03:26:08,539 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 03:40:22,413 [INFO] apscheduler.scheduler : Scheduler has been shut down
+2025-11-26 03:40:22,414 [INFO] Taskera AI : [Scheduler] Stopped cleanly.
+2025-11-26 04:04:37,288 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 04:37:59,503 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 04:38:04,108 [INFO] Taskera AI : LangGraph workflow compiled successfully.
+2025-11-26 04:38:04,224 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 04:38:04,606 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 04:38:05,223 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 04:38:05,367 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized successfully.
+2025-11-26 04:40:13,184 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 04:40:13,192 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 04:41:00,689 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 04:41:00,693 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 04:41:01,228 [ERROR] Taskera AI : Google API Quota Exceeded for user 114735889560025246923
+2025-11-26 04:53:38,148 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 04:53:38,151 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 04:53:52,902 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 04:53:52,904 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 04:53:59,802 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 04:53:59,804 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:07:13,186 [INFO] Taskera AI : [Scheduler] Scheduler was not running.
+2025-11-26 05:20:07,206 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 05:20:12,981 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 05:20:13,509 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 05:20:14,270 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 05:20:14,278 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized (WAL mode).
+2025-11-26 05:20:14,278 [INFO] Taskera AI : Compiling Agent Graph with Persistent Checkpointer...
+2025-11-26 05:20:14,290 [INFO] Taskera AI : Agent Graph Compiled and Ready.
+2025-11-26 05:20:30,677 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:20:30,686 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:20:59,829 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:20:59,830 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user '114735889560025246923' from file 'new.jpeg'
+2025-11-26 05:21:00,350 [INFO] app.impl.ocr_service_impl : No readable text found in image 'new.jpeg' for user '114735889560025246923'.
+2025-11-26 05:21:00,357 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:21:45,915 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:21:45,917 [INFO] app.impl.ocr_service_impl : [MCP-OCR] Attempting to extract text for user '114735889560025246923' from file 'text.jpg'
+2025-11-26 05:21:46,419 [INFO] app.impl.ocr_service_impl : Successfully extracted text from 'text.jpg' for user '114735889560025246923'.
+2025-11-26 05:21:46,423 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:23:15,020 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:23:15,022 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 05:23:15,872 [INFO] Taskera AI : [MCP-RAG] No documents found to index for user '114735889560025246923'.
+2025-11-26 05:23:15,873 [ERROR] Taskera AI : Agent Error: object str can't be used in 'await' expression
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 303, in http_chat_endpoint
+    await create_rag_tool_impl(user_id)
+TypeError: object str can't be used in 'await' expression
+2025-11-26 05:23:40,247 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:23:40,249 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 05:23:40,252 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-26 05:23:40,657 [INFO] Taskera AI : [RAG-Load] Valid text detected (2080 chars). Skipping OCR.
+2025-11-26 05:23:43,220 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user '114735889560025246923'.
+2025-11-26 05:23:43,221 [ERROR] Taskera AI : Agent Error: object str can't be used in 'await' expression
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 303, in http_chat_endpoint
+    await create_rag_tool_impl(user_id)
+TypeError: object str can't be used in 'await' expression
+2025-11-26 05:24:07,184 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:24:07,186 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 05:24:07,191 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-26 05:24:07,281 [INFO] Taskera AI : [RAG-Load] Valid text detected (2080 chars). Skipping OCR.
+2025-11-26 05:24:08,162 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user '114735889560025246923'.
+2025-11-26 05:24:08,163 [ERROR] Taskera AI : Agent Error: object str can't be used in 'await' expression
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 303, in http_chat_endpoint
+    await create_rag_tool_impl(user_id)
+TypeError: object str can't be used in 'await' expression
+2025-11-26 05:24:29,077 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:24:29,082 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:24:34,205 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:24:34,209 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:24:35,779 [INFO] Taskera AI : Fetching weather for: Okara
+2025-11-26 05:24:36,803 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:24:50,491 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:24:50,498 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:32:42,915 [INFO] Taskera AI : [Scheduler] Scheduler was not running.
+2025-11-26 05:33:24,990 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 05:33:28,528 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 05:33:28,902 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 05:33:29,534 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 05:33:29,541 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized (WAL mode).
+2025-11-26 05:33:29,541 [INFO] Taskera AI : Compiling Agent Graph with Persistent Checkpointer...
+2025-11-26 05:33:29,558 [INFO] Taskera AI : Agent Graph Compiled and Ready.
+2025-11-26 05:33:54,005 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:33:54,012 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:34:08,564 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:34:08,569 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:34:16,364 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:34:16,369 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:34:17,953 [INFO] Taskera AI : Fetching weather for: Okara
+2025-11-26 05:34:18,933 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:35:03,836 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:35:03,837 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 05:35:04,188 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-26 05:35:07,000 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user '114735889560025246923'.
+2025-11-26 05:35:07,005 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 05:48:33,621 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 05:48:33,623 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 05:48:33,626 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-26 05:48:35,479 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user '114735889560025246923'.
+2025-11-26 05:48:35,487 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:15:08,344 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 22:18:07,136 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 22:18:26,158 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 22:29:18,990 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 22:29:22,371 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 22:29:23,288 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 22:29:24,050 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 22:29:24,069 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized (WAL mode).
+2025-11-26 22:29:24,069 [INFO] Taskera AI : Compiling Agent Graph with Persistent Checkpointer...
+2025-11-26 22:29:24,085 [INFO] Taskera AI : Agent Graph Compiled and Ready.
+2025-11-26 22:30:25,638 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:30:25,650 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:30:40,834 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:30:40,840 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:30:53,252 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:30:53,258 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:30:54,135 [ERROR] Taskera AI : Google API Quota Exceeded for user 114735889560025246923
+2025-11-26 22:32:35,314 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:32:35,319 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:32:49,190 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:32:49,195 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:33:01,471 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:33:01,477 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:33:05,813 [INFO] Taskera AI : Fetching weather for: Okara
+2025-11-26 22:33:07,030 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:33:21,371 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:33:21,376 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:33:22,869 [INFO] Taskera AI : Fetching weather for: Karachi
+2025-11-26 22:33:24,021 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:34:02,190 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:34:02,196 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:34:58,595 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:34:58,596 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 22:34:59,234 [INFO] Taskera AI : [RAG-Load] Attempting fast load for PDF: Document (2) (3).pdf
+2025-11-26 22:35:01,600 [INFO] Taskera AI : [MCP-RAG] Indexed 2 chunks for user '114735889560025246923'.
+2025-11-26 22:35:01,607 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:35:46,752 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 22:35:46,759 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:35:50,461 [INFO] Taskera AI : [RAG Proxy] user=royalchampion230@gmail.com, query=Summarize the document in 50 words.
+2025-11-26 22:35:50,779 [ERROR] Taskera AI : [RAG-Service] Failed to initialize Chroma for royalchampion230@gmail.com: Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: user_royalchampion230@gmail.com
+2025-11-26 22:35:50,780 [ERROR] Taskera AI : MCP Execution Error (local_document_retriever): Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: user_royalchampion230@gmail.com
+2025-11-26 22:35:50,782 [ERROR] Taskera AI : [MCP Client] MCP server returned error for method 'local_document_retriever': Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: user_royalchampion230@gmail.com
+2025-11-26 22:35:50,783 [ERROR] Taskera AI : [MCP Client] Unexpected error calling method 'local_document_retriever': MCP Error -32000: Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: user_royalchampion230@gmail.com
+2025-11-26 22:35:50,784 [ERROR] Taskera AI : [RAG Proxy] MCP Error: MCP Error None: MCP Error -32000: Validation error: name: Expected a name containing 3-512 characters from [a-zA-Z0-9._-], starting and ending with a character in [a-zA-Z0-9]. Got: user_royalchampion230@gmail.com
+2025-11-26 22:35:50,787 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 22:52:04,232 [INFO] Taskera AI : [Scheduler] Scheduler was not running.
+2025-11-26 22:52:51,786 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 22:52:54,994 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 22:52:55,473 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 23:05:32,773 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 23:05:35,978 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 23:05:36,319 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 23:05:37,232 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 23:05:37,258 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized (WAL mode).
+2025-11-26 23:05:37,258 [INFO] Taskera AI : Compiling Agent Graph with Persistent Checkpointer...
+2025-11-26 23:05:37,270 [INFO] Taskera AI : Agent Graph Compiled and Ready.
+2025-11-26 23:05:56,689 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:05:56,697 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:06:22,601 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:06:22,607 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:06:49,624 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:06:49,630 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:07:07,764 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:07:07,773 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:08:03,335 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:08:03,337 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 23:08:03,340 [ERROR] Taskera AI : RAG Indexing Failed: _get_or_create_user_chroma() takes 1 positional argument but 2 were given
+2025-11-26 23:08:03,350 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:14:14,881 [INFO] Taskera AI : [Scheduler] Scheduler was not running.
+2025-11-26 23:14:56,938 [INFO] Taskera AI : Supabase client created successfully
+2025-11-26 23:15:00,507 [INFO] numexpr.utils : NumExpr defaulting to 4 threads.
+2025-11-26 23:15:00,869 [INFO] app.impl.ocr_service_impl : Tesseract OCR engine found at default Windows path.
+2025-11-26 23:15:01,479 [ERROR] Taskera AI : [Scheduler] Failed to start: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\services\scheduler.py", line 84, in start_scheduler
+    from app.core.memory_manager import run_expired_session_cleanup
+ImportError: cannot import name 'run_expired_session_cleanup' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-26 23:15:01,521 [INFO] Taskera AI : [Memory] Persistent SQLite memory initialized (WAL mode).
+2025-11-26 23:15:01,522 [INFO] Taskera AI : Compiling Agent Graph with Persistent Checkpointer...
+2025-11-26 23:15:01,532 [INFO] Taskera AI : Agent Graph Compiled and Ready.
+2025-11-26 23:15:44,230 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:15:44,239 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:16:44,681 [INFO] Taskera AI : [Chat] Request from 114735889560025246923
+2025-11-26 23:16:44,683 [INFO] Taskera AI : [MCP-RAG] Indexing RAG for user '114735889560025246923'.
+2025-11-26 23:16:44,686 [ERROR] Taskera AI : RAG Indexing Failed: _get_or_create_user_chroma() takes 1 positional argument but 2 were given
+2025-11-26 23:16:44,696 [INFO] Taskera AI : Agent node executing for user: 114735889560025246923
+2025-11-26 23:51:38,420 [INFO] Taskera AI : [Scheduler] Scheduler was not running.
+2025-11-27 01:03:02 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 01:03:05 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 01:06:52 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 01:06:53 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 01:06:53 | INFO     | Taskera AI | lifespan:48 | ============================================================
+2025-11-27 01:06:53 | INFO     | Taskera AI | lifespan:49 | 🚀 Starting Taskera AI Server
+2025-11-27 01:06:53 | INFO     | Taskera AI | lifespan:50 | ============================================================
+2025-11-27 01:06:57 | INFO     | Taskera AI | start_scheduler:144 | [Scheduler] Started successfully
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:59 | ✓ Scheduler started
+2025-11-27 01:06:57 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 01:06:57 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:62 | ✓ Memory system initialized
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:65 | ✓ Agent graph compiled
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:69 | ✓ Database connected
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:73 | ============================================================
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:74 | ✓ Server ready on 0.0.0.0:8000
+2025-11-27 01:06:57 | INFO     | Taskera AI | lifespan:75 | ============================================================
+2025-11-27 01:57:28 | INFO     | Taskera AI | chat_endpoint:374 | [Chat] Request from 114735889560025246923
+2025-11-27 01:57:28 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 01:57:33 | ERROR    | Taskera AI | agent_node:172 | [Agent] Quota exceeded for user 114735889560025246923
+2025-11-27 01:58:05 | INFO     | Taskera AI | lifespan:84 | 🛑 Shutting down Taskera AI Server...
+2025-11-27 01:58:05 | INFO     | Taskera AI | shutdown_scheduler:164 | [Scheduler] Shut down successfully
+2025-11-27 01:58:05 | INFO     | Taskera AI | shutdown_mcp_client:86 | [MCP] Client shut down
+2025-11-27 01:58:05 | INFO     | Taskera AI | lifespan:94 | ✓ Graceful shutdown complete
+2025-11-27 02:12:37 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 02:12:40 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 02:12:40 | INFO     | Taskera AI | lifespan:48 | ============================================================
+2025-11-27 02:12:40 | INFO     | Taskera AI | lifespan:49 | 🚀 Starting Taskera AI Server
+2025-11-27 02:12:40 | INFO     | Taskera AI | lifespan:50 | ============================================================
+2025-11-27 02:12:43 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 02:12:43 | INFO     | Taskera AI | lifespan:59 | ✓ Scheduler started
+2025-11-27 02:12:43 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 02:12:43 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 02:12:43 | INFO     | Taskera AI | lifespan:62 | ✓ Memory system initialized
+2025-11-27 02:12:43 | INFO     | Taskera AI | lifespan:65 | ✓ Agent graph compiled
+2025-11-27 02:12:44 | INFO     | Taskera AI | lifespan:69 | ✓ Database connected
+2025-11-27 02:12:44 | INFO     | Taskera AI | lifespan:73 | ============================================================
+2025-11-27 02:12:44 | INFO     | Taskera AI | lifespan:74 | ✓ Server ready on 0.0.0.0:8000
+2025-11-27 02:12:44 | INFO     | Taskera AI | lifespan:75 | ============================================================
+2025-11-27 02:18:37 | INFO     | Taskera AI | lifespan:84 | 🛑 Shutting down Taskera AI Server...
+2025-11-27 02:18:37 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 02:18:37 | INFO     | Taskera AI | shutdown_mcp_client:86 | [MCP] Client shut down
+2025-11-27 02:18:37 | INFO     | Taskera AI | lifespan:94 | ✓ Graceful shutdown complete
+2025-11-27 02:28:21 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 02:28:23 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 02:28:23 | INFO     | Taskera AI | lifespan:45 | Starting Taskera AI Server
+2025-11-27 02:28:26 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 02:28:26 | INFO     | Taskera AI | lifespan:53 | Scheduler started
+2025-11-27 02:28:26 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 02:28:26 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 02:28:26 | INFO     | Taskera AI | lifespan:56 |  Memory system initialized
+2025-11-27 02:28:26 | INFO     | Taskera AI | lifespan:59 | Agent graph compiled
+2025-11-27 02:28:27 | INFO     | Taskera AI | lifespan:62 |  Database connected
+2025-11-27 02:28:27 | INFO     | Taskera AI | lifespan:66 | Server ready on 0.0.0.0:8000
+2025-11-27 02:29:45 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 02:29:45 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 114735889560025246923
+2025-11-27 02:29:45 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 02:31:09 | INFO     | Taskera AI | auth_signup:255 | New user registered: royalchampion230@gmail.com
+2025-11-27 02:31:48 | INFO     | Taskera AI | auth_login:296 | User logged in: royalchampion230@gmail.com
+2025-11-27 02:32:00 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:32:00 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:00 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:30 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:32:30 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:30 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:45 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:32:45 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:45 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:32:54 | INFO     | Taskera AI | <module>:24 | Tesseract OCR available
+2025-11-27 02:32:55 | INFO     | Taskera AI | weather_search:77 | [Weather] Location: Pakpattan
+2025-11-27 02:32:57 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:33:39 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:33:39 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:33:39 | INFO     | Taskera AI | image_text_extractor_impl:42 | [OCR] Extracting text from 'Date Sheet.jpeg' for user '1deff9c8-e44a-4c0d-974c-4491a635b7e9'
+2025-11-27 02:33:40 | INFO     | Taskera AI | image_text_extractor_impl:73 | [OCR] Successfully extracted text from 'Date Sheet.jpeg' (1537 chars)
+2025-11-27 02:33:40 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:34:31 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:34:31 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:34:31 | INFO     | Taskera AI | create_rag_tool_impl:126 | [RAG] Indexing documents for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:34:32 | INFO     | Taskera AI | _get_or_create_user_chroma:79 | [RAG] Initialized vector store for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:34:32 | INFO     | Taskera AI | _load_pdf_smart:32 | [RAG] Loading PDF: Document (2) (3).pdf
+2025-11-27 02:34:32 | INFO     | Taskera AI | _smart_load_directory:117 | [RAG] Loaded 1 chunks from Document (2) (3).pdf
+2025-11-27 02:34:34 | INFO     | Taskera AI | create_rag_tool_impl:174 | [RAG] Successfully indexed 2 chunks from 1 documents
+2025-11-27 02:34:34 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:35:19 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:35:19 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:35:19 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:36:00 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'new row violates row-level security policy for table "usage_quotas"', 'code': '42501', 'hint': None, 'details': None}
+2025-11-27 02:36:00 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:36:00 | INFO     | Taskera AI | create_rag_tool_impl:126 | [RAG] Indexing documents for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 02:36:00 | INFO     | Taskera AI | _load_pdf_smart:32 | [RAG] Loading PDF: Document (2) (3).pdf
+2025-11-27 02:36:00 | INFO     | Taskera AI | _smart_load_directory:117 | [RAG] Loaded 1 chunks from Document (2) (3).pdf
+2025-11-27 02:36:01 | INFO     | Taskera AI | create_rag_tool_impl:174 | [RAG] Successfully indexed 2 chunks from 1 documents
+2025-11-27 02:36:01 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:19:31 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': None}
+2025-11-27 03:19:31 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:19:31 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:21:42 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': None}
+2025-11-27 03:21:42 | INFO     | Taskera AI | chat_endpoint:336 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:21:42 | INFO     | Taskera AI | create_rag_tool_impl:126 | [RAG] Indexing documents for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:21:42 | INFO     | Taskera AI | _load_pdf_smart:32 | [RAG] Loading PDF: Document (2) (3).pdf
+2025-11-27 03:21:42 | INFO     | Taskera AI | _smart_load_directory:117 | [RAG] Loaded 1 chunks from Document (2) (3).pdf
+2025-11-27 03:21:45 | INFO     | Taskera AI | create_rag_tool_impl:174 | [RAG] Successfully indexed 2 chunks from 1 documents
+2025-11-27 03:21:45 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:25:08 | INFO     | Taskera AI | lifespan:74 | Shutting down Taskera AI Server...
+2025-11-27 03:25:08 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 03:25:08 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 03:25:08 | INFO     | Taskera AI | lifespan:84 | Graceful shutdown complete
+2025-11-27 03:25:57 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 03:25:59 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 03:25:59 | INFO     | Taskera AI | lifespan:53 | Starting Taskera AI Server
+2025-11-27 03:25:59 | ERROR    | Taskera AI | lifespan:80 | Startup failed: cannot import name 'get_user_checkpointer' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+Traceback (most recent call last):
+  File "D:\TASKERA_AI\backend\app\mcp_server.py", line 58, in lifespan
+    from app.core.memory_manager import get_user_checkpointer # Ensure init logic is here if needed
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ImportError: cannot import name 'get_user_checkpointer' from 'app.core.memory_manager' (D:\TASKERA_AI\backend\app\core\memory_manager.py)
+2025-11-27 03:39:52 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 03:39:54 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 03:39:54 | INFO     | Taskera AI | lifespan:49 | Starting Taskera AI Server
+2025-11-27 03:39:57 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 03:39:57 | INFO     | Taskera AI | lifespan:58 | Scheduler started
+2025-11-27 03:39:58 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 03:39:58 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 03:39:58 | INFO     | Taskera AI | lifespan:62 | Memory system initialized
+2025-11-27 03:39:58 | INFO     | Taskera AI | lifespan:66 | Agent graph compiled
+2025-11-27 03:39:58 | INFO     | Taskera AI | lifespan:70 | Database connected
+2025-11-27 03:39:58 | INFO     | Taskera AI | lifespan:74 | Server ready on 0.0.0.0:8000
+2025-11-27 03:40:41 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(1deff9c8-e44a-4c0d-974c-4491a635b7e9) already exists.'}
+2025-11-27 03:40:41 | INFO     | Taskera AI | chat_endpoint:382 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:40:41 | INFO     | Taskera AI | <module>:24 | Tesseract OCR available
+2025-11-27 03:40:42 | INFO     | Taskera AI | create_rag_tool_impl:126 | [RAG] Indexing documents for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:40:42 | INFO     | Taskera AI | _get_or_create_user_chroma:79 | [RAG] Initialized vector store for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:40:42 | INFO     | Taskera AI | _load_pdf_smart:32 | [RAG] Loading PDF: Document (2) (3).pdf
+2025-11-27 03:40:42 | INFO     | Taskera AI | _smart_load_directory:117 | [RAG] Loaded 1 chunks from Document (2) (3).pdf
+2025-11-27 03:40:44 | INFO     | Taskera AI | create_rag_tool_impl:174 | [RAG] Successfully indexed 2 chunks from 1 documents
+2025-11-27 03:40:44 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:40:47 | INFO     | Taskera AI | retrieve_info_impl:23 | [RAG] Retrieving for user=1deff9c8-e44a-4c0d-974c-4491a635b7e9, query='Summarize the document and give me the essential questions from it for my exam tomorrow'
+2025-11-27 03:40:47 | INFO     | Taskera AI | retrieve_info_impl:190 | [RAG] Retrieving for user=1deff9c8-e44a-4c0d-974c-4491a635b7e9, query='Summarize the document and give me the essential questions from it for my exam tomorrow'
+2025-11-27 03:40:48 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:41:14 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(1deff9c8-e44a-4c0d-974c-4491a635b7e9) already exists.'}
+2025-11-27 03:41:14 | INFO     | Taskera AI | chat_endpoint:382 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:41:14 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:43:43 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(1deff9c8-e44a-4c0d-974c-4491a635b7e9) already exists.'}
+2025-11-27 03:43:43 | INFO     | Taskera AI | chat_endpoint:382 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:43:43 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:08 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(1deff9c8-e44a-4c0d-974c-4491a635b7e9) already exists.'}
+2025-11-27 03:44:08 | INFO     | Taskera AI | chat_endpoint:382 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:08 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:10 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:24 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(1deff9c8-e44a-4c0d-974c-4491a635b7e9) already exists.'}
+2025-11-27 03:44:24 | INFO     | Taskera AI | chat_endpoint:382 | [Chat] Request from 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:24 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 03:44:26 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 1deff9c8-e44a-4c0d-974c-4491a635b7e9
+2025-11-27 04:01:52 | INFO     | Taskera AI | lifespan:82 | Shutting down Taskera AI Server...
+2025-11-27 04:01:52 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 04:01:52 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 04:01:52 | INFO     | Taskera AI | lifespan:92 | Graceful shutdown complete
+2025-11-27 04:02:50 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 04:02:52 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 04:02:52 | INFO     | Taskera AI | lifespan:53 | Starting Taskera AI Server
+2025-11-27 04:02:56 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 04:02:56 | INFO     | Taskera AI | lifespan:62 | Scheduler started
+2025-11-27 04:02:56 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 04:02:56 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 04:02:56 | INFO     | Taskera AI | lifespan:66 | Memory system initialized
+2025-11-27 04:02:56 | INFO     | Taskera AI | lifespan:70 | Agent graph compiled
+2025-11-27 04:02:57 | INFO     | Taskera AI | lifespan:74 | Database connected
+2025-11-27 04:02:57 | INFO     | Taskera AI | lifespan:78 | Server ready on 0.0.0.0:8000
+2025-11-27 04:03:05 | INFO     | Taskera AI | google_oauth_start:60 | [OAuth] Starting Google auth for user: google_login
+2025-11-27 04:03:26 | INFO     | Taskera AI | get_or_create_user:60 | [CRUD] Created new user: 114735889560025246923
+2025-11-27 04:03:26 | INFO     | Taskera AI | save_refresh_token:91 | [CRUD] Saved refresh token for user: 114735889560025246923
+2025-11-27 04:03:26 | INFO     | Taskera AI | google_oauth_callback:91 | [OAuth] Saved refresh token for user: royalchampion230@gmail.com
+2025-11-27 04:03:32 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:03:32 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:03:32 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:04:48 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:04:48 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:04:48 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:04:49 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:04:55 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:04:55 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:04:55 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:05:02 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:05:38 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:05:38 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:05:38 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:05:42 | ERROR    | Taskera AI | agent_node:180 | [Agent] Quota exceeded for user 114735889560025246923
+2025-11-27 04:08:04 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:08:04 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:08:04 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:08:08 | ERROR    | Taskera AI | agent_node:180 | [Agent] Quota exceeded for user 114735889560025246923
+2025-11-27 04:32:25 | ERROR    | Taskera AI | increment_quota:167 | [CRUD] Quota increment error: {'message': 'duplicate key value violates unique constraint "usage_quotas_identifier_key"', 'code': '23505', 'hint': None, 'details': 'Key (identifier)=(114735889560025246923) already exists.'}
+2025-11-27 04:32:25 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:32:25 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:32:45 | INFO     | Taskera AI | agent_node:110 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:40:49 | INFO     | Taskera AI | lifespan:86 | Shutting down Taskera AI Server...
+2025-11-27 04:40:49 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 04:40:49 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 04:40:49 | INFO     | Taskera AI | lifespan:96 | Graceful shutdown complete
+2025-11-27 04:41:56 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 04:41:58 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 04:41:58 | INFO     | Taskera AI | lifespan:53 | Starting Taskera AI Server
+2025-11-27 04:42:03 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 04:42:03 | INFO     | Taskera AI | lifespan:62 | Scheduler started
+2025-11-27 04:42:03 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 04:42:03 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 04:42:03 | INFO     | Taskera AI | lifespan:66 | Memory system initialized
+2025-11-27 04:42:03 | INFO     | Taskera AI | lifespan:70 | Agent graph compiled
+2025-11-27 04:42:03 | INFO     | Taskera AI | lifespan:74 | Database connected
+2025-11-27 04:42:03 | INFO     | Taskera AI | lifespan:78 | Server ready on 0.0.0.0:8000
+2025-11-27 04:42:13 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:42:13 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:42:27 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:42:27 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:42:31 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:42:45 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:42:45 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:43:32 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:43:32 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:51:11 | INFO     | Taskera AI | lifespan:86 | Shutting down Taskera AI Server...
+2025-11-27 04:51:11 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 04:51:11 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 04:51:11 | INFO     | Taskera AI | lifespan:96 | Graceful shutdown complete
+2025-11-27 04:52:35 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 04:52:37 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 04:52:37 | INFO     | Taskera AI | lifespan:53 | Starting Taskera AI Server
+2025-11-27 04:52:40 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 04:52:40 | INFO     | Taskera AI | lifespan:62 | Scheduler started
+2025-11-27 04:52:40 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 04:52:40 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 0.00 MB
+2025-11-27 04:52:40 | INFO     | Taskera AI | lifespan:66 | Memory system initialized
+2025-11-27 04:52:40 | INFO     | Taskera AI | lifespan:70 | Agent graph compiled
+2025-11-27 04:52:41 | INFO     | Taskera AI | lifespan:74 | Database connected
+2025-11-27 04:52:41 | INFO     | Taskera AI | lifespan:78 | Server ready on 0.0.0.0:8000
+2025-11-27 04:52:51 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:52:51 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:52:57 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:53:18 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:53:18 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:53:46 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:53:46 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:53:51 | INFO     | Taskera AI | delete_calendar_event_impl:184 | [Google] Event deleted: mepmtn1cts9haaesm2ldeureqs
+2025-11-27 04:53:51 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:55:37 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:55:37 | INFO     | Taskera AI | <module>:24 | Tesseract OCR available
+2025-11-27 04:55:38 | INFO     | Taskera AI | create_rag_tool_impl:126 | [RAG] Indexing documents for user: 114735889560025246923
+2025-11-27 04:55:39 | INFO     | Taskera AI | _get_or_create_user_chroma:79 | [RAG] Initialized vector store for user: 114735889560025246923
+2025-11-27 04:55:39 | INFO     | Taskera AI | _load_pdf_smart:32 | [RAG] Loading PDF: Document (2) (3).pdf
+2025-11-27 04:55:39 | INFO     | Taskera AI | _smart_load_directory:117 | [RAG] Loaded 1 chunks from Document (2) (3).pdf
+2025-11-27 04:55:40 | INFO     | Taskera AI | create_rag_tool_impl:174 | [RAG] Successfully indexed 2 chunks from 1 documents
+2025-11-27 04:55:40 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:55:42 | INFO     | Taskera AI | retrieve_info_impl:23 | [RAG] Retrieving for user=114735889560025246923, query='What is the content of this document.'
+2025-11-27 04:55:42 | INFO     | Taskera AI | retrieve_info_impl:190 | [RAG] Retrieving for user=114735889560025246923, query='What is the content of this document.'
+2025-11-27 04:55:43 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 04:57:12 | INFO     | Taskera AI | google_oauth_start:60 | [OAuth] Starting Google auth for user: google_login
+2025-11-27 04:57:50 | INFO     | Taskera AI | save_refresh_token:91 | [CRUD] Saved refresh token for user: 114735889560025246923
+2025-11-27 04:57:50 | INFO     | Taskera AI | google_oauth_callback:91 | [OAuth] Saved refresh token for user: royalchampion230@gmail.com
+2025-11-27 04:59:11 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 04:59:11 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:00:54 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:00:54 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:00:56 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:01:13 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:01:13 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:01:18 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:03:07 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:03:07 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:03:26 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:03:26 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:03:27 | INFO     | Taskera AI | duckduckgo_search_wrapper:41 | [Search] Query: Who won the afl premier league
+2025-11-27 05:03:29 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:03:50 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:03:50 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:03:52 | INFO     | Taskera AI | duckduckgo_search_wrapper:41 | [Search] Query: Brisbane Lions 2025 AFL Grand Final score
+2025-11-27 05:03:53 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:04:24 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:04:24 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:04:31 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:04:31 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:04:41 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:04:41 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:04:42 | INFO     | Taskera AI | weather_search:77 | [Weather] Location: Okara
+2025-11-27 05:04:44 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:04:51 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:04:51 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:05:04 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:05:04 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:05:18 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:05:18 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:05:32 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:05:32 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:07:53 | INFO     | Taskera AI | chat_endpoint:388 | [Chat] Request from 114735889560025246923
+2025-11-27 05:07:53 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: 114735889560025246923
+2025-11-27 05:11:07 | INFO     | Taskera AI | lifespan:86 | Shutting down Taskera AI Server...
+2025-11-27 05:11:07 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 05:11:07 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 05:11:07 | INFO     | Taskera AI | lifespan:96 | Graceful shutdown complete
+2025-11-27 22:04:18 | INFO     | Taskera AI | _initialize_client:36 | ✓ Supabase client initialized successfully
+2025-11-27 22:04:21 | INFO     | Taskera AI | _initialize_client:41 | ✓ Database connection verified
+2025-11-27 22:04:22 | INFO     | Taskera AI | lifespan:47 | Starting Taskera AI Server
+2025-11-27 22:04:30 | INFO     | Taskera AI | start_scheduler:140 | [Scheduler] Started successfully
+2025-11-27 22:04:30 | INFO     | Taskera AI | lifespan:55 | Scheduler started
+2025-11-27 22:04:30 | INFO     | Taskera AI | initialize_memory:38 | ✓ SQLite memory initialized (WAL mode enabled)
+2025-11-27 22:04:30 | INFO     | Taskera AI | initialize_memory:43 |   Database size: 2.95 MB
+2025-11-27 22:04:30 | INFO     | Taskera AI | lifespan:58 | Memory system initialized
+2025-11-27 22:04:30 | INFO     | Taskera AI | lifespan:61 | Agent graph compiled
+2025-11-27 22:04:31 | INFO     | Taskera AI | lifespan:65 | Database connected
+2025-11-27 22:04:31 | INFO     | Taskera AI | lifespan:69 | Server ready on 0.0.0.0:8000
+2025-11-27 22:44:57 | INFO     | Taskera AI | chat_endpoint:367 | [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-27 22:44:57 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-27 22:46:03 | INFO     | Taskera AI | chat_endpoint:367 | [Chat] Request from guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-27 22:46:03 | INFO     | Taskera AI | agent_node:107 | [Agent] Processing for user: guest_ce6b52ff-f109-4e63-8870-e9ca407384d8
+2025-11-27 23:16:45 | INFO     | Taskera AI | lifespan:77 | Shutting down Taskera AI Server...
+2025-11-27 23:16:45 | INFO     | Taskera AI | shutdown_scheduler:159 | [Scheduler] Shut down successfully
+2025-11-27 23:16:45 | INFO     | Taskera AI | shutdown_mcp_client:84 | [MCP] Client shut down
+2025-11-27 23:16:45 | INFO     | Taskera AI | lifespan:87 | Graceful shutdown complete

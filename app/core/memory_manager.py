@@ -1,125 +1,132 @@
-import time
-import logging
-import threading
-import asyncio
-
-from langgraph.checkpoint.memory import MemorySaver
+import os
+import aiosqlite
+from typing import Optional
+from datetime import datetime, timedelta
+from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 from app.core.logger import logger
-from app.mcp_client import call_mcp, MCPError 
-SESSION_EXPIRY_SECONDS = 3600  
-QUESTION_EXPIRY_SECONDS = 300  
-user_sessions = {}
-session_lock = threading.Lock()
 
-def get_user_checkpointer(user_id: str) -> MemorySaver:
+_checkpointer: Optional[AsyncSqliteSaver] = None
+_connection: Optional[aiosqlite.Connection] = None
+
+async def initialize_memory() -> AsyncSqliteSaver:
     """
-    Fetch or create a user's persistent LangGraph checkpointer
-    in a thread-safe manner.
+    Initialize persistent memory with SQLite + WAL mode
+    """
+    global _checkpointer, _connection
     
-    This is called by the acp_server.
+    try:
+        db_path = "checkpoints.sqlite"
+        
+        _connection = await aiosqlite.connect(
+            db_path,
+            timeout=30.0,
+            isolation_level=None  
+        )
+        
+        await _connection.execute("PRAGMA journal_mode=WAL;")
+        await _connection.execute("PRAGMA synchronous=NORMAL;")
+        await _connection.execute("PRAGMA cache_size=-64000;")  
+        await _connection.execute("PRAGMA temp_store=MEMORY;")
+        await _connection.commit()
+        
+        _checkpointer = AsyncSqliteSaver(_connection)
+        await _checkpointer.setup()
+        
+        logger.info("SQLite memory initialized (WAL mode enabled)")
+        
+        if os.path.exists(db_path):
+            size_mb = os.path.getsize(db_path) / (1024 * 1024)
+            logger.info(f"  Database size: {size_mb:.2f} MB")
+        
+        return _checkpointer
+        
+    except Exception as e:
+        logger.error(f"CRITICAL: Memory initialization failed: {e}", exc_info=True)
+        raise
+
+def get_global_checkpointer() -> Optional[AsyncSqliteSaver]:
+    """Get the global checkpointer instance"""
+    return _checkpointer
+
+async def cleanup_old_sessions(days: int = 30):
     """
-    with session_lock:
-        current_time = time.time()
-
-        if user_id not in user_sessions:
-            logger.info(f"[Session] Creating new session and checkpointer for user_id: {user_id}")
-            user_sessions[user_id] = {
-                "checkpointer": MemorySaver(),
-                "last_active": current_time,
-                "expiry_duration": SESSION_EXPIRY_SECONDS
-            }
-        else:
-            session_data = user_sessions[user_id]
-            
-            if current_time - session_data["last_active"] > session_data["expiry_duration"]:
-                logger.info(f"[Session] Session expired for user: {user_id}. Resetting checkpointer.")
-                user_sessions[user_id]["checkpointer"] = MemorySaver()
-                user_sessions[user_id]["expiry_duration"] = SESSION_EXPIRY_SECONDS
-            
-            user_sessions[user_id]["last_active"] = current_time
-
-        return user_sessions[user_id]["checkpointer"]
+    Clean up old sessions from database
+    """
+    if not _connection:
+        logger.warning("Cannot cleanup: No database connection")
+        return
+    
+    try:
+        cutoff_date = datetime.now() - timedelta(days=days)
+        cutoff_timestamp = cutoff_date.timestamp()
+        
+        
+        cursor = await _connection.execute(
+            "SELECT COUNT(*) FROM checkpoints WHERE created_at < ?",
+            (cutoff_timestamp,)
+        )
+        count = await cursor.fetchone()
+        
+        if count and count[0] > 0:
+            await _connection.execute(
+                "DELETE FROM checkpoints WHERE created_at < ?",
+                (cutoff_timestamp,)
+            )
+            await _connection.commit()
+            logger.info(f"Cleaned up {count[0]} old sessions (older than {days} days)")
+        
+    except Exception as e:
+        logger.error(f"Session cleanup error: {e}")
 
 def update_session_on_response(user_id: str, agent_response: str):
     """
-    Update session timers based on agent's behavior.
-    This is called by the acp_server after a graph run.
+    Hook for session analytics (placeholder for future use)
     """
-    with session_lock:
-        if user_id not in user_sessions:
-            logger.warning(f"[Session] Attempted to update non-existent session for user: {user_id}")
-            return
-
-        if isinstance(agent_response, list):
-            agent_response = " ".join(str(x) for x in agent_response)
-        elif not isinstance(agent_response, str):
-            agent_response = str(agent_response)
-
-        is_question = agent_response.strip().endswith("?")
-
-        if is_question:
-            user_sessions[user_id]["expiry_duration"] = QUESTION_EXPIRY_SECONDS
-            logger.info(f"[Session] AI asked a question -> shorter expiry ({QUESTION_EXPIRY_SECONDS}s) for user: {user_id}")
-        else:
-            user_sessions[user_id]["expiry_duration"] = SESSION_EXPIRY_SECONDS
-            
-        user_sessions[user_id]["last_active"] = time.time()
-
-def _clear_expired_sessions_memory() -> list[str]:
-    """
-    (Internal) Checks and clears expired sessions from the in-memory dict.
-    Returns a list of user_ids that were expired for backend cleanup.
-    """
-    current_time = time.time()
-    expired_users = []
-
-    with session_lock:
-        for user_id, data in list(user_sessions.items()):
-            if current_time - data["last_active"] > data["expiry_duration"]:
-                logger.info(f"[Session] Clearing expired in-memory session for user: {user_id}")
-                del user_sessions[user_id]
-                expired_users.append(user_id)
-    
-    return expired_users
-
-async def run_expired_session_cleanup():
-    """
-    This is the function the ACP scheduler will run periodically.
-    It cleans local memory, then calls the MCP server to clean backend data.
-    """
-    logger.info("[Session Cleanup Job] Running...")
-    
-    expired_users = _clear_expired_sessions_memory()
-    
-    if not expired_users:
-        logger.info("[Session Cleanup Job] No expired sessions found.")
-        return
-
-    logger.info(f"[Session Cleanup Job] Cleared {len(expired_users)} in-memory sessions. Now performing I/O cleanup via MCP.")
-    
-    for user_id in expired_users:
-        try:
-            logger.info(f"[Session Cleanup Job] Calling MCP to delete data for expired user: {user_id}")
-            await call_mcp("delete_all_user_data", {"user_id": user_id})
-        except MCPError as e:
-            logger.error(f"[Session Cleanup Job] Failed to clear backend data for user {user_id}: {e}")
-        except Exception as e:
-            logger.error(f"[Session Cleanup Job] Unexpected error during MCP call for user {user_id}: {e}")
+    pass
 
 def clear_user_session(user_id: str):
     """
-    (Sync) Fully removes a user's in-memory session upon request.
-    This is called by the admin_agent in acp_server.
-    The admin_agent is responsible for *also* calling the MCP
-    server to delete backend data.
+    Clear specific user session
+    Note: Actual deletion requires raw SQL as LangGraph doesn't expose this
     """
-    session_found = False
-    with session_lock:
-        if user_id in user_sessions:
-            del user_sessions[user_id]
-            logger.info(f"[Session] Cleared in-memory checkpointer for user: {user_id}")
-            session_found = True
-        else:
-            logger.warning(f"[Session] No active session found to clear for user: {user_id}")
+    logger.info(f"Clear session requested for user: {user_id}")
     
-    return session_found
+
+async def get_memory_stats() -> dict:
+    """Get memory system statistics"""
+    if not _connection:
+        return {"status": "unavailable"}
+    
+    try:
+        cursor = await _connection.execute("SELECT COUNT(*) FROM checkpoints")
+        checkpoint_count = (await cursor.fetchone())[0]
+        
+        cursor = await _connection.execute(
+            "SELECT SUM(LENGTH(checkpoint)) FROM checkpoints"
+        )
+        total_size = (await cursor.fetchone())[0] or 0
+        
+        return {
+            "status": "active",
+            "checkpoint_count": checkpoint_count,
+            "total_size_mb": total_size / (1024 * 1024),
+            "wal_mode": "enabled"
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get memory stats: {e}")
+        return {"status": "error", "error": str(e)}
+
+async def shutdown_memory():
+    """Gracefully close memory connections"""
+    global _connection, _checkpointer
+    
+    if _connection:
+        try:
+            await _connection.close()
+            logger.info("Memory system shut down")
+        except Exception as e:
+            logger.error(f"Memory shutdown error: {e}")
+    
+    _connection = None
+    _checkpointer = None

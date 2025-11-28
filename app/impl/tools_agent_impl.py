@@ -1,146 +1,216 @@
 import os
 import random
-import logging
-import numexpr  
+import numexpr
 from langchain_google_genai import ChatGoogleGenerativeAI
-from app.core.config import settings
-from playwright.async_api import async_playwright
 from langchain_community.tools import DuckDuckGoSearchRun, WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper, OpenWeatherMapAPIWrapper
+from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
 
-logger = logging.getLogger("Taskera AI")
+from app.core.config import get_settings
+from app.core.logger import logger
+
+settings = get_settings()
 
 llm = ChatGoogleGenerativeAI(
-    api_key=settings.gemini_api_key,
-    model="gemini-2.0-flash-lite-preview-02-05",
+    api_key=settings.GOOGLE_API_KEY,
+    model="gemini-2.0-flash-lite",
     temperature=0,
-    max_retries=0  
+    max_retries=1,
+    request_timeout=30.0
 )
 
 search = DuckDuckGoSearchRun()
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(wiki_client=None))
 
-def duckduckgo_search_wrapper(query: str) -> str:
-    """(IMPL) Performs a live web search using DuckDuckGo."""
+weather_wrapper = None
+if settings.OPENWEATHERMAP_API_KEY:
     try:
-        return search.run(query)
+        weather_wrapper = OpenWeatherMapAPIWrapper(
+            openweathermap_api_key=settings.OPENWEATHERMAP_API_KEY
+        )
     except Exception as e:
-        logger.error(f"DuckDuckGo search failed: {e}")
+        logger.warning(f"Weather API initialization failed: {e}")
+else:
+    logger.info("Weather API key not configured")
+
+def duckduckgo_search_wrapper(query: str) -> str:
+    """
+    Perform web search using DuckDuckGo
+    """
+    try:
+        logger.info(f"[Search] Query: {query}")
+        result = search.run(query)
+        return result if result else "No results found"
+        
+    except Exception as e:
+        logger.error(f"[Search] Error: {e}")
         return f"Search failed: {str(e)}"
 
 def wikipedia_query_wrapper(query: str) -> str:
-    """(IMPL) Fetches a Wikipedia summary for a given query."""
+    """
+    Fetch Wikipedia summary
+    """
     try:
-        return wiki.run(query)
+        logger.info(f"[Wiki] Query: {query}")
+        result = wiki.run(query)
+        return result if result else "No Wikipedia article found"
+        
     except Exception as e:
-        logger.error(f"Wikipedia search failed: {e}")
+        logger.error(f"[Wiki] Error: {e}")
         return f"Wikipedia search failed: {str(e)}"
 
-openweathermap_api_key = os.getenv("OPENWEATHERMAP_API_KEY")
-weather_wrapper = None
-if openweathermap_api_key:
-    weather_wrapper = OpenWeatherMapAPIWrapper(openweathermap_api_key=openweathermap_api_key)
-else:
-    logger.warning("OPENWEATHERMAP_API_KEY not found in environment variables")
-
 def weather_search(location: str) -> str:
-    """(IMPL) Get the current weather for a specific city."""
+    """
+    Get current weather for a location
+    """
     if not weather_wrapper:
-        return "Weather service is not configured. Please set OPENWEATHERMAP_API_KEY in .env file."
+        return (
+            "Weather service not available. "
+            "Please configure OPENWEATHERMAP_API_KEY in your environment."
+        )
     
-    clean_location = location.strip().lower()
-    if not clean_location or clean_location in ["", "current", "none", "null"]:
-        return "Error: A valid city name is required. Please provide a city name."
+    clean_location = location.strip()
+    if not clean_location or clean_location.lower() in ["", "current", "none", "null"]:
+        return "Please provide a valid city name"
     
     try:
-        logger.info(f"Fetching weather for: {location}")
-        return weather_wrapper.run(location)
+        logger.info(f"[Weather] Location: {location}")
+        result = weather_wrapper.run(location)
+        return result if result else f"Weather data not available for '{location}'"
+        
     except Exception as e:
-        logger.error(f"Weather tool failed for '{location}': {e}")
-        return f"Sorry, I couldn't fetch the weather for '{location}'."
+        logger.error(f"[Weather] Error for '{location}': {e}")
+        return f"Could not fetch weather for '{location}'"
 
 async def headless_browser_search(query: str) -> str:
-    """(IMPL) Uses a headless browser (Playwright) to perform a Google search."""
+    """
+    Use Playwright to scrape Google search results
+    """
     try:
         async with async_playwright() as p:
             browser = await p.firefox.launch(headless=True)
+            
             context = await browser.new_context(
                 user_agent=(
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                     "AppleWebKit/537.36 (KHTML, like Gecko) "
-                    "Chrome/91.0.4472.124 Safari/537.36"
-                )
+                    "Chrome/120.0.0.0 Safari/537.36"
+                ),
+                viewport={'width': 1920, 'height': 1080}
             )
-            page = await context.new_page()
             
+            page = await context.new_page()
             search_url = f"https://www.google.com/search?q={query}"
-            collected_texts = []
-            logger.info(f"Browsing to: {search_url}")
+            
+            logger.info(f"[Browser] Navigating to: {search_url}")
             
             try:
-                await page.goto(search_url, timeout=20000, wait_until="domcontentloaded")
-                await page.wait_for_timeout(random.randint(1500, 3500)) 
+                await page.goto(
+                    search_url,
+                    timeout=20000,
+                    wait_until="domcontentloaded"
+                )
                 
-                content = await page.evaluate("() => document.body.innerText.slice(0, 8000)")
+                await page.wait_for_timeout(random.randint(1500, 3000))
                 
-                if content:
-                    logger.info(f"Successfully scraped content (size: {len(content)})")
-                    collected_texts.append(f"--- Search results for '{query}' ---\n{content.strip()}\n")
+                content = await page.evaluate(
+                    "() => document.body.innerText.slice(0, 8000)"
+                )
+                
+                await browser.close()
+                
+                if content and len(content.strip()) > 50:
+                    logger.info(f"[Browser] Scraped {len(content)} characters")
+                    return f"**Search Results for '{query}':**\n\n{content.strip()}"
                 else:
-                    logger.warning("Scraped content was empty.")
+                    logger.warning("[Browser] Scraped content too short or empty")
+                    return "No meaningful content found"
                     
-            except Exception as e:
-                logger.error(f"Error accessing {search_url}: {e}")
-                collected_texts.append(f"[Error accessing {search_url}: {e}]")
-            
-            await browser.close()
-            return "\n\n".join(collected_texts) if collected_texts else "No relevant content found."
-            
+            except PlaywrightTimeout:
+                await browser.close()
+                logger.error(f"[Browser] Timeout for query: {query}")
+                return f"Browser search timed out for '{query}'"
+                
     except Exception as e:
-        logger.error(f"Error running Playwright: {e}")
-        return f"Error running Playwright: {e}"
+        logger.error(f"[Browser] Error: {e}")
+        return f"Browser search failed: {str(e)}"
 
 def latest_news_tool_function(headline: str) -> str:
-    """(IMPL) Fetches the latest news headlines and summaries."""
+    """
+    Fetch latest news about a topic
+    """
     try:
-        logger.info(f"Fetching news for: {headline}")
-        query = f"latest news about {headline}"
-        return duckduckgo_search_wrapper(query)
+        logger.info(f"[News] Query: {headline}")
+        query = f"latest news {headline}"
+        result = duckduckgo_search_wrapper(query)
+        return result
+        
     except Exception as e:
-        logger.error(f"News tool failed for '{headline}': {e}")
-        return f"Error fetching news: {e}"
+        logger.error(f"[News] Error: {e}")
+        return f"Failed to fetch news: {str(e)}"
 
 def calculator_tool_function(expression: str) -> str:
-    """(IMPL) Evaluates basic mathematical expressions safely using NumExpr."""
+    """
+    Safely evaluate mathematical expressions using NumExpr
+    """
     try:
-        if not expression:
-            return "Error: Empty expression."   
+        if not expression or not expression.strip():
+            return "Error: Empty expression"
+        
+        expression = expression.strip()
+        
         result = numexpr.evaluate(expression).item()
-        return f"The result of '{expression}' is {result}"
+        
+        logger.info(f"[Calc] {expression} = {result}")
+        return f"The result of '{expression}' is **{result}**"
+        
     except Exception as e:
-        logger.warning(f"Calculator error on input '{expression}': {e}")
-        return "Error evaluating expression. Please ensure it contains only numbers and basic math operations."
+        logger.warning(f"[Calc] Error on '{expression}': {e}")
+        return (
+            "Could not evaluate expression. "
+            "Please ensure it contains only numbers and basic operations (+, -, *, /, **, sqrt, etc.)"
+        )
 
 def summarize_text(text: str) -> str:
-    """(IMPL) Summarize a given text input."""
+    """
+    Summarize text using LLM
+    """
+    if not text or len(text.strip()) < 50:
+        return "Text too short to summarize"
+    
     try:
+        logger.info(f"[Summarize] Processing {len(text)} characters")
+        
         response = llm.invoke([
-            ("system", "You are a helpful summarization assistant."),
-            ("human", f"Summarize the following text:\n\n{text}")
+            ("system", "You are a helpful assistant that creates concise, accurate summaries."),
+            ("human", f"Summarize the following text in 3-5 sentences:\n\n{text}")
         ])
-        return response.content if hasattr(response, 'content') else str(response)
+        
+        summary = response.content if hasattr(response, 'content') else str(response)
+        return summary if summary else "Failed to generate summary"
+        
     except Exception as e:
-        logger.error(f"Summarization failed: {e}")
-        return f"Error summarizing text: {e}"
+        logger.error(f"[Summarize] Error: {e}")
+        return f"Summarization failed: {str(e)}"
 
 def translator_tool_function(text: str, target_language: str = "English") -> str:
-    """(IMPL) Translates text into the specified target language."""
+    """
+    Translate text to target language using LLM
+    """
+    if not text or not text.strip():
+        return "Error: Empty text"
+    
     try:
+        logger.info(f"[Translate] To {target_language}: {text[:50]}...")
+        
         response = llm.invoke([
-            ("system", "You are a multilingual translator."),
-            ("human", f"Translate this text to {target_language}: {text}")
+            ("system", f"You are a professional translator. Translate text to {target_language}."),
+            ("human", f"Translate this to {target_language}:\n\n{text}")
         ])
-        return response.content if hasattr(response, 'content') else str(response)
+        
+        translation = response.content if hasattr(response, 'content') else str(response)
+        return translation if translation else "Translation failed"
+        
     except Exception as e:
-        logger.error(f"Translation failed: {e}")
-        return f"Translation error: {e}"
+        logger.error(f"[Translate] Error: {e}")
+        return f"Translation failed: {str(e)}"
