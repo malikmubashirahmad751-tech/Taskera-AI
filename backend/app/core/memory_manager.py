@@ -17,27 +17,23 @@ async def initialize_memory() -> AsyncSqliteSaver:
     try:
         db_path = "checkpoints.sqlite"
         
-        # Create connection with proper settings
         _connection = await aiosqlite.connect(
             db_path,
             timeout=30.0,
-            isolation_level=None  # Autocommit mode
+            isolation_level=None  
         )
         
-        # Enable WAL mode for better concurrency
         await _connection.execute("PRAGMA journal_mode=WAL;")
         await _connection.execute("PRAGMA synchronous=NORMAL;")
-        await _connection.execute("PRAGMA cache_size=-64000;")  # 64MB cache
+        await _connection.execute("PRAGMA cache_size=-64000;")  
         await _connection.execute("PRAGMA temp_store=MEMORY;")
         await _connection.commit()
         
-        # Create checkpointer
         _checkpointer = AsyncSqliteSaver(_connection)
         await _checkpointer.setup()
         
-        logger.info("✓ SQLite memory initialized (WAL mode enabled)")
+        logger.info("SQLite memory initialized (WAL mode enabled)")
         
-        # Log database size
         if os.path.exists(db_path):
             size_mb = os.path.getsize(db_path) / (1024 * 1024)
             logger.info(f"  Database size: {size_mb:.2f} MB")
@@ -64,8 +60,7 @@ async def cleanup_old_sessions(days: int = 30):
         cutoff_date = datetime.now() - timedelta(days=days)
         cutoff_timestamp = cutoff_date.timestamp()
         
-        # Note: This requires knowledge of LangGraph's internal schema
-        # Adjust table/column names based on actual schema
+        
         cursor = await _connection.execute(
             "SELECT COUNT(*) FROM checkpoints WHERE created_at < ?",
             (cutoff_timestamp,)
@@ -87,7 +82,6 @@ def update_session_on_response(user_id: str, agent_response: str):
     """
     Hook for session analytics (placeholder for future use)
     """
-    # Could be used to track conversation quality, user satisfaction, etc.
     pass
 
 def clear_user_session(user_id: str):
@@ -96,8 +90,7 @@ def clear_user_session(user_id: str):
     Note: Actual deletion requires raw SQL as LangGraph doesn't expose this
     """
     logger.info(f"Clear session requested for user: {user_id}")
-    # In production, you'd need to delete from the checkpoints table
-    # where thread_id matches the user_id
+    
 
 async def get_memory_stats() -> dict:
     """Get memory system statistics"""
