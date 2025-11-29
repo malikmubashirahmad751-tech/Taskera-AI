@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupSuggestionCards();
         updateUIState();
         
-        console.log('✓ Taskera AI initialized');
+        console.log(' Taskera AI initialized');
     }
 
     

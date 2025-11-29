@@ -8,7 +8,12 @@ class Settings(BaseSettings):
     
     GOOGLE_CLIENT_ID: str = Field(..., min_length=1)
     GOOGLE_CLIENT_SECRET: str = Field(..., min_length=1)
-    GOOGLE_REDIRECT_URI: str = Field(default="http://localhost:7860/auth/google/callback")
+    
+    # UPDATED: Defaulting to your Production URL. 
+    # Your local .env should override this to "http://localhost:7860/auth/google/callback" for testing.
+    GOOGLE_REDIRECT_URI: str = Field(
+        default="https://mubashir751-taskera-ai-backend.hf.space/auth/google/callback"
+    )
     
     SUPABASE_URL: str = Field(..., min_length=1)
     SUPABASE_KEY: str = Field(..., min_length=1)
@@ -24,8 +29,16 @@ class Settings(BaseSettings):
     SERVER_PORT: int = Field(default=7860)
     DEBUG: bool = Field(default=False)
     
+    
+    FRONTEND_URL: str = Field(default="https://taskera-ai.vercel.app")
+    MCP_SERVER_URL: str = Field(default="https://mubashir751-taskera-ai-backend.hf.space/mcp")
+    
     CORS_ORIGINS: list[str] = Field(
-        default=["http://localhost:5500", "http://127.0.0.1:5500"]
+        default=[
+            "http://localhost:5500", 
+            "http://127.0.0.1:5500", 
+            "https://taskera-ai.vercel.app"
+        ]
     )
     
     RATE_LIMIT_PER_MINUTE: int = Field(default=60)

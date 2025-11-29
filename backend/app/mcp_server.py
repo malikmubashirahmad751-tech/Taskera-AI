@@ -101,15 +101,22 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-
 app.include_router(auth_router)
 
 if settings.DEBUG:
     os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
+default_origins = [
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://taskera-ai.vercel.app"
+]
+
+origins = settings.CORS_ORIGINS if hasattr(settings, "CORS_ORIGINS") else default_origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS if hasattr(settings, "CORS_ORIGINS") else ["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
     allow_headers=["*"],
@@ -118,30 +125,13 @@ app.add_middleware(
 
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "::1", "*.taskera.ai"]
-)
-
-app.add_middleware(
-    SessionMiddleware,
-    secret_key=settings.CSRF_SESSION_SECRET,
-    session_cookie="taskera_session",
-    max_age=3600,
-    same_site="lax",
-    https_only=not settings.DEBUG
-)
-
-app.add_middleware(
-    CSRFMiddleware,
-    secret=settings.CSRF_TOKEN_SECRET,
-    sensitive_cookies={"taskera_session"},
-    cookie_path="/",
-    header_name="x-csrftoken",
-    exempt_urls=[
-        re.compile(r"^/auth/.*"),
-        re.compile(r"^/mcp"),
-        re.compile(r"^/health"),
-        re.compile(r"^/docs.*"),
-        re.compile(r"^/redoc.*")
+    allowed_hosts=[
+        "localhost", 
+        "127.0.0.1", 
+        "::1", 
+        "mubashir751-taskera-ai-backend.hf.space",
+        "*.hf.space",
+        "*.taskera.ai"
     ]
 )
 

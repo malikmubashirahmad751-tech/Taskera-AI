@@ -15,6 +15,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/auth", tags=["authentication"])
 
+# Ensure we allow HTTP for local testing, HTTPS for prod
 os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
 def get_google_flow(redirect_uri: str = None) -> Flow:
@@ -70,6 +71,11 @@ async def google_oauth_start(request: Request, user_id: str):
 @router.get("/google/callback")
 async def google_oauth_callback(request: Request, code: str, state: str):
     """Handle Google OAuth callback"""
+    
+    # Determined base Frontend URL from .env settings
+    # Default fallback to Vercel if not set, or Localhost if debugging
+    frontend_base = getattr(settings, "FRONTEND_URL", "https://taskera-ai.vercel.app")
+
     try:
         flow = get_google_flow()
         flow.fetch_token(code=code)
@@ -92,9 +98,13 @@ async def google_oauth_callback(request: Request, code: str, state: str):
         else:
             logger.warning(f"[OAuth] No refresh token received for: {email}")
         
+        # Dynamic Redirect Construction
+        # Checks if the base url already has query params to append correctly
+        separator = "&" if "?" in frontend_base else "?"
+        
         redirect_url = (
-            f"http://127.0.0.1:5500/frontend/index.html"
-            f"?google_auth=success"
+            f"{frontend_base}"
+            f"{separator}google_auth=success"
             f"&access_token={creds.token}"
             f"&email={email}"
             f"&user_id={real_user_id}"
@@ -104,11 +114,13 @@ async def google_oauth_callback(request: Request, code: str, state: str):
         
     except requests.RequestException as e:
         logger.error(f"[OAuth] Failed to fetch user info: {e}")
+        separator = "&" if "?" in frontend_base else "?"
         return RedirectResponse(
-            "http://127.0.0.1:5500/frontend/index.html?google_auth=error&reason=user_info_failed"
+            f"{frontend_base}{separator}google_auth=error&reason=user_info_failed"
         )
     except Exception as e:
         logger.error(f"[OAuth] Callback error: {e}", exc_info=True)
+        separator = "&" if "?" in frontend_base else "?"
         return RedirectResponse(
-            "http://127.0.0.1:5500/frontend/index.html?google_auth=error&reason=unknown"
+            f"{frontend_base}{separator}google_auth=error&reason=unknown"
         )
