@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    const API_BASE_URL = 'http://127.0.0.1:7860';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API_BASE_URL = isLocal 
+        ? 'http://127.0.0.1:7860' 
+        : 'https://mubashir751-taskera-ai-backend.hf.space';
     const CHAT_ENDPOINT = '/api/chat';
     
     const KEYS = {
