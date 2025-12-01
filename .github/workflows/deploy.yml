@@ -3,10 +3,12 @@ name: Full-Stack Deploy
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
-  
+  # ------------------------------------------------------------------
+  # JOB 1: BACKEND (Test Docker Build -> Push to Hugging Face)
+  # ------------------------------------------------------------------
   deploy-backend:
     runs-on: ubuntu-latest
     steps:
@@ -16,6 +18,13 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      # NEW STEP: Verify the Dockerfile works BEFORE deploying
+      - name: Test Docker Build
+        run: |
+          cd backend
+          docker build . -t test-build
+          echo "Docker build successful! Proceeding to deploy..."
+
       - name: Install Python & HF Hub
         run: pip install huggingface_hub
 
@@ -24,11 +33,12 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_ID: mubashir751/taskera-ai-backend 
         run: |
-          # This command uploads the CONTENTS of the 'backend' folder
-          # to the ROOT of your Hugging Face Space.
+          # Only runs if the 'Test Docker Build' step passed
           huggingface-cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
 
-  
+  # ------------------------------------------------------------------
+  # JOB 2: FRONTEND (Vercel)
+  # ------------------------------------------------------------------
   deploy-frontend:
     runs-on: ubuntu-latest
     steps:
