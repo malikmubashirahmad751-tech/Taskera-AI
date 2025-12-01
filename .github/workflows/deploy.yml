@@ -18,23 +18,29 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      # NEW STEP: Verify the Dockerfile works BEFORE deploying
+      # 1. Test Build: Ensures code isn't broken before deploying
       - name: Test Docker Build
         run: |
           cd backend
           docker build . -t test-build
           echo "Docker build successful! Proceeding to deploy..."
 
-      - name: Install Python & HF Hub
+      # 2. ESSENTIAL FIX: Set up Python so pip tools work globally
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install HF Hub
         run: pip install huggingface_hub
 
+      # 3. ESSENTIAL FIX: Use 'python -m' to run the CLI safely
       - name: Push Backend to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_ID: mubashir751/taskera-ai-backend 
         run: |
-          # Only runs if the 'Test Docker Build' step passed
-          huggingface-cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
+          python -m huggingface_hub.cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
 
   # ------------------------------------------------------------------
   # JOB 2: FRONTEND (Vercel)
