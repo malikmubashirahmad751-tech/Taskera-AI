@@ -33,13 +33,13 @@ jobs:
       - name: Install HF Hub
         run: pip install huggingface_hub
 
-      # Reverted to the standard command, which now works because of 'Set up Python'
+      # FIXED: Uses Python directly to upload (bypasses PATH issues)
       - name: Push Backend to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_ID: mubashir751/taskera-ai-backend 
         run: |
-          huggingface-cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
+          python -c "from huggingface_hub import HfApi; import os; HfApi().upload_folder(folder_path='./backend', repo_id=os.environ['HF_SPACE_ID'], repo_type='space', token=os.environ['HF_TOKEN'], path_in_repo='.')"
 
   # ------------------------------------------------------------------
   # JOB 2: FRONTEND
