@@ -53,10 +53,12 @@ jobs:
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
+      # FIXED: Explicitly cd into frontend and run deploy from there
       - name: Deploy to Vercel
-        working-directory: ./frontend
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-        run: vercel deploy --prod --token=$VERCEL_TOKEN --yes
+        run: |
+          cd frontend
+          vercel deploy --prod --token=$VERCEL_TOKEN --yes
