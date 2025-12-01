@@ -1,0 +1,45 @@
+name: Full-Stack Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch: 
+
+jobs:
+  
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Install Python & HF Hub
+        run: pip install huggingface_hub
+
+      - name: Push Backend to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE_ID: mubashir751/taskera-ai-backend 
+        run: |
+          # This command uploads the CONTENTS of the 'backend' folder
+          # to the ROOT of your Hugging Face Space.
+          huggingface-cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
+
+  
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: ./frontend
+          vercel-args: '--prod'

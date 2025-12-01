@@ -1,5 +1,4 @@
 import os
-import re
 import asyncio
 import uvicorn
 from concurrent.futures import ThreadPoolExecutor
@@ -12,10 +11,11 @@ from fastapi import (
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator
 from starlette.middleware.sessions import SessionMiddleware
-from starlette_csrf.middleware import CSRFMiddleware
+
+# Removed CSRFMiddleware import to fix Vercel/HF communication issues
 
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
@@ -24,7 +24,7 @@ from slowapi.errors import RateLimitExceeded
 from app.core.config import get_settings
 from app.core.logger import logger
 from app.core.database import db_manager, supabase
-from app.core.crud import UserCRUD, QuotaCRUD, save_refresh_token
+from app.core.crud import UserCRUD, QuotaCRUD
 from app.core.context import user_id_context
 
 from app.routes.google_auth import router as auth_router
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
             else:
                 logger.warning("Database unavailable (running in degraded mode)")
         
-        logger.info(f"Server ready on {settings.SERVER_HOST}:{settings.SERVER_PORT}")
+        logger.info(f"Server ready")
         
         yield
         
@@ -94,8 +94,8 @@ app = FastAPI(
     description="Production-Ready AI Agent with Multi-Tool Integration",
     version="2.0.0",
     lifespan=lifespan,
-    docs_url="/docs" if settings.DEBUG else None,
-    redoc_url="/redoc" if settings.DEBUG else None
+    docs_url="/docs",
+    redoc_url="/redoc"
 )
 
 app.state.limiter = limiter
@@ -106,33 +106,31 @@ app.include_router(auth_router)
 if settings.DEBUG:
     os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
-default_origins = [
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "https://taskera-ai.vercel.app"
-]
+# ---------------------------------------------------------
+# MIDDLEWARE CONFIGURATION
+# ---------------------------------------------------------
 
-origins = settings.CORS_ORIGINS if hasattr(settings, "CORS_ORIGINS") else default_origins
-
+# 1. CORS: Allow Vercel to talk to Hugging Face
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    # Allow ALL origins to ensure Vercel Preview deployments work.
+    allow_origins=["*"], 
     allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["X-CSRF-Token"]
 )
 
+# 2. Trusted Host: Allow HF Spaces and Localhost
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=[
-        "localhost", 
-        "127.0.0.1", 
-        "::1", 
-        "mubashir751-taskera-ai-backend.hf.space",
-        "*.hf.space",
-        "*.taskera.ai"
-    ]
+    allowed_hosts=["*"]
+)
+
+# 3. Session Middleware
+# FIX: Use JWT_SECRET_KEY because SECRET_KEY does not exist in your config
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=settings.JWT_SECRET_KEY
 )
 
 
@@ -172,7 +170,6 @@ class MCPResponse(BaseModel):
     id: Union[int, str]
 
 
-
 async def verify_quota(request: Request, user_id: str = Form(...)) -> str:
     """Verify user has not exceeded quota"""
     user_id = user_id.strip()
@@ -202,7 +199,6 @@ async def verify_quota(request: Request, user_id: str = Form(...)) -> str:
     return user_id
 
 
-
 @app.get("/")
 async def root():
     return {
@@ -220,10 +216,6 @@ async def health_check_endpoint():
         "version": "2.0.0"
     }
 
-@app.get("/csrf-token")
-async def get_csrf_token_endpoint(request: Request):
-    token = request.scope.get("csrf_token", "")
-    return {"csrf_token": token}
 
 
 @app.post("/auth/signup")
@@ -308,7 +300,6 @@ async def handle_file_uploads(user_id: str, files: List[UploadFile]) -> str:
         with open(file_path, "wb") as f:
             f.write(content)
         
-        # Image -> OCR
         if ext in ['.png', '.jpg', '.jpeg']:
             try:
                 txt = await loop.run_in_executor(
@@ -401,7 +392,6 @@ async def chat_endpoint(
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, "An error occurred processing your request")
     finally:
         user_id_context.reset(token)
-
 
 
 @app.post("/mcp", response_model=MCPResponse)
@@ -508,8 +498,8 @@ async def global_exception_handler(request: Request, exc: Exception):
 if __name__ == "__main__":
     uvicorn.run(
         "app.mcp_server:app",
-        host=settings.SERVER_HOST,
-        port=settings.SERVER_PORT,
+        host="0.0.0.0",
+        port=7860, 
         reload=settings.DEBUG,
         log_level="info"
     )

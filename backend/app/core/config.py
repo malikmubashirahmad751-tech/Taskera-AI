@@ -9,8 +9,6 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = Field(..., min_length=1)
     GOOGLE_CLIENT_SECRET: str = Field(..., min_length=1)
     
-    # UPDATED: Defaulting to your Production URL. 
-    # Your local .env should override this to "http://localhost:7860/auth/google/callback" for testing.
     GOOGLE_REDIRECT_URI: str = Field(
         default="https://mubashir751-taskera-ai-backend.hf.space/auth/google/callback"
     )
@@ -21,14 +19,11 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: str = Field(..., min_length=1, alias="GOOGLE_API_KEY")
     OPENWEATHERMAP_API_KEY: Optional[str] = Field(default=None)
     
-    CSRF_SESSION_SECRET: str = Field(..., min_length=32)
-    CSRF_TOKEN_SECRET: str = Field(..., min_length=32)
     JWT_SECRET_KEY: str = Field(..., min_length=32)
     
     SERVER_HOST: str = Field(default="0.0.0.0")
     SERVER_PORT: int = Field(default=7860)
     DEBUG: bool = Field(default=False)
-    
     
     FRONTEND_URL: str = Field(default="https://taskera-ai.vercel.app")
     MCP_SERVER_URL: str = Field(default="https://mubashir751-taskera-ai-backend.hf.space/mcp")
@@ -61,7 +56,7 @@ class Settings(BaseSettings):
             raise ValueError("Required API key cannot be empty")
         return v
     
-    @validator("CSRF_SESSION_SECRET", "CSRF_TOKEN_SECRET", "JWT_SECRET_KEY")
+    @validator("JWT_SECRET_KEY")
     def validate_secret_length(cls, v):
         if len(v) < 32:
             raise ValueError("Secret must be at least 32 characters long")
@@ -77,7 +72,6 @@ class Settings(BaseSettings):
 _settings: Optional[Settings] = None
 
 def get_settings() -> Settings:
-    """Get or create settings singleton"""
     global _settings
     if _settings is None:
         _settings = Settings()
