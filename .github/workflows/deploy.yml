@@ -7,7 +7,7 @@ on:
 
 jobs:
   # ------------------------------------------------------------------
-  # JOB 1: BACKEND (Test Docker Build -> Push to Hugging Face)
+  # JOB 1: BACKEND
   # ------------------------------------------------------------------
   deploy-backend:
     runs-on: ubuntu-latest
@@ -18,14 +18,13 @@ jobs:
           fetch-depth: 0
           lfs: true
 
-      # 1. Test Build: Ensures code isn't broken before deploying
       - name: Test Docker Build
         run: |
           cd backend
           docker build . -t test-build
-          echo "Docker build successful! Proceeding to deploy..."
+          echo "Docker build successful!"
 
-      # 2. ESSENTIAL FIX: Set up Python so pip tools work globally
+      # This step fixes the "command not found" error
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -34,16 +33,16 @@ jobs:
       - name: Install HF Hub
         run: pip install huggingface_hub
 
-      # 3. ESSENTIAL FIX: Use 'python -m' to run the CLI safely
+      # Reverted to the standard command, which now works because of 'Set up Python'
       - name: Push Backend to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_SPACE_ID: mubashir751/taskera-ai-backend 
         run: |
-          python -m huggingface_hub.cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
+          huggingface-cli upload $HF_SPACE_ID ./backend . --repo-type space --token $HF_TOKEN
 
   # ------------------------------------------------------------------
-  # JOB 2: FRONTEND (Vercel)
+  # JOB 2: FRONTEND
   # ------------------------------------------------------------------
   deploy-frontend:
     runs-on: ubuntu-latest
