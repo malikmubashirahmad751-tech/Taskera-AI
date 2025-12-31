@@ -16,6 +16,7 @@ from langchain_community.document_loaders import (
 
 from app.core.config import get_settings
 from app.core.logger import logger
+from app.core.context import get_current_user_id 
 from app.services.rag_service import (
     _get_or_create_user_chroma,
     DATA_PATH,
@@ -25,24 +26,17 @@ from app.services.rag_service import (
 settings = get_settings()
 
 def _load_pdf_smart(file_path: str) -> List[Document]:
-    """
-    Smart PDF loading with OCR fallback for scanned documents
-    """
+    """Smart PDF loading with OCR fallback for scanned documents"""
     try:
         logger.info(f"[RAG] Loading PDF: {os.path.basename(file_path)}")
-        
         loader = PyPDFLoader(file_path)
         docs = loader.load()
         
         full_text = " ".join([d.page_content for d in docs[:3]]).strip()
         has_text = len(full_text) > 100
         
-        if not has_text or (
-            ("CamScanner" in full_text or "Scanned" in full_text) 
-            and len(full_text) < 500
-        ):
+        if not has_text or (("CamScanner" in full_text or "Scanned" in full_text) and len(full_text) < 500):
             logger.warning(f"[RAG] Scanned PDF detected, switching to OCR...")
-            
             try:
                 ocr_loader = UnstructuredPDFLoader(
                     file_path,
@@ -50,60 +44,39 @@ def _load_pdf_smart(file_path: str) -> List[Document]:
                     mode="elements"
                 )
                 return ocr_loader.load()
-                
             except Exception as ocr_error:
                 logger.error(f"[RAG] OCR failed: {ocr_error}")
                 return docs
-        
         return docs
-        
     except Exception as e:
         logger.error(f"[RAG] PDF load error for {file_path}: {e}")
         return []
 
 def _smart_load_single_file(file_path: str) -> List[Document]:
-    """
-    Load a single file based on extension
-    """
+    """Load a single file based on extension"""
     ext = file_path.lower()
-    
     if not os.path.exists(file_path):
-        logger.warning(f"[RAG] File not found: {file_path}")
         return []
     
     try:
         if ext.endswith(".pdf"):
             return _load_pdf_smart(file_path)
-            
         elif ext.endswith((".docx", ".doc")):
             try:
                 return Docx2txtLoader(file_path).load()
             except:
                 return UnstructuredWordDocumentLoader(file_path).load()
-                
         elif ext.endswith((".txt", ".md")):
-            return TextLoader(
-                file_path,
-                encoding="utf-8",
-                autodetect_encoding=True
-            ).load()
-            
-        else:
-            logger.warning(f"[RAG] Unsupported file type: {ext}")
-            return []
-            
+            return TextLoader(file_path, encoding="utf-8", autodetect_encoding=True).load()
+        return []
     except Exception as e:
         logger.error(f"[RAG] Error loading {file_path}: {e}")
         return []
 
 def _smart_load_directory(directory_path: str) -> List[Document]:
-    """
-    Load all supported files from a directory
-    """
+    """Load all supported files from a directory"""
     documents = []
-    
     if not os.path.exists(directory_path):
-        logger.warning(f"[RAG] Directory not found: {directory_path}")
         return documents
     
     supported_exts = [".pdf", ".doc", ".docx", ".txt", ".md"]
@@ -115,35 +88,25 @@ def _smart_load_directory(directory_path: str) -> List[Document]:
             docs = _smart_load_single_file(file_path)
             documents.extend(docs)
             logger.info(f"[RAG] Loaded {len(docs)} chunks from {os.path.basename(file_path)}")
-    
     return documents
 
-def create_rag_tool_impl(user_id: str) -> str:
-    """
-    Create/update RAG index for a user
-    WARNING: CPU-intensive, should run in executor
-    """
+def create_rag_tool_impl(user_id: str = None) -> str:
+    """Create/update RAG index for a user"""
+    if not user_id:
+        user_id = get_current_user_id()
+        
+    if not user_id:
+        return "Error: No user ID provided for indexing."
+
     logger.info(f"[RAG] Indexing documents for user: {user_id}")
     
     user_upload_path = os.path.join(UPLOAD_PATH, user_id)
-    
     os.makedirs(DATA_PATH, exist_ok=True)
     os.makedirs(user_upload_path, exist_ok=True)
     
     try:
-        embeddings = GoogleGenerativeAIEmbeddings(
-            model="models/text-embedding-004",
-            task_type="retrieval_document",
-            google_api_key=settings.GOOGLE_API_KEY
-        )
-    except Exception as e:
-        logger.error(f"[RAG] Failed to initialize embeddings: {e}")
-        return f"Failed to initialize embedding model: {str(e)}"
-    
-    try:
         db = _get_or_create_user_chroma(user_id)
     except Exception as e:
-        logger.error(f"[RAG] Failed to get vector store: {e}")
         return f"Failed to initialize vector database: {str(e)}"
     
     system_docs = _smart_load_directory(DATA_PATH)
@@ -155,12 +118,8 @@ def create_rag_tool_impl(user_id: str) -> str:
     
     try:
         text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1500,
-            chunk_overlap=200,
-            length_function=len,
-            separators=["\n\n", "\n", ". ", " ", ""]
+            chunk_size=1500, chunk_overlap=200, length_function=len, separators=["\n\n", "\n", ". ", " ", ""]
         )
-        
         chunks = text_splitter.split_documents(all_docs)
         
         if not chunks:
@@ -171,28 +130,27 @@ def create_rag_tool_impl(user_id: str) -> str:
             batch = chunks[i:i + batch_size]
             db.add_documents(batch)
         
-        logger.info(f"[RAG] Successfully indexed {len(chunks)} chunks from {len(all_docs)} documents")
-        
-        return (
-            f"Successfully indexed **{len(chunks)} text chunks** "
-            f"from **{len(all_docs)} documents**. "
-            f"You can now ask questions about your uploaded files."
-        )
+        return f"Successfully indexed **{len(chunks)} text chunks** from **{len(all_docs)} documents**."
         
     except Exception as e:
         logger.error(f"[RAG] Indexing error: {e}", exc_info=True)
         return f"Failed to index documents: {str(e)}"
 
-def retrieve_info_impl(query: str, user_id: str) -> str:
+def retrieve_info_impl(query: str) -> str:
     """
-    Retrieve relevant information from user's documents
+    Retrieve relevant information from user's documents.
+    User ID is fetched from CONTEXT, not passed as an argument.
     """
+    user_id = get_current_user_id() 
+    if not user_id:
+        return "Error: User context missing. Cannot retrieve documents."
+
     logger.info(f"[RAG] Retrieving for user={user_id}, query='{query}'")
     
     try:
         embeddings = GoogleGenerativeAIEmbeddings(
             model="models/text-embedding-004",
-            task_type="retrieval_query",  
+            task_type="retrieval_query",
             google_api_key=settings.GOOGLE_API_KEY
         )
         
@@ -206,19 +164,13 @@ def retrieve_info_impl(query: str, user_id: str) -> str:
         results = retriever.invoke(query)
         
         if not results:
-            return (
-                "No relevant information found in your documents. "
-                "Try rephrasing your question or upload more documents."
-            )
+            return "No relevant information found in your documents."
         
         formatted_results = []
         for i, doc in enumerate(results, 1):
             source = doc.metadata.get('source', 'Unknown')
             filename = os.path.basename(source) if source else 'Unknown'
-            
-            formatted_results.append(
-                f"**Source {i}: {filename}**\n{doc.page_content}\n"
-            )
+            formatted_results.append(f"**Source {i}: {filename}**\n{doc.page_content}\n")
         
         return "\n---\n\n".join(formatted_results)
         
