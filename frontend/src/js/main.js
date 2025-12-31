@@ -1,11 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // ---------------------------------------------------------
-    // CONFIGURATION
-    // ---------------------------------------------------------
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     
-    // IMPORTANT: Local now uses 7860 to match Hugging Face backend port
     const API_BASE_URL = isLocal 
         ? 'http://127.0.0.1:7860' 
         : 'https://mubashir751-taskera-ai-backend.hf.space';
@@ -21,16 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const MAX_FILES = 10;
     const MAX_FILE_SIZE_MB = 10;
+    const MAX_RETRY_ATTEMPTS = 3;
+    const RETRY_DELAY_MS = 2000;
 
     let state = {
         currentUserId: null,
         authToken: null,
         stagedFiles: [],
         isLoginMode: true,
-        isProcessing: false
+        isProcessing: false,
+        retryCount: 0
     };
 
-    // DOM Elements Cache
     const dom = {
         sidebar: document.getElementById('sidebar'),
         sidebarOverlay: document.getElementById('sidebarOverlay'),
@@ -69,11 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
         authSwitchText: document.getElementById('authSwitchText'),
     };
 
-    // ---------------------------------------------------------
-    // INITIALIZATION
-    // ---------------------------------------------------------
     function init() {
-        console.log(`🚀 Connecting to Backend: ${API_BASE_URL}`);
+        console.log(`Connecting to: ${API_BASE_URL}`);
+        const googleBtn = document.querySelector('a[href*="/auth/google"]');
+        if (googleBtn) {
+        googleBtn.href = `${API_BASE_URL}/auth/google`; 
+    }
+        
         handleGoogleLoginRedirect();
         loadSession();
         setupEventListeners();
@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleGoogleLoginRedirect() {
         const urlParams = new URLSearchParams(window.location.search);
+        
         if (urlParams.get('google_auth') === 'success') {
             const token = urlParams.get('access_token');
             const email = urlParams.get('email');
@@ -96,10 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.authToken = token;
                 state.currentUserId = userId;
                 
-                updateAuthUI(true, email);
                 window.history.replaceState({}, document.title, window.location.pathname);
+                
                 addSystemMessage("Successfully logged in with Google!");
             }
+        } else if (urlParams.get('error') === 'auth_failed') {
+            addSystemMessage("Authentication failed: " + (urlParams.get('details') || 'Unknown error'));
+            window.history.replaceState({}, document.title, window.location.pathname);
         }
     }
 
@@ -128,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function setupEventListeners() {
-        if(dom.menuButton) dom.menuButton.addEventListener('click', toggleSidebar);
+        if(dom.menuButton) dom.menuButton.addEventListener('click', () => toggleSidebar());
         if(dom.sidebarOverlay) dom.sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
         
         if(dom.chatForm) dom.chatForm.addEventListener('submit', handleChatSubmit);
@@ -166,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.suggestion-card').forEach(card => {
             card.addEventListener('click', () => {
                 if (state.isProcessing) return;
-                const textSpan = card.querySelector('span.text-zinc-200') || card.querySelector('h3');
+                const textSpan = card.querySelector('span.text-zinc-200') || card.querySelector('h3') || card.querySelector('p');
                 if (textSpan) {
                     dom.userInput.value = textSpan.textContent.trim();
                     dom.userInput.focus();
@@ -175,9 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ---------------------------------------------------------
-    // CHAT LOGIC
-    // ---------------------------------------------------------
     async function handleChatSubmit(e) {
         if(e) e.preventDefault();
         
@@ -188,6 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!message && !hasFiles) return;
         
+        state.retryCount = 0;
+        
+        await sendChatRequest(message, hasFiles);
+    }
+
+    async function sendChatRequest(message, hasFiles) {
         const fileNames = state.stagedFiles.map(f => f.file.name);
         addMessageToChat('user', message, hasFiles ? fileNames : null);
         
@@ -208,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addTypingIndicator();
 
         try {
-            // Simplified Headers (Removed CSRF)
             const headers = {};
             if (state.authToken) {
                 headers['Authorization'] = `Bearer ${state.authToken}`;
@@ -223,37 +229,71 @@ document.addEventListener('DOMContentLoaded', () => {
             removeTypingIndicator();
 
             if (response.status === 402) {
-                addSystemMessage("Free trial limit reached. Please sign in.");
-                showAuthModal(false, "Limit reached. Create account.");
+                addSystemMessage("Free trial limit reached. Please sign in to continue.");
+                showAuthModal(false, "Create an account to continue using Taskera AI");
                 return;
             }
+            
             if (response.status === 401) {
                 handleLogout();
-                showAuthModal(true, "Session expired. Log in again.");
+                showAuthModal(true, "Session expired. Please log in again.");
                 return;
+            }
+
+            if (response.status === 429) {
+                addSystemMessage("Rate limit exceeded. Please wait a moment before trying again.");
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                return;
+            }
+
+            if (response.status === 504 || response.status === 503) {
+                if (state.retryCount < MAX_RETRY_ATTEMPTS) {
+                    state.retryCount++;
+                    addSystemMessage(`Request timeout. Retrying (${state.retryCount}/${MAX_RETRY_ATTEMPTS})...`);
+                    await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * state.retryCount));
+                    return await sendChatRequest(message, hasFiles);
+                } else {
+                    addSystemMessage("Service temporarily unavailable. Please try again in a few minutes.");
+                    state.retryCount = 0;
+                    return;
+                }
             }
 
             const data = await response.json();
             
-            if (!response.ok) throw new Error(data.detail || `Error: ${response.status}`);
+            if (!response.ok) {
+                const errorMsg = data.detail?.message || data.detail || data.error || `Error: ${response.status}`;
+                throw new Error(errorMsg);
+            }
 
             let aiResponse = data.answer || JSON.stringify(data, null, 2);
             if (Array.isArray(aiResponse)) aiResponse = aiResponse.join('\n');
             
             addMessageToChat('ai', aiResponse);
+            state.retryCount = 0; 
 
         } catch (error) {
             removeTypingIndicator();
             console.error('Chat error:', error);
-            addSystemMessage(`Error: ${error.message}`);
+            
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                if (state.retryCount < MAX_RETRY_ATTEMPTS) {
+                    state.retryCount++;
+                    addSystemMessage(`Connection error. Retrying (${state.retryCount}/${MAX_RETRY_ATTEMPTS})...`);
+                    await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS * state.retryCount));
+                    return await sendChatRequest(message, hasFiles);
+                } else {
+                    addSystemMessage("Cannot connect to server. Please check your internet connection.");
+                    state.retryCount = 0;
+                }
+            } else {
+                addSystemMessage(`Error: ${error.message}`);
+            }
         } finally {
             setProcessing(false);
         }
     }
 
-    // ---------------------------------------------------------
-    // AUTH LOGIC
-    // ---------------------------------------------------------
     async function handleAuthSubmit(e) {
         e.preventDefault();
         const email = dom.authEmail.value;
@@ -274,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             const data = await response.json();
-            if (!response.ok) throw new Error(data.detail || "Authentication failed");
+            if (!response.ok) throw new Error(data.detail || data.message || "Authentication failed");
 
             if (state.isLoginMode) {
                 state.authToken = data.access_token;
@@ -286,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 updateAuthUI(true, data.email);
                 hideAuthModal();
-                addSystemMessage("Successfully logged in!");
+                addSystemMessage(" Successfully logged in!");
             } else {
                 state.isLoginMode = true;
                 renderAuthModalState();
@@ -319,9 +359,6 @@ document.addEventListener('DOMContentLoaded', () => {
         addSystemMessage("Logged out successfully.");
     }
 
-    // ---------------------------------------------------------
-    // UI HELPERS
-    // ---------------------------------------------------------
     function addMessageToChat(sender, message, fileNames = null) {
         const wrapper = document.createElement('div');
         wrapper.className = `chat-message-wrapper w-full flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-6 animate-fade-in`;
@@ -399,15 +436,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Modal & Sidebar Logic
     function showAuthModal(isLogin = true, message = null) {
         state.isLoginMode = isLogin;
         renderAuthModalState();
         dom.authModal.classList.remove('hidden');
         setTimeout(() => {
             dom.authModal.classList.remove('opacity-0');
-            dom.authModal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
+            const content = dom.authModal.querySelector('.modal-content') || dom.authModal.children[0];
+            if(content) content.classList.remove('scale-95', 'opacity-0');
         }, 10);
+        
         if (message) {
             dom.authErrorMsg.textContent = message;
             dom.authErrorMsg.classList.remove('hidden');
@@ -416,7 +454,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function hideAuthModal() {
         dom.authModal.classList.add('opacity-0');
-        dom.authModal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+        const content = dom.authModal.querySelector('.modal-content') || dom.authModal.children[0];
+        if(content) content.classList.add('scale-95', 'opacity-0');
+        
         setTimeout(() => {
             dom.authModal.classList.add('hidden');
             dom.authErrorMsg.classList.add('hidden');
@@ -451,13 +491,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (newState) {
             dom.sidebar.classList.remove('-translate-x-full');
             dom.sidebarOverlay.classList.remove('hidden');
-            dom.menuIcon.classList.add('hidden');
-            dom.closeIcon.classList.remove('hidden');
+            if(dom.menuIcon) dom.menuIcon.classList.add('hidden');
+            if(dom.closeIcon) dom.closeIcon.classList.remove('hidden');
         } else {
             dom.sidebar.classList.add('-translate-x-full');
             dom.sidebarOverlay.classList.add('hidden');
-            dom.menuIcon.classList.remove('hidden');
-            dom.closeIcon.classList.add('hidden');
+            if(dom.menuIcon) dom.menuIcon.classList.remove('hidden');
+            if(dom.closeIcon) dom.closeIcon.classList.add('hidden');
         }
     }
 
@@ -468,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.userInput.value = '';
         dom.userInput.focus();
         toggleSidebar(false);
+        state.retryCount = 0;
     }
 
     function setProcessing(isProcessing) {
@@ -485,7 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Utilities
     function formatAIResponse(text) {
         if (!text) return '';
         let formatted = escapeHtml(text);
@@ -509,9 +549,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleFileStage(e) {
         const files = Array.from(e.target.files);
-        if (state.stagedFiles.length + files.length > MAX_FILES) return addSystemMessage(`Max ${MAX_FILES} files.`);
+        if (state.stagedFiles.length + files.length > MAX_FILES) return addSystemMessage(`Maximum ${MAX_FILES} files allowed`);
         files.forEach(file => {
-            if (file.size / (1024 * 1024) > MAX_FILE_SIZE_MB) return addSystemMessage(`${file.name} too large.`);
+            if (file.size / (1024 * 1024) > MAX_FILE_SIZE_MB) return addSystemMessage(`${file.name} exceeds ${MAX_FILE_SIZE_MB}MB limit`);
             const id = generateUUID();
             state.stagedFiles.push({ id, file });
             renderFileChip(file, id);

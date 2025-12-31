@@ -1,179 +1,187 @@
-import os
-from datetime import datetime, timedelta
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.executors.pool import ThreadPoolExecutor
-
-from app.core.logger import logger
+import asyncio
+from datetime import datetime, timezone, timedelta
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
 from app.core.database import supabase
+from app.core.logger import logger
+from app.impl.tools_agent_impl import duckduckgo_search_wrapper
 
-executors = {
-    'default': ThreadPoolExecutor(max_workers=3)
-}
+scheduler = AsyncIOScheduler()
 
-scheduler = BackgroundScheduler(
-    executors=executors,
-    job_defaults={
-        'coalesce': False,
-        'max_instances': 1
-    }
-)
-
-def run_research_task(query: str):
+async def process_research_tasks():
     """
-    Execute a scheduled research task
+    Polls Supabase for 'pending' research events that are due.
+    Executes search and updates description with results.
     """
-    logger.info(f"[Scheduler] Running research task: '{query}'")
-    
+    if not supabase:
+        logger.warning("[Scheduler] Supabase not available, skipping task processing")
+        return
+
     try:
-        from app.impl.tools_agent_impl import duckduckgo_search_wrapper
+        now_utc = datetime.now(timezone.utc)
+        now_iso = now_utc.isoformat()
         
-        result = duckduckgo_search_wrapper(query)
-        logger.info(f"[Scheduler] Task completed: {query}\nResult: {result[:200]}...")
+        logger.debug(f"[Scheduler] Checking for tasks due before {now_iso}")
         
-        return result
-        
-    except Exception as e:
-        logger.error(f"[Scheduler] Task failed for '{query}': {e}", exc_info=True)
-        return None
+        response = supabase.table("events")\
+            .select("*")\
+            .eq("status", "pending")\
+            .lte("start_time", now_iso)\
+            .ilike("title", "Research Task:%")\
+            .order("start_time", desc=False)\
+            .limit(10)\
+            .execute()
 
-def correct_run_date(run_date: datetime) -> datetime:
-    """
-    Ensure run_date is in the future
-    If in the past, schedule for next day at 10:00 AM
-    """
-    now = datetime.now()
-    
-    if run_date < now:
-        logger.warning(f"[Scheduler] Date {run_date} is in the past, adjusting...")
-        run_date = now + timedelta(days=1)
-        run_date = run_date.replace(hour=10, minute=0, second=0, microsecond=0)
-    
-    return run_date
+        tasks = response.data if response.data else []
+        
+        if not tasks:
+            logger.debug("[Scheduler] No due research tasks found")
+            return
 
-def add_new_task(
-    func,
-    trigger: str,
-    run_date: datetime,
-    args: list = None,
-    job_id: str = None
-) -> dict:
-    """
-    Add a new scheduled task
-    """
-    args = args or []
-    
-    try:
-        run_date = correct_run_date(run_date)
-        
-        job = scheduler.add_job(
-            func,
-            trigger=trigger,
-            run_date=run_date,
-            args=args,
-            id=job_id,
-            replace_existing=True
-        )
-        
-        logger.info(
-            f"[Scheduler] Added task '{func.__name__}' for {run_date} (ID: {job.id})"
-        )
-        
-        return {
-            "status": "success",
-            "job_id": job.id,
-            "run_date": run_date.isoformat()
-        }
-        
-    except Exception as e:
-        logger.error(f"[Scheduler] Failed to add task: {e}", exc_info=True)
-        return {"error": str(e)}
+        logger.info(f"[Scheduler] Found {len(tasks)} due research tasks to process")
 
-def remove_task(job_id: str) -> bool:
-    """
-    Remove a scheduled task
-    """
-    try:
-        scheduler.remove_job(job_id)
-        logger.info(f"[Scheduler] Removed task: {job_id}")
-        return True
-        
-    except KeyError:
-        logger.warning(f"[Scheduler] Task not found: {job_id}")
-        return False
-        
-    except Exception as e:
-        logger.error(f"[Scheduler] Error removing task {job_id}: {e}")
-        return False
+        for task in tasks:
+            task_id = task.get('id')
+            task_title = task.get('title', '')
+            user_id = task.get('user_id', 'unknown')
+            
+            query = task_title.replace("Research Task:", "").strip()
+            
+            if not query:
+                logger.warning(f"[Scheduler] Task {task_id} has empty query, skipping")
+                try:
+                    supabase.table("events").update({
+                        "status": "failed",
+                        "description": "Failed: Empty research query"
+                    }).eq("id", task_id).execute()
+                except:
+                    pass
+                continue
+            
+            logger.info(f"[Scheduler] Processing task {task_id} for user {user_id}: '{query}'")
+            
+            try:
+                search_result = duckduckgo_search_wrapper(query)
+                
+                if search_result and len(search_result) > 0:
+                    summary = search_result[:2000]  
+                    if len(search_result) > 2000:
+                        summary += "\n\n[Results truncated for brevity]"
+                    
+                    status_message = " Reearch completed successfully"
+                else:
+                    summary = "No results found for this query"
+                    status_message = "Research completed but no results found"
+                
+                existing_desc = task.get('description', '')
+                timestamp = now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')
+                
+                new_description = f"""{existing_desc}
 
-def list_scheduled_tasks() -> list:
-    """
-    List all scheduled tasks
-    """
-    try:
-        jobs = scheduler.get_jobs()
-        
-        task_list = []
-        for job in jobs:
-            task_list.append({
-                "id": job.id,
-                "name": job.name,
-                "next_run": job.next_run_time.isoformat() if job.next_run_time else None,
-                "trigger": str(job.trigger)
-            })
-        
-        return task_list
-        
-    except Exception as e:
-        logger.error(f"[Scheduler] Error listing tasks: {e}")
-        return []
+---
+**Research Results** (Executed: {timestamp})
 
-def start_scheduler():
+{summary}
+
+---
+Status: {status_message}
+"""
+                
+                update_response = supabase.table("events").update({
+                    "description": new_description,
+                    "status": "completed"
+                }).eq("id", task_id).execute()
+                
+                if update_response.data:
+                    logger.info(f"[Scheduler] Task {task_id} completed successfully")
+                else:
+                    logger.warning(f"[Scheduler] Task {task_id} update returned no data")
+                
+            except Exception as task_error:
+                logger.error(f"[Scheduler] Task {task_id} failed with error: {task_error}", exc_info=True)
+                
+                try:
+                    error_message = str(task_error)[:500]  
+                    supabase.table("events").update({
+                        "status": "failed",
+                        "description": f"Failed: {error_message}\n\nOriginal description:\n{task.get('description', '')}"
+                    }).eq("id", task_id).execute()
+                    
+                    logger.info(f"[Scheduler] Marked task {task_id} as failed")
+                    
+                except Exception as update_error:
+                    logger.error(f"[Scheduler] Failed to update task status for {task_id}: {update_error}")
+
+    except ConnectionResetError as conn_error:
+        logger.warning(f"[Scheduler] Connection reset by remote host. Will retry next cycle. Error: {conn_error}")
+        
+    except Exception as loop_error:
+        logger.error(f"[Scheduler] Critical error in task processing loop: {loop_error}", exc_info=True)
+
+async def cleanup_old_completed_tasks():
     """
-    Start the background scheduler
+    Periodically clean up old completed/failed tasks to prevent database bloat
     """
-    if scheduler.running:
-        logger.info("[Scheduler] Already running")
+    if not supabase:
         return
     
     try:
-        scheduler.start()
-        logger.info("[Scheduler] Started successfully")
+        cutoff_date = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
         
-        jobs = scheduler.get_jobs()
-        if jobs:
-            logger.info(f"[Scheduler] Loaded {len(jobs)} existing jobs")
+        response = supabase.table("events")\
+            .delete()\
+            .in_("status", ["completed", "failed"])\
+            .lt("start_time", cutoff_date)\
+            .execute()
+        
+        if response.data:
+            logger.info(f"[Scheduler] Cleaned up {len(response.data)} old tasks")
+            
+    except Exception as e:
+        logger.error(f"[Scheduler] Cleanup error: {e}")
+
+def start_scheduler():
+    """Start the background scheduler"""
+    if scheduler.running:
+        logger.warning("[Scheduler] Already running")
+        return
+    
+    try:
+        scheduler.add_job(
+            process_research_tasks,
+            trigger=IntervalTrigger(seconds=60),
+            id="process_research_tasks",
+            name="Process Due Research Tasks",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True,
+            misfire_grace_time=30
+        )
+        
+        scheduler.add_job(
+            cleanup_old_completed_tasks,
+            trigger=IntervalTrigger(hours=24),
+            id="cleanup_old_tasks",
+            name="Cleanup Old Tasks",
+            replace_existing=True,
+            max_instances=1,
+            coalesce=True
+        )
+        
+        scheduler.start()
+        logger.info("Background Scheduler Started (Checking every 60s)")
         
     except Exception as e:
         logger.error(f"[Scheduler] Failed to start: {e}", exc_info=True)
+        raise
 
 def shutdown_scheduler():
-    """
-    Gracefully stop the scheduler
-    """
-    if not scheduler.running:
-        logger.info("[Scheduler] Not running")
-        return
-    
-    try:
-        scheduler.shutdown(wait=True)
-        logger.info("[Scheduler] Shut down successfully")
-        
-    except Exception as e:
-        logger.error(f"[Scheduler] Shutdown error: {e}")
-
-def get_scheduler_stats() -> dict:
-    """
-    Get scheduler statistics
-    """
-    return {
-        "running": scheduler.running,
-        "jobs_count": len(scheduler.get_jobs()),
-        "jobs": [
-            {
-                "id": job.id,
-                "next_run": job.next_run_time.isoformat() 
-                    if job.next_run_time else None
-            }
-            for job in scheduler.get_jobs()
-        ]
-    }
+    """Gracefully shutdown the scheduler"""
+    if scheduler.running:
+        try:
+            scheduler.shutdown(wait=True)
+            logger.info("Scheduler shut down gracefully")
+        except Exception as e:
+            logger.error(f"[Scheduler] Shutdown error: {e}")
+    else:
+        logger.info("[Scheduler] Not running, nothing to shut down")

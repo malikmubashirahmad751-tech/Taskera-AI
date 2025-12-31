@@ -1,11 +1,9 @@
-/* Import Font */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap');
 
 body {
     font-family: 'Outfit', sans-serif;
 }
 
-/* --- Premium Custom Scrollbar --- */
 .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
@@ -15,15 +13,14 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #3f3f46; /* zinc-700 */
+    background-color: #3f3f46; 
     border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: #52525b; /* zinc-600 */
+    background-color: #52525b; 
 }
 
-/* --- Animations --- */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
@@ -33,10 +30,9 @@ body {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* --- Markdown Styling for AI Responses --- */
 .prose pre {
-    background: #18181b; /* zinc-950 */
-    border: 1px solid #27272a; /* zinc-800 */
+    background: #18181b; 
+    border: 1px solid #27272a; 
     border-radius: 0.75rem;
     padding: 1rem;
     margin: 0.75rem 0;
@@ -44,10 +40,10 @@ body {
 }
 
 .prose code {
-    color: #e879f9; /* fuchsia-400 */
+    color: #e879f9; 
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     font-size: 0.9em;
-    background: #27272a; /* zinc-800 */
+    background: #27272a; 
     padding: 2px 5px;
     border-radius: 4px;
 }
@@ -55,7 +51,7 @@ body {
 .prose pre code {
     background: transparent;
     padding: 0;
-    color: #e4e4e7; /* zinc-200 */
+    color: #e4e4e7; 
 }
 
 .prose strong {

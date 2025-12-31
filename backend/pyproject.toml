@@ -63,6 +63,9 @@ numexpr = "^2.10.0"
 langchain-core = "^1.1.0"
 aiosqlite = "^0.21.0"
 langgraph-checkpoint-sqlite = "^3.0.0"
+authlib = "^1.6.5"
+passlib = "^1.7.4"
+bcrypt = "^5.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.2"

@@ -33,12 +33,11 @@ class DatabaseManager:
                 settings.SUPABASE_URL,
                 settings.SUPABASE_KEY
             )
-            logger.info("✓ Supabase client initialized successfully")
+            logger.info(" Supabase client initialized successfully")
             
-            # Verify connection
             try:
                 self._client.table("users").select("count", count="exact").limit(1).execute()
-                logger.info("✓ Database connection verified")
+                logger.info(" Database connection verified")
             except Exception as e:
                 logger.warning(f"Database connection test failed: {e}")
                 
@@ -69,13 +68,11 @@ class DatabaseManager:
             logger.error(f"Database health check failed: {e}")
             return False
 
-# Singleton instance
 _db_manager = DatabaseManager()
 
 def get_database() -> Optional[Client]:
     """Get database client (for backward compatibility)"""
     return _db_manager.client
 
-# Export for convenience
 supabase = get_database()
 db_manager = _db_manager

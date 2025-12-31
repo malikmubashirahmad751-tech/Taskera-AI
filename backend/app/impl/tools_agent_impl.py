@@ -13,7 +13,7 @@ settings = get_settings()
 
 llm = ChatGoogleGenerativeAI(
     api_key=settings.GOOGLE_API_KEY,
-    model="gemini-2.0-flash-lite",
+    model="gemini-2.5-flash-lite",
     temperature=0,
     max_retries=1,
     request_timeout=30.0
