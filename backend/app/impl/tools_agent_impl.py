@@ -12,12 +12,12 @@ from app.core.logger import logger
 settings = get_settings()
 
 llm = ChatGoogleGenerativeAI(
-    api_key=settings.GOOGLE_API_KEY,
-    model="gemini-2.5-flash-lite",
-    temperature=0,
-    max_retries=1,
-    request_timeout=30.0
-)
+        model="gemini-2.5-flash-lite", 
+        temperature=0.1,
+        api_key=settings.GOOGLE_API_KEY,
+        max_retries=0,  
+        request_timeout=90.0,
+    )
 
 search = DuckDuckGoSearchRun()
 wiki = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper(wiki_client=None))
