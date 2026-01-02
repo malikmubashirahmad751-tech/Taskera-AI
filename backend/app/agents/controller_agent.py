@@ -54,7 +54,6 @@ try:
         api_key=settings.GOOGLE_API_KEY,
         max_retries=0,  
         request_timeout=90.0,
-        max_output_tokens=8192
     )
 except Exception as e:
     logger.error(f"Failed to initialize LLM: {e}")
