@@ -1,18 +1,16 @@
 import sys
 import asyncio
 import platform
-import functools  
-
-if platform.system() == 'Windows':
-    if not isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
-        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
+import functools
 import os
 import uuid
+import logging
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from typing import Optional, List, Any, Dict, Union
 
+# --- Third Party Imports ---
 from fastapi import (
     FastAPI, HTTPException, Body, Request,
     Form, File, UploadFile, Depends, status, Query
@@ -27,6 +25,17 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import HumanMessage
+
+# --- Platform Specific Setup ---
+if platform.system() == 'Windows':
+    if not isinstance(asyncio.get_event_loop_policy(), asyncio.WindowsSelectorEventLoopPolicy):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
+# --- Internal Imports ---
+# Assumes these modules exist in your project structure
 from app.core.config import get_settings
 from app.core.logger import logger
 from app.core.database import db_manager, supabase
@@ -37,11 +46,11 @@ from app.core.memory_manager import (
     shutdown_memory, 
     get_memory_stats
 )
-from app.core.conversations import HistoryService 
 from app.routes.google_auth import router as auth_router
 
 settings = get_settings()
 
+# --- Executor & Limiter ---
 process_executor = ThreadPoolExecutor(
     max_workers=min(4, (os.cpu_count() or 1)),
     thread_name_prefix="taskera_worker"
@@ -53,12 +62,187 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
+# ==========================================
+# 1. CORE SERVICES (Merged from conversations.py)
+# ==========================================
+
+class HistoryService:
+    """Service to handle conversation history, titles, and thread management."""
+    
+    @staticmethod
+    async def _generate_title(query: str, answer: str) -> str:
+        """Generate concise title using LLM"""
+        if not settings.GOOGLE_API_KEY:
+            return (query[:30] + "...") if len(query) > 30 else (query or "New Chat")
+
+        try:
+            llm = ChatGoogleGenerativeAI(
+                model="gemini-2.0-flash-lite-preview-02-05", 
+                api_key=settings.GOOGLE_API_KEY,
+                temperature=0.1,
+                max_retries=1,
+                request_timeout=5.0
+            )
+            
+            prompt = ChatPromptTemplate.from_template(
+                "Generate a short, specific title (3 to 6 words) for this conversation based on the user's request.\n"
+                "Do NOT use quotes. Do NOT start with 'Title:'.\n\n"
+                "User Request: {query}\n"
+                "Title:"
+            )
+            
+            safe_query = (query or "")[:500]
+            
+            chain = prompt | llm
+            result = await chain.ainvoke({"query": safe_query})
+            
+            title = result.content.strip()
+            title = title.replace('"', '').replace("Title:", "").replace("**", "").strip()
+            
+            if not title:
+                return "New Conversation"
+                
+            return title
+            
+        except Exception as e:
+            logger.warning(f"Title generation failed: {e}. Falling back to default.")
+            if query:
+                return " ".join(query.split()[:5]) + "..."
+            return "New Chat"
+
+    @staticmethod
+    async def create_or_update_thread(
+        user_id: str,
+        thread_id: str,
+        query: Optional[str] = None,
+        answer: Optional[str] = None
+    ):
+        """Create or update thread metadata in Supabase"""
+        if not supabase:
+            return
+
+        try:
+            now = datetime.now(timezone.utc).isoformat()
+            
+            response = await asyncio.to_thread(
+                lambda: supabase.table("conversations")
+                .select("thread_id")
+                .eq("thread_id", thread_id)
+                .execute()
+            )
+            
+            exists = bool(response.data)
+            
+            if exists:
+                await asyncio.to_thread(
+                    lambda: supabase.table("conversations")
+                    .update({"updated_at": now})
+                    .eq("thread_id", thread_id)
+                    .execute()
+                )
+            else:
+                title = await HistoryService._generate_title(query or "New Chat", answer or "")
+                logger.info(f"Creating new thread: {thread_id} with title: '{title}'")
+                
+                await asyncio.to_thread(
+                    lambda: supabase.table("conversations").insert({
+                        "thread_id": thread_id,
+                        "user_id": user_id,
+                        "title": title,
+                        "created_at": now,
+                        "updated_at": now
+                    }).execute()
+                )
+                
+        except Exception as e:
+            logger.error(f"Thread metadata error for {thread_id}: {e}")
+
+    @staticmethod
+    async def rename_thread(thread_id: str, user_id: str, new_title: str):
+        """Rename a specific thread"""
+        if not supabase: return
+        try:
+            now = datetime.now(timezone.utc).isoformat()
+            await asyncio.to_thread(
+                lambda: supabase.table("conversations")
+                .update({
+                    "title": new_title,
+                    "updated_at": now
+                })
+                .eq("thread_id", thread_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
+        except Exception as e:
+            logger.error(f"Rename thread error: {e}")
+            raise e
+
+    @staticmethod
+    async def get_user_threads(user_id: str, limit: int = 50) -> List[Dict]:
+        """Fetch user's conversation list"""
+        if not supabase: return []
+        try:
+            response = await asyncio.to_thread(
+                lambda: supabase.table("conversations")
+                .select("*")
+                .eq("user_id", user_id)
+                .order("updated_at", desc=True)
+                .limit(limit)
+                .execute()
+            )
+            return response.data or []
+        except Exception as e:
+            logger.error(f"Fetch threads error: {e}")
+            return []
+
+    @staticmethod
+    async def get_thread_messages(app_state, thread_id: str) -> List[Dict]:
+        """Fetch messages from LangGraph state"""
+        if not hasattr(app_state, "agent_graph"): return []
+        try:
+            config = {"configurable": {"thread_id": thread_id}}
+            snapshot = await app_state.agent_graph.aget_state(config)
+            
+            if not snapshot.values: return []
+
+            messages = []
+            for msg in snapshot.values.get("messages", []):
+                if msg.type in ("human", "ai"):
+                    messages.append({
+                        "role": "user" if msg.type == "human" else "ai",
+                        "content": msg.content
+                    })
+            return messages
+        except Exception as e:
+            logger.error(f"Message fetch error: {e}")
+            return []
+
+    @staticmethod
+    async def delete_thread(thread_id: str, user_id: str):
+        """Delete thread metadata"""
+        if not supabase: return
+        try:
+            await asyncio.to_thread(
+                lambda: supabase.table("conversations")
+                .delete()
+                .eq("thread_id", thread_id)
+                .eq("user_id", user_id)
+                .execute()
+            )
+        except Exception as e:
+            logger.error(f"Delete thread error: {e}")
+
+# ==========================================
+# 2. LIFESPAN & APP SETUP
+# ==========================================
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan with proper cleanup"""
     logger.info("Starting Taskera AI Server")
     
     try:
+        # Lazy imports to avoid circular dependencies
         from app.services.scheduler import start_scheduler
         start_scheduler()
         logger.info("Scheduler started")
@@ -66,6 +250,7 @@ async def lifespan(app: FastAPI):
         checkpointer = await initialize_memory()
         logger.info("Memory system initialized")
         
+        # Initialize Agent Graph
         from app.agents.controller_agent import workflow as agent_workflow
         app.state.agent_graph = agent_workflow.compile(checkpointer=checkpointer)
         logger.info("Agent graph compiled")
@@ -110,15 +295,15 @@ app = FastAPI(
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
 app.include_router(auth_router)
 
 if settings.DEBUG:
     os.environ["OAUTHLIB_RELAX_TOKEN_SCOPE"] = "1"
 
+# CORS Configuration
 origins_str = os.getenv(
     "BACKEND_CORS_ORIGINS", 
-    "http://127.0.0.1:5500,http://localhost:5500,https://taskera-ai.vercel.app"
+    "http://127.0.0.1:5500,http://localhost:5500,https://taskera-ai.vercel.app,http://127.0.0.1:8000"
 )
 origins = [origin.strip() for origin in origins_str.split(",")]
 
@@ -126,7 +311,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allow_headers=["*"],
     max_age=3600,
     expose_headers=["*"]
@@ -145,6 +330,9 @@ app.add_middleware(
     https_only=not settings.DEBUG
 )
 
+# ==========================================
+# 3. PYDANTIC MODELS
+# ==========================================
 
 class AuthCredentials(BaseModel):
     email: str = Field(..., pattern=r"^\S+@\S+\.\S+$")
@@ -182,6 +370,12 @@ class MCPResponse(BaseModel):
     error: Optional[dict] = None
     id: Union[int, str]
 
+class RenameThreadRequest(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+
+# ==========================================
+# 4. DEPENDENCIES & UTILS
+# ==========================================
 
 def _check_quota(identifier: str, is_guest: bool):
     try:
@@ -297,7 +491,9 @@ async def handle_file_uploads(user_id: str, files: List[UploadFile]) -> str:
     
     return ocr_context
 
-# --- Routes ---
+# ==========================================
+# 5. API ROUTES
+# ==========================================
 
 @app.get("/")
 async def root():
@@ -314,7 +510,6 @@ async def health_check():
         "version": "2.3.0",
         "uptime": "operational"
     }
-
 
 @app.get("/api/history")
 @limiter.limit("30/minute")
@@ -340,6 +535,21 @@ async def get_thread_content(request: Request, thread_id: str, user_id: str = De
         logger.error(f"Thread fetch error: {e}")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, {"error": "fetch_failed"})
 
+@app.patch("/api/threads/{thread_id}")
+@limiter.limit("20/minute")
+async def rename_thread(
+    thread_id: str,
+    request: Request,
+    body: RenameThreadRequest,
+    user_id: str = Depends(verify_quota_query)
+):
+    try:
+        await HistoryService.rename_thread(thread_id, user_id, body.title)
+        return {"success": True, "message": "Thread renamed successfully", "title": body.title}
+    except Exception as e:
+        logger.error(f"Thread rename error: {e}")
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, {"error": "rename_failed", "message": str(e)})
+
 @app.delete("/api/threads/{thread_id}")
 @limiter.limit("20/minute")
 async def delete_conversation(request: Request, thread_id: str, user_id: str = Depends(verify_quota_query)):
@@ -349,7 +559,6 @@ async def delete_conversation(request: Request, thread_id: str, user_id: str = D
     except Exception as e:
         logger.error(f"Thread delete error: {e}")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, {"error": "delete_failed"})
-
 
 @app.post("/auth/signup")
 @limiter.limit("5/minute")
@@ -389,7 +598,6 @@ async def login(creds: AuthCredentials, request: Request):
         logger.warning(f"Login error: {e}")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
 
-
 @app.post("/api/chat")
 @limiter.limit("30/minute")
 async def chat(
@@ -400,7 +608,6 @@ async def chat(
     email: Optional[str] = Form(None),
     files: List[UploadFile] = File([])
 ):
-    from langchain_core.messages import HumanMessage
     token = user_id_context.set(user_id)
     is_new_thread = False
     
@@ -420,8 +627,7 @@ async def chat(
         if files:
             ocr_context = await handle_file_uploads(user_id, files)
         
-        import datetime
-        now = datetime.datetime.now()
+        now = datetime.now()
         full_query = f"{query}{ocr_context}\n\n[Context: {now.strftime('%A, %Y-%m-%d %H:%M')}, Email: {email or 'guest'}]"
         
         input_message = {
@@ -463,8 +669,9 @@ async def chat(
 @app.post("/mcp", response_model=MCPResponse)
 @limiter.limit("100/minute")
 async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
-    """FIXED: MCP endpoint using functools.partial for kwargs in executors"""
+    """MCP endpoint including PATCH for renaming"""
     
+    # Imports for tools
     from app.impl.tools_agent_impl import (
         duckduckgo_search_wrapper, wikipedia_query_wrapper, weather_search,
         headless_browser_search, latest_news_tool_function, calculator_tool_function,
@@ -476,6 +683,18 @@ async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
     from app.services.file_handler import delete_specific_user_file, delete_all_user_files
     from app.services.rag_service import delete_user_vectorstore
     
+    # NEW: Tool to rename conversation exposed to MCP
+    async def rename_conversation_tool(thread_id: str, new_title: str, user_id: str = None):
+        """Tool to rename a specific conversation thread."""
+        if not user_id:
+             # Logic to infer user_id if not passed, but better to require it or pull from context
+             return "Error: user_id is required to rename a thread."
+        try:
+            await HistoryService.rename_thread(thread_id, user_id, new_title)
+            return f"Successfully renamed conversation {thread_id} to '{new_title}'"
+        except Exception as e:
+             return f"Failed to rename conversation: {str(e)}"
+
     TOOL_REGISTRY = {
         "web_search": duckduckgo_search_wrapper,
         "wikipedia_search": wikipedia_query_wrapper,
@@ -493,6 +712,7 @@ async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
         "delete_specific_user_file": delete_specific_user_file,
         "delete_all_user_files": delete_all_user_files,
         "delete_user_vectorstore": delete_user_vectorstore,
+        "rename_conversation": rename_conversation_tool, # ADDED TO REGISTRY
     }
     
     method_name = mcp_req.method
@@ -507,7 +727,8 @@ async def mcp_endpoint(request: Request, mcp_req: MCPRequest = Body(...)):
     try:
         func = TOOL_REGISTRY[method_name]
         call_params = params.copy()
-        if "user_id" in call_params: del call_params["user_id"]
+        if "user_id" in call_params and func != rename_conversation_tool: 
+            del call_params["user_id"]
         
         if asyncio.iscoroutinefunction(func):
             result = await asyncio.wait_for(func(**call_params), timeout=60.0)
