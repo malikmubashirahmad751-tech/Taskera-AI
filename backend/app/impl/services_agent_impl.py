@@ -38,8 +38,6 @@ async def list_schedules_internal(user_id: str) -> str:
             except:
                 formatted_time = start_raw
             
-            
-            
             output.append(f" **{title}**")
             output.append(f"   Time: {formatted_time}")
             output.append(f"   Status: {status.upper()}")
@@ -60,22 +58,17 @@ async def manage_calendar_events_impl(
     title: Optional[str] = None, 
     start_time: Optional[str] = None, 
     description: Optional[str] = "",
-    event_id: Optional[str] = None
+    event_id: Optional[str] = None,
+    user_id: Optional[str] = None  
 ) -> str:
     """
     Implementation for Supabase Calendar Management
-    
-    Args:
-        action: One of 'create', 'list', 'update', 'delete'
-        title: Event title
-        start_time: ISO 8601 formatted start time
-        description: Event description
-        event_id: UUID for update/delete operations
     """
     if not supabase:
         return "Database unavailable. Calendar features are disabled."
     
-    user_id = get_current_user_id()
+    user_id = user_id or get_current_user_id()
+    
     if not user_id or user_id == "unknown": 
         return "Error: No user logged in. Please authenticate first."
 
@@ -201,21 +194,23 @@ async def manage_calendar_events_impl(
         logger.error(f"[Calendar] Implementation Error: {e}", exc_info=True)
         return f"System Error: {str(e)}"
 
-async def schedule_research_task_impl(query: str, run_date_iso: str) -> str:
+async def schedule_research_task_impl(
+    query: str, 
+    run_date_iso: str, 
+    user_id: Optional[str] = None 
+) -> str:
     """
     Special wrapper to create a Research Task event
-    
-    Args:
-        query: The research query to execute
-        run_date_iso: ISO 8601 formatted datetime when to run the research
     """
+    user_id = user_id or get_current_user_id()
+
     if not query or not query.strip():
         return "Error: Research query cannot be empty."
     
     if not run_date_iso or not run_date_iso.strip():
         return "Error: run_date_iso is required."
     
-    logger.info(f"[Scheduler] Scheduling research task: '{query}' at {run_date_iso}")
+    logger.info(f"[Scheduler] Scheduling research task: '{query}' at {run_date_iso} for user {user_id}")
     
     title = f"Research Task: {query}"
     description = f"Automated research query: {query}\nScheduled via schedule_research_task tool."
@@ -224,7 +219,8 @@ async def schedule_research_task_impl(query: str, run_date_iso: str) -> str:
         action="create",
         title=title,
         start_time=run_date_iso,
-        description=description
+        description=description,
+        user_id=user_id 
     )
     
     return result
