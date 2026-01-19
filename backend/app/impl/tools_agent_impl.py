@@ -12,7 +12,7 @@ from app.core.logger import logger
 settings = get_settings()
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-2.5-flash-lite", 
+    model="gemini-2.5-flash", 
     temperature=0.1,
     api_key=settings.GOOGLE_API_KEY,
     max_retries=1,  

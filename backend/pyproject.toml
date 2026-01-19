@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Taskera-Ai-Project"
-version = "1.0.0"
+version = "3.0.0"
 description = "Multi-functional AI agent with ACP/MCP architecture."
 authors = ["Mubashir Hassan <mubashir.hassan@devisgon.com>"]
 packages = [

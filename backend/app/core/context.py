@@ -16,14 +16,20 @@ def get_current_user_id() -> Optional[str]:
         logger.warning("[Context] user_id not set in context")
         return None
 
-def set_current_user_id(user_id: str) -> None:
+def set_current_user_id(user_id: str):
     """
     Set the current user_id in context.
-    
-    Args:
-        user_id: The user identifier to set
+    Returns a token that must be used to reset the context.
     """
     if user_id:
-        user_id_context.set(user_id)
+        return user_id_context.set(user_id)
     else:
         logger.warning("[Context] Attempted to set empty user_id")
+        return None
+
+def reset_current_user_id(token):
+    """
+    Reset the user_id context using the token returned by set_current_user_id.
+    """
+    if token:
+        user_id_context.reset(token)
