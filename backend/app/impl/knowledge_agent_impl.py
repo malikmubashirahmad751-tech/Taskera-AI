@@ -1,6 +1,6 @@
 import os
 import glob
-from typing import List
+from typing import List, Optional
 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters.character import RecursiveCharacterTextSplitter
@@ -92,8 +92,7 @@ def _smart_load_directory(directory_path: str) -> List[Document]:
 
 def create_rag_tool_impl(user_id: str = None) -> str:
     """Create/update RAG index for a user"""
-    if not user_id:
-        user_id = get_current_user_id()
+    user_id = user_id or get_current_user_id()
         
     if not user_id:
         return "Error: No user ID provided for indexing."
@@ -136,12 +135,12 @@ def create_rag_tool_impl(user_id: str = None) -> str:
         logger.error(f"[RAG] Indexing error: {e}", exc_info=True)
         return f"Failed to index documents: {str(e)}"
 
-def retrieve_info_impl(query: str) -> str:
+def retrieve_info_impl(query: str, user_id: Optional[str] = None) -> str: 
     """
     Retrieve relevant information from user's documents.
-    User ID is fetched from CONTEXT, not passed as an argument.
     """
-    user_id = get_current_user_id() 
+    user_id = user_id or get_current_user_id() 
+    
     if not user_id:
         return "Error: User context missing. Cannot retrieve documents."
 
