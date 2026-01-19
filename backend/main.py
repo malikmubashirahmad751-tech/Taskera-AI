@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+load_dotenv()
+
 import os
 import sys
 import platform
@@ -15,18 +18,18 @@ def main():
         print("Applying Windows SelectorEventLoop policy for Psycopg...")
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    port = int(os.getenv("PORT", 7860))
+    port = settings.SERVER_PORT if hasattr(settings, 'SERVER_PORT') else int(os.getenv("PORT", 7860))
     
-    print(f"Starting Server on Port {port}...")
+    print(f"Starting Taskera AI on Port {port}...")
 
     uvicorn.run(
        "app.mcp_server:app",
-        host="0.0.0.0",
-        port=port,
-        reload=settings.DEBUG,
-        log_level="info",
-        access_log=settings.DEBUG,
-        workers=1 
+       host="0.0.0.0",
+       port=port,
+       reload=settings.DEBUG,
+       log_level="info",
+       access_log=settings.DEBUG,
+       workers=1 
     )
 
 if __name__ == "__main__":

@@ -1,7 +1,16 @@
 import os
-from typing import Optional
+from pathlib import Path
+from typing import Optional, List
 from pydantic import Field, validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+
+load_dotenv()
+
+current_dir = Path(__file__).resolve().parent
+if not os.getenv("GOOGLE_API_KEY"):
+    load_dotenv(current_dir.parent / ".env")        
+    load_dotenv(current_dir.parent.parent / ".env") 
 
 class Settings(BaseSettings):
     """Production-ready configuration with validation"""
@@ -33,7 +42,7 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = Field(default="https://taskera-ai.vercel.app")
     MCP_SERVER_URL: str = Field(default="https://mubashir751-taskera-ai-backend.hf.space/mcp")
     
-    CORS_ORIGINS: list[str] = Field(
+    CORS_ORIGINS: List[str] = Field(
         default=[
             "http://localhost:5500", 
             "http://127.0.0.1:5500", 
@@ -46,7 +55,7 @@ class Settings(BaseSettings):
     
     MAX_UPLOAD_SIZE_MB: int = Field(default=10)
     MAX_FILES_PER_USER: int = Field(default=50)
-    ALLOWED_EXTENSIONS: list[str] = Field(
+    ALLOWED_EXTENSIONS: List[str] = Field(
         default=[".pdf", ".docx", ".doc", ".txt", ".md", ".png", ".jpg", ".jpeg"]
     )
     
@@ -55,16 +64,29 @@ class Settings(BaseSettings):
     CHROMA_PATH: str = Field(default="chroma_db")
     LOG_PATH: str = Field(default="logs")
     
-    @validator("GOOGLE_API_KEY", "GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET")
+    @validator("GOOGLE_API_KEY")
+    def validate_api_key(cls, v):
+        if not v or v.strip() == "":
+            raise ValueError("CRITICAL: GOOGLE_API_KEY is missing/empty in .env")
+        os.environ["GOOGLE_API_KEY"] = v
+        return v
+    
+    @validator("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET")
     def validate_required_keys(cls, v):
         if not v or v.strip() == "":
-            raise ValueError("Required API key cannot be empty")
+            raise ValueError("Required OAuth key cannot be empty")
         return v
     
     @validator("JWT_SECRET_KEY")
     def validate_secret_length(cls, v):
         if len(v) < 32:
             raise ValueError("Secret must be at least 32 characters long")
+        return v
+
+    @validator("UPLOAD_PATH", "DATA_PATH", "CHROMA_PATH", "LOG_PATH")
+    def create_directories(cls, v):
+        """Auto-create directories on startup to prevent runtime errors"""
+        os.makedirs(v, exist_ok=True)
         return v
     
     model_config = SettingsConfigDict(
@@ -79,7 +101,13 @@ _settings: Optional[Settings] = None
 def get_settings() -> Settings:
     global _settings
     if _settings is None:
-        _settings = Settings()
+        try:
+            _settings = Settings()
+        except Exception as e:
+            print(f"!!! CONFIG LOADING FAILED !!! Error: {e}")
+            print(f"Current Directory: {os.getcwd()}")
+            print(f"Env contents (filtered): {[k for k in os.environ.keys() if 'GOOGLE' in k]}")
+            raise e
     return _settings
 
 settings = get_settings()

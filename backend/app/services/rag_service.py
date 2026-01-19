@@ -1,8 +1,8 @@
 import os
 import re
 import shutil
-import chromadb
-from typing import List
+import weakref
+from typing import List, Optional
 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
@@ -22,16 +22,8 @@ DATA_PATH = settings.DATA_PATH
 UPLOAD_PATH = settings.UPLOAD_PATH
 CHROMA_PATH = settings.CHROMA_PATH
 
-_user_vectorstores = {}
-
 def _get_sanitized_collection_name(user_id: str) -> str:
-    """
-    Sanitize user_id for ChromaDB collection name
-    Requirements:
-    - 3-63 characters
-    - Alphanumeric, underscores, dots, dashes only
-    - Must start and end with alphanumeric
-    """
+    """Sanitize user_id for ChromaDB collection name"""
     clean = re.sub(r"[^a-zA-Z0-9._-]", "_", user_id)
     
     if not clean:
@@ -47,14 +39,15 @@ def _get_sanitized_collection_name(user_id: str) -> str:
     
     return collection_name[:63]
 
+_chroma_cache = weakref.WeakValueDictionary()
+
 def _get_or_create_user_chroma(user_id: str) -> Chroma:
     """
-    Get or create cached Chroma instance for user
+    Get or create Chroma instance for user.
+    Uses WeakValueDictionary to allow garbage collection when not in use.
     """
-    global _user_vectorstores
-    
-    if user_id in _user_vectorstores:
-        return _user_vectorstores[user_id]
+    if user_id in _chroma_cache:
+        return _chroma_cache[user_id]
     
     collection_name = _get_sanitized_collection_name(user_id)
     user_chroma_path = os.path.join(CHROMA_PATH, user_id)
@@ -74,7 +67,7 @@ def _get_or_create_user_chroma(user_id: str) -> Chroma:
             collection_name=collection_name
         )
         
-        _user_vectorstores[user_id] = vectordb
+        _chroma_cache[user_id] = vectordb
         
         logger.info(f"[RAG] Initialized vector store for user: {user_id}")
         return vectordb
@@ -84,9 +77,7 @@ def _get_or_create_user_chroma(user_id: str) -> Chroma:
         raise
 
 async def index_documents(user_id: str, documents: List[Document]):
-    """
-    Add documents to user's vector store
-    """
+    """Add documents to user's vector store"""
     if not documents:
         logger.warning(f"[RAG] No documents to index for {user_id}")
         return
@@ -94,7 +85,10 @@ async def index_documents(user_id: str, documents: List[Document]):
     try:
         vs = _get_or_create_user_chroma(user_id)
         
-        vs.add_documents(documents)
+        batch_size = 100
+        for i in range(0, len(documents), batch_size):
+            batch = documents[i:i + batch_size]
+            await vs.aadd_documents(batch)
         
         logger.info(f"[RAG] Indexed {len(documents)} documents for {user_id}")
         
@@ -102,13 +96,15 @@ async def index_documents(user_id: str, documents: List[Document]):
         logger.error(f"[RAG] Indexing failed for {user_id}: {e}")
         raise
 
-def search_documents(user_id: str, query: str, k: int = 4) -> List[Document]:
-    """
-    Perform similarity search on user's vector store
-    """
+async def search_documents(user_id: str, query: str, k: int = 4) -> List[Document]:
+    """Perform similarity search on user's vector store"""
     try:
         vs = _get_or_create_user_chroma(user_id)
-        docs = vs.similarity_search(query, k=k)
+        
+        if hasattr(vs.embedding_function, 'task_type'):
+            vs.embedding_function.task_type = "retrieval_query"
+            
+        docs = await vs.asimilarity_search(query, k=k)
         
         logger.info(f"[RAG] Found {len(docs)} results for user {user_id}")
         return docs
@@ -118,30 +114,15 @@ def search_documents(user_id: str, query: str, k: int = 4) -> List[Document]:
         return []
 
 def delete_user_vectorstore(user_id: str):
-    """
-    Delete user's vector store and cached instance
-    """
-    global _user_vectorstores
+    """Delete user's vector store and cached instance"""
+    if user_id in _chroma_cache:
+        del _chroma_cache[user_id]
     
-    collection_name = _get_sanitized_collection_name(user_id)
     user_chroma_path = os.path.join(CHROMA_PATH, user_id)
-    
-    if user_id in _user_vectorstores:
-        try:
-            del _user_vectorstores[user_id]
-        except:
-            pass
     
     if os.path.exists(user_chroma_path):
         try:
-            try:
-                client = chromadb.PersistentClient(path=user_chroma_path)
-                client.delete_collection(collection_name)
-            except Exception as e:
-                logger.debug(f"[RAG] Collection delete attempt: {e}")
-            
             shutil.rmtree(user_chroma_path, ignore_errors=True)
-            
             logger.info(f"[RAG] Deleted vector store for {user_id}")
             
         except Exception as e:
@@ -150,9 +131,7 @@ def delete_user_vectorstore(user_id: str):
         logger.info(f"[RAG] No vector store found for {user_id}")
 
 def get_vectorstore_stats(user_id: str) -> dict:
-    """
-    Get statistics about user's vector store
-    """
+    """Get statistics about user's vector store"""
     try:
         vs = _get_or_create_user_chroma(user_id)
         
@@ -162,12 +141,20 @@ def get_vectorstore_stats(user_id: str) -> dict:
         return {
             "user_id": user_id,
             "document_count": count,
-            "collection_name": _get_sanitized_collection_name(user_id)
+            "collection_name": _get_sanitized_collection_name(user_id),
+            "status": "active"
         }
         
     except Exception as e:
         logger.error(f"[RAG] Stats error for {user_id}: {e}")
         return {
             "user_id": user_id,
-            "error": str(e)
+            "error": str(e),
+            "status": "error"
         }
+
+def clear_cache():
+    """Clear the entire cache (useful for testing or maintenance)"""
+    global _chroma_cache
+    _chroma_cache.clear()
+    logger.info("[RAG] Cache cleared")
