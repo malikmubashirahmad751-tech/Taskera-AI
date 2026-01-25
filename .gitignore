@@ -1,6 +1,5 @@
 .env
-.venv
-Dockerfile 
+.venv 
 .dockerignore
 # Node / Frontend
 node_modules/

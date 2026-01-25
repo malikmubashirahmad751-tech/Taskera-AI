@@ -1,15 +1,17 @@
 import httpx
+import os
 from typing import Any, Dict
-
 from app.core.logger import logger
+from app.core.config import get_settings
 
-MCP_SERVER_URL = "http://127.0.0.1:7860/mcp"
+settings = get_settings()
+
+MCP_SERVER_URL = getattr(settings, "MCP_SERVER_URL", os.getenv("MCP_SERVER_URL", "http://127.0.0.1:7860/mcp"))
 
 _client = httpx.AsyncClient(
     timeout=httpx.Timeout(60.0, connect=10.0),
     limits=httpx.Limits(max_keepalive_connections=20, max_connections=100)
 )
-
 class MCPError(Exception):
     """Custom exception for MCP failures"""
     def __init__(self, message: str, code: int = None):

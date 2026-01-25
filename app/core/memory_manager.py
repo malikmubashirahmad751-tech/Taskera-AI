@@ -1,132 +1,127 @@
 import os
-import aiosqlite
+import asyncio
 from typing import Optional
-from datetime import datetime, timedelta
-from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
+from psycopg_pool import AsyncConnectionPool
+from langgraph.checkpoint.postgres.aio import AsyncPostgresSaver
+from app.core.config import get_settings
 from app.core.logger import logger
 
-_checkpointer: Optional[AsyncSqliteSaver] = None
-_connection: Optional[aiosqlite.Connection] = None
+settings = get_settings()
 
-async def initialize_memory() -> AsyncSqliteSaver:
-    """
-    Initialize persistent memory with SQLite + WAL mode
-    """
-    global _checkpointer, _connection
+_checkpointer: Optional[AsyncPostgresSaver] = None
+_pool: Optional[AsyncConnectionPool] = None
+_init_lock = asyncio.Lock()
+
+async def initialize_memory() -> AsyncPostgresSaver:
+    """Initialize persistent memory with proper async handling"""
+    global _checkpointer, _pool
     
-    try:
-        db_path = "checkpoints.sqlite"
+    async with _init_lock:
+        if _checkpointer is not None:
+            return _checkpointer
         
-        _connection = await aiosqlite.connect(
-            db_path,
-            timeout=30.0,
-            isolation_level=None  
-        )
+        db_url = settings.SUPABASE_DB_URL
         
-        await _connection.execute("PRAGMA journal_mode=WAL;")
-        await _connection.execute("PRAGMA synchronous=NORMAL;")
-        await _connection.execute("PRAGMA cache_size=-64000;")  
-        await _connection.execute("PRAGMA temp_store=MEMORY;")
-        await _connection.commit()
-        
-        _checkpointer = AsyncSqliteSaver(_connection)
-        await _checkpointer.setup()
-        
-        logger.info("SQLite memory initialized (WAL mode enabled)")
-        
-        if os.path.exists(db_path):
-            size_mb = os.path.getsize(db_path) / (1024 * 1024)
-            logger.info(f"  Database size: {size_mb:.2f} MB")
-        
-        return _checkpointer
-        
-    except Exception as e:
-        logger.error(f"CRITICAL: Memory initialization failed: {e}", exc_info=True)
-        raise
+        if not db_url:
+            logger.error("CRITICAL: SUPABASE_DB_URL is missing")
+            raise ValueError("Missing SUPABASE_DB_URL")
 
-def get_global_checkpointer() -> Optional[AsyncSqliteSaver]:
-    """Get the global checkpointer instance"""
-    return _checkpointer
-
-async def cleanup_old_sessions(days: int = 30):
-    """
-    Clean up old sessions from database
-    """
-    if not _connection:
-        logger.warning("Cannot cleanup: No database connection")
-        return
-    
-    try:
-        cutoff_date = datetime.now() - timedelta(days=days)
-        cutoff_timestamp = cutoff_date.timestamp()
-        
-        
-        cursor = await _connection.execute(
-            "SELECT COUNT(*) FROM checkpoints WHERE created_at < ?",
-            (cutoff_timestamp,)
-        )
-        count = await cursor.fetchone()
-        
-        if count and count[0] > 0:
-            await _connection.execute(
-                "DELETE FROM checkpoints WHERE created_at < ?",
-                (cutoff_timestamp,)
+        try:
+            logger.info("Initializing Database Pool...")
+            
+            _pool = AsyncConnectionPool(
+                conninfo=db_url,
+                min_size=2,
+                max_size=20,
+                timeout=30.0,
+                kwargs={"autocommit": True, "prepare_threshold": None},
+                open=False
             )
-            await _connection.commit()
-            logger.info(f"Cleaned up {count[0]} old sessions (older than {days} days)")
-        
-    except Exception as e:
-        logger.error(f"Session cleanup error: {e}")
+            
+            await _pool.open(wait=True, timeout=30.0)
+            
+            async with _pool.connection() as conn:
+                result = await conn.execute("SELECT 1")
+                await result.fetchone()
+                
+            _checkpointer = AsyncPostgresSaver(_pool)
+            await _checkpointer.setup()
+            
+            logger.info(" Supabase Postgres Memory initialized successfully")
+            return _checkpointer
+                
+        except asyncio.TimeoutError:
+            logger.error("Database connection timeout")
+            await _cleanup_on_error()
+            raise ConnectionError("Database connection timeout")
+            
+        except Exception as e:
+            logger.error(f"Memory init failed: {e}", exc_info=True)
+            await _cleanup_on_error()
+            raise
 
-def update_session_on_response(user_id: str, agent_response: str):
-    """
-    Hook for session analytics (placeholder for future use)
-    """
-    pass
-
-def clear_user_session(user_id: str):
-    """
-    Clear specific user session
-    Note: Actual deletion requires raw SQL as LangGraph doesn't expose this
-    """
-    logger.info(f"Clear session requested for user: {user_id}")
-    
+async def _cleanup_on_error():
+    """Cleanup resources on initialization error"""
+    global _pool, _checkpointer
+    if _pool:
+        try:
+            await _pool.close()
+        except:
+            pass
+        _pool = None
+    _checkpointer = None
 
 async def get_memory_stats() -> dict:
-    """Get memory system statistics"""
-    if not _connection:
+    """Get memory system statistics with error handling"""
+    if not _pool:
         return {"status": "unavailable"}
     
     try:
-        cursor = await _connection.execute("SELECT COUNT(*) FROM checkpoints")
-        checkpoint_count = (await cursor.fetchone())[0]
-        
-        cursor = await _connection.execute(
-            "SELECT SUM(LENGTH(checkpoint)) FROM checkpoints"
-        )
-        total_size = (await cursor.fetchone())[0] or 0
-        
-        return {
-            "status": "active",
-            "checkpoint_count": checkpoint_count,
-            "total_size_mb": total_size / (1024 * 1024),
-            "wal_mode": "enabled"
-        }
-        
+        async with asyncio.timeout(5.0):
+            async with _pool.connection() as conn:
+                cursor = await conn.execute(
+                    "SELECT COUNT(DISTINCT thread_id) FROM checkpoints"
+                )
+                thread_count = (await cursor.fetchone())[0]
+                
+                pool_stats = _pool.get_stats() if hasattr(_pool, "get_stats") else {}
+                
+                return {
+                    "status": "active",
+                    "backend": "postgres",
+                    "active_threads": thread_count,
+                    "pool_size": pool_stats.get("pool_size", 0)
+                }
+    except asyncio.TimeoutError:
+        logger.warning("Stats query timeout")
+        return {"status": "timeout"}
     except Exception as e:
-        logger.error(f"Failed to get memory stats: {e}")
+        logger.error(f"Stats error: {e}")
         return {"status": "error", "error": str(e)}
 
 async def shutdown_memory():
-    """Gracefully close memory connections"""
-    global _connection, _checkpointer
+    """Gracefully shutdown with timeout protection"""
+    global _pool, _checkpointer
     
-    if _connection:
+    logger.info("Shutting down memory system...")
+    
+    if _pool:
         try:
-            await _connection.close()
-            logger.info("Memory system shut down")
+            async with asyncio.timeout(10.0):
+                await _pool.close()
+            logger.info("Database pool closed")
+        except asyncio.TimeoutError:
+            logger.warning("Pool shutdown timeout - forcing close")
         except Exception as e:
-            logger.error(f"Memory shutdown error: {e}")
+            logger.error(f"Shutdown error: {e}")
     
-    _connection = None
+    _pool = None
     _checkpointer = None
+
+def get_pool() -> Optional[AsyncConnectionPool]:
+    """Thread-safe pool accessor"""
+    return _pool
+
+def is_initialized() -> bool:
+    """Check if memory system is ready"""
+    return _checkpointer is not None and _pool is not None

@@ -1,145 +1,230 @@
-import dateparser
-from datetime import datetime
-from typing import Literal, Optional
-
+import asyncio
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+from app.core.database import supabase
 from app.core.logger import logger
-from app.services.scheduler import add_new_task, correct_run_date, run_research_task
-from app.services import scheduler_service
+from app.core.context import get_current_user_id
 
-def schedule_research_task_impl(query: str, run_date_iso: str) -> str:
-    """
-    Schedule a research task for a specific date/time
-    """
+async def list_schedules_internal(user_id: str) -> str:
+    """List events from Supabase for a user."""
+    if not supabase:
+        return "Database unavailable. Cannot retrieve events."
+    
     try:
-        run_date = dateparser.parse(
-            run_date_iso,
-            settings={"PREFER_DATES_FROM": "future"}
-        )
-        
-        if not run_date:
-            return f"Could not understand date: '{run_date_iso}'. Try 'tomorrow at 3pm' or '2024-01-15 14:00'"
-        
-        run_date = correct_run_date(run_date)
-        
-        result = add_new_task(
-            func=run_research_task,
-            trigger='date',
-            run_date=run_date,
-            args=[query]
-        )
-        
-        if "error" in result:
-            return f" Failed to schedule: {result['error']}"
-        
-        formatted_date = run_date.strftime('%A, %B %d at %I:%M %p')
-        return (
-            f"Research task scheduled!\n\n"
-            f"**Query:** {query}\n"
-            f"**When:** {formatted_date}\n"
-            f"**Job ID:** {result['job_id']}"
-        )
-        
-    except ValueError as e:
-        logger.warning(f"[Scheduler] Invalid date: {e}")
-        return f" Invalid date format: {str(e)}"
+        now = datetime.now(timezone.utc).isoformat()
+        response = supabase.table("events")\
+            .select("*")\
+            .eq("user_id", user_id)\
+            .gte("start_time", now)\
+            .order("start_time", desc=False)\
+            .limit(20)\
+            .execute()
+            
+        events = response.data
+        if not events or len(events) == 0:
+            return "No upcoming events found in your calendar."
+
+        output = ["**Upcoming Events:**\n"]
+        for event in events:
+            event_id = event.get('id', 'unknown')
+            title = event.get('title', 'Untitled')
+            start_raw = event.get('start_time', '')
+            status = event.get('status', 'pending')
+            description = event.get('description', '')
+            
+            try:
+                start_dt = datetime.fromisoformat(start_raw.replace('Z', ''))
+                formatted_time = start_dt.strftime('%Y-%m-%d %H:%M')
+            except:
+                formatted_time = start_raw
+            
+            
+            
+            output.append(f" **{title}**")
+            output.append(f"   Time: {formatted_time}")
+            output.append(f"   Status: {status.upper()}")
+            output.append(f"   ID: `{event_id}`")
+            if description and len(description) > 0:
+                desc_preview = description[:100] + "..." if len(description) > 100 else description
+                output.append(f"   Note: {desc_preview}")
+            output.append("")
+            
+        return "\n".join(output)
         
     except Exception as e:
-        logger.error(f"[Scheduler] Error: {e}", exc_info=True)
-        return f" Scheduling error: {str(e)}"
+        logger.error(f"[Calendar] List Error: {e}", exc_info=True)
+        return f"Error retrieving schedule: {str(e)}"
 
-Action = Literal["create", "list", "update", "delete"]
+async def manage_calendar_events_impl(
+    action: str, 
+    title: Optional[str] = None, 
+    start_time: Optional[str] = None, 
+    description: Optional[str] = "",
+    event_id: Optional[str] = None
+) -> str:
+    """
+    Implementation for Supabase Calendar Management
+    
+    Args:
+        action: One of 'create', 'list', 'update', 'delete'
+        title: Event title
+        start_time: ISO 8601 formatted start time
+        description: Event description
+        event_id: UUID for update/delete operations
+    """
+    if not supabase:
+        return "Database unavailable. Calendar features are disabled."
+    
+    user_id = get_current_user_id()
+    if not user_id or user_id == "unknown": 
+        return "Error: No user logged in. Please authenticate first."
 
-def manage_calendar_events_impl(
-    action: Action,
-    name: Optional[str] = "Unnamed Event",
-    date_expression: Optional[str] = None,
-    description: Optional[str] = None,
-    job_id: Optional[str] = None
-) -> dict:
-    """
-    Manage internal calendar events
-    """
     try:
-        if action == "create":
-            if not date_expression:
-                return {"error": "Missing 'date_expression' for event creation"}
+        action = action.lower().strip()
+        
+        if action == "list":
+            return await list_schedules_internal(user_id)
+
+        elif action == "create":
+            if not title or not start_time:
+                return "Error: Both 'title' and 'start_time' are required to create an event."
             
-            run_date = dateparser.parse(
-                date_expression,
-                settings={
-                    "PREFER_DATES_FROM": "future",
-                    "RELATIVE_BASE": datetime.now(),
-                    "DATE_ORDER": "DMY"
-                }
-            )
-            
-            if not run_date:
-                return {"error": f"Could not parse date: '{date_expression}'"}
-            
-            run_date = correct_run_date(run_date)
-            
-            new_event = scheduler_service.create_event(
-                name=name,
-                description=description or f"Event: {name}",
-                run_date=run_date.isoformat()
-            )
-            
-            if "error" in new_event:
-                return new_event
-            
-            formatted_date = run_date.strftime('%B %d, %Y at %I:%M %p')
-            
-            return {
-                "status": "success",
-                "message": f" Event '{name}' scheduled for {formatted_date}",
-                "run_date": run_date.isoformat(),
-                "job_id": new_event.get("id", "unknown")
+            try:
+                start_time_clean = start_time.replace('Z', '').strip()
+                dt_start = datetime.fromisoformat(start_time_clean)
+                
+                if dt_start.tzinfo is None:
+                    dt_start = dt_start.replace(tzinfo=timezone.utc)
+                
+                dt_end = dt_start + timedelta(hours=1)
+                
+                start_time_iso = dt_start.isoformat()
+                end_time_iso = dt_end.isoformat()
+                
+            except ValueError as ve:
+                logger.error(f"[Calendar] Invalid datetime format: {start_time}")
+                return f"Error: Invalid date/time format. Use ISO 8601 format (YYYY-MM-DDTHH:MM:SS). Example: 2025-12-25T14:00:00"
+
+            data = {
+                "user_id": user_id,
+                "title": title.strip(),
+                "description": description.strip() if description else "",
+                "start_time": start_time_iso,
+                "end_time": end_time_iso,
+                "status": "pending"
             }
-        
-        elif action == "delete":
-            if not job_id:
-                return {"error": "Missing 'job_id' for delete"}
             
-            result = scheduler_service.delete_event(event_id=job_id)
+            logger.info(f"[Calendar] Creating event for user {user_id}: {title} at {start_time_iso}")
             
-            if result.get("status") == "success":
-                return {"status": "success", "message": f" Event {job_id} deleted"}
-            
-            return result
-        
+            try:
+                res = supabase.table("events").insert(data).execute()
+                
+                if res.data and len(res.data) > 0:
+                    created_event = res.data[0]
+                    event_id = created_event.get('id')
+                    logger.info(f"[Calendar] Event created successfully: {event_id}")
+                    return f"Event **'{title}'** scheduled for {dt_start.strftime('%Y-%m-%d %H:%M')} UTC\nEvent ID: `{event_id}`"
+                else:
+                    logger.error(f"[Calendar] Insert returned no data")
+                    return "Error: Event creation failed (no data returned from database)."
+                    
+            except Exception as db_error:
+                logger.error(f"[Calendar] Database insert error: {db_error}", exc_info=True)
+                return f"Database error: {str(db_error)}"
+
         elif action == "update":
-            if not job_id:
-                return {"error": "Missing 'job_id' for update"}
+            if not event_id:
+                return "Error: 'event_id' is required for updating an event."
             
-            run_date_iso = None
-            if date_expression:
-                run_date = dateparser.parse(
-                    date_expression,
-                    settings={"PREFER_DATES_FROM": "future"}
-                )
-                if run_date:
-                    run_date = correct_run_date(run_date)
-                    run_date_iso = run_date.isoformat()
+            update_data = {}
+            if title:
+                update_data['title'] = title.strip()
+            if description is not None:
+                update_data['description'] = description.strip()
+            if start_time:
+                try:
+                    start_time_clean = start_time.replace('Z', '').strip()
+                    dt_start = datetime.fromisoformat(start_time_clean)
+                    if dt_start.tzinfo is None:
+                        dt_start = dt_start.replace(tzinfo=timezone.utc)
+                    dt_end = dt_start + timedelta(hours=1)
+                    update_data['start_time'] = dt_start.isoformat()
+                    update_data['end_time'] = dt_end.isoformat()
+                except ValueError:
+                    return "Error: Invalid date/time format for start_time."
             
-            result = scheduler_service.update_event(
-                event_id=job_id,
-                name=name if name != "Unnamed Event" else None,
-                description=description,
-                run_date=run_date_iso
-            )
+            if not update_data:
+                return "Error: No fields provided to update."
             
-            if result.get("status") == "success":
-                return {"status": "success", "message": f"Event {job_id} updated"}
+            logger.info(f"[Calendar] Updating event {event_id} for user {user_id}")
             
-            return result
-        
-        elif action == "list":
-            events = scheduler_service.list_events()
-            return {"status": "success", "events": events}
-        
+            try:
+                res = supabase.table("events").update(update_data)\
+                    .eq("id", event_id)\
+                    .eq("user_id", user_id)\
+                    .execute()
+                
+                if res.data and len(res.data) > 0:
+                    return f"Event **'{event_id}'** updated successfully."
+                else:
+                    return f"Event not found or you don't have permission to update it."
+                    
+            except Exception as db_error:
+                logger.error(f"[Calendar] Update error: {db_error}", exc_info=True)
+                return f"Update failed: {str(db_error)}"
+
+        elif action == "delete":
+            if not event_id:
+                return "Error: 'event_id' is required for deletion."
+            
+            logger.info(f"[Calendar] Deleting event {event_id} for user {user_id}")
+            
+            try:
+                res = supabase.table("events").delete()\
+                    .eq("id", event_id)\
+                    .eq("user_id", user_id)\
+                    .execute()
+                
+                if res.data and len(res.data) > 0:
+                    return f"Event **'{event_id}'** deleted successfully."
+                else:
+                    return f"Event not found or you don't have permission to delete it."
+                    
+            except Exception as db_error:
+                logger.error(f"[Calendar] Delete error: {db_error}", exc_info=True)
+                return f"Delete failed: {str(db_error)}"
+
         else:
-            return {"error": f"Unknown action: '{action}'"}
-        
+            return f"Unknown action: '{action}'. Supported actions: create, list, update, delete"
+
     except Exception as e:
-        logger.error(f"[Calendar] Error: {e}", exc_info=True)
-        return {"error": str(e)}
+        logger.error(f"[Calendar] Implementation Error: {e}", exc_info=True)
+        return f"System Error: {str(e)}"
+
+async def schedule_research_task_impl(query: str, run_date_iso: str) -> str:
+    """
+    Special wrapper to create a Research Task event
+    
+    Args:
+        query: The research query to execute
+        run_date_iso: ISO 8601 formatted datetime when to run the research
+    """
+    if not query or not query.strip():
+        return "Error: Research query cannot be empty."
+    
+    if not run_date_iso or not run_date_iso.strip():
+        return "Error: run_date_iso is required."
+    
+    logger.info(f"[Scheduler] Scheduling research task: '{query}' at {run_date_iso}")
+    
+    title = f"Research Task: {query}"
+    description = f"Automated research query: {query}\nScheduled via schedule_research_task tool."
+    
+    result = await manage_calendar_events_impl(
+        action="create",
+        title=title,
+        start_time=run_date_iso,
+        description=description
+    )
+    
+    return result

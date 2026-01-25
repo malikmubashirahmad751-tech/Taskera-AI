@@ -1,12 +1,21 @@
 import re
-from typing import Optional, Dict, Any
+import uuid
+from typing import Optional, Dict, Any, Union
 from datetime import datetime, timezone
 from pydantic import BaseModel, Field, field_validator
 from app.core.database import supabase
 from app.core.logger import logger
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def verify_password(plain_password, hashed_password):
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password):
+    return pwd_context.hash(password)
 
 class UserIDValidator(BaseModel):
-    """Validates user ID format"""
     user_id: str = Field(..., min_length=1, max_length=100)
     
     @field_validator('user_id')
@@ -17,7 +26,6 @@ class UserIDValidator(BaseModel):
         return v
 
 def validate_user_id(user_id: str) -> str:
-    """Validate and sanitize user ID"""
     try:
         validated = UserIDValidator(user_id=str(user_id).strip())
         return validated.user_id
@@ -26,166 +34,129 @@ def validate_user_id(user_id: str) -> str:
         raise ValueError(f"Invalid user ID: {e}")
 
 class UserCRUD:
-    """User database operations"""
-    
     @staticmethod
-    def get_or_create_user(user_id: str) -> Optional[Dict[str, Any]]:
-        """Get existing user or create new one"""
-        if not supabase:
-            logger.warning("[CRUD] Database not available")
-            return None
+    def get_or_create_user(user_id: str, email: Optional[str] = None) -> Optional[Dict[str, Any]]:
+        """Used for Google Auth (Social Login)"""
+        if not supabase: return None
         
         try:
             safe_uid = validate_user_id(user_id)
             
-            response = supabase.table("users")\
-                .select("*")\
-                .eq("user_id_string", safe_uid)\
-                .execute()
-            
+            response = supabase.table("users").select("*").eq("id", safe_uid).execute()
             if response.data:
                 return response.data[0]
             
             new_user_data = {
-                "user_id_string": safe_uid,
+                "id": safe_uid,
+                "email": email,
                 "created_at": datetime.now(timezone.utc).isoformat(),
                 "updated_at": datetime.now(timezone.utc).isoformat()
             }
             
-            new_user = supabase.table("users")\
-                .insert(new_user_data)\
-                .execute()
-            
+            new_user = supabase.table("users").insert(new_user_data).execute()
             if new_user.data:
                 logger.info(f"[CRUD] Created new user: {safe_uid}")
                 return new_user.data[0]
             
-            logger.error(f"[CRUD] Failed to create user: {safe_uid}")
             return None
             
         except Exception as e:
             logger.error(f"[CRUD] User operation error: {e}", exc_info=True)
             return None
-    
+
     @staticmethod
-    def save_refresh_token(user_id: str, token: str) -> bool:
-        """Save Google refresh token for user"""
-        if not supabase:
-            return False
-        
+    def create_user(email: str, password: str) -> Optional[Dict[str, Any]]:
+        """Used for Standard Auth (Email/Password Signup)"""
+        if not supabase: return None
+
         try:
-            safe_uid = validate_user_id(user_id)
+            existing = supabase.table("users").select("email").eq("email", email).execute()
+            if existing.data:
+                return None  
+
+            hashed_pw = get_password_hash(password)
+            new_uid = str(uuid.uuid4())
             
-            UserCRUD.get_or_create_user(safe_uid)
-            
-            data = {
-                "user_id_string": safe_uid,
-                "google_refresh_token": token,
+            new_user_data = {
+                "id": new_uid,
+                "email": email,
+                "password_hash": hashed_pw, 
+                "created_at": datetime.now(timezone.utc).isoformat(),
                 "updated_at": datetime.now(timezone.utc).isoformat()
             }
             
-            supabase.table("users")\
-                .upsert(data, on_conflict="user_id_string")\
-                .execute()
-            
-            logger.info(f"[CRUD] Saved refresh token for user: {safe_uid}")
-            return True
+            data = supabase.table("users").insert(new_user_data).execute()
+            if data.data:
+                user = data.data[0]
+                user['user_id'] = user['id']  
+                return user
+            return None
             
         except Exception as e:
-            logger.error(f"[CRUD] Token save error: {e}", exc_info=True)
-            return False
-    
+            logger.error(f"[CRUD] Create user error: {e}")
+            raise e
+
     @staticmethod
-    def get_refresh_token(user_id: str) -> Optional[str]:
-        """Get Google refresh token for user"""
-        if not supabase:
-            return None
-        
+    def authenticate_user(email: str, password: str) -> Union[Dict[str, Any], bool]:
+        """Used for Standard Auth (Login)"""
+        if not supabase: return False
+
         try:
-            safe_uid = validate_user_id(user_id)
+            response = supabase.table("users").select("*").eq("email", email).execute()
+            if not response.data:
+                return False
             
-            response = supabase.table("users")\
-                .select("google_refresh_token")\
-                .eq("user_id_string", safe_uid)\
-                .execute()
+            user = response.data[0]
+            stored_hash = user.get("password_hash")
             
-            if response.data and response.data[0].get("google_refresh_token"):
-                return response.data[0]["google_refresh_token"]
+            if not stored_hash:
+                return False 
             
-            return None
-            
+            if verify_password(password, stored_hash):
+                user['user_id'] = user['id']
+                return user
+                
+            return False
         except Exception as e:
-            logger.error(f"[CRUD] Token retrieval error: {e}", exc_info=True)
-            return None
+            logger.error(f"[CRUD] Auth error: {e}")
+            return False
 
 class QuotaCRUD:
-    """Usage quota operations"""
-    
     @staticmethod
     def get_quota(identifier: str) -> Dict[str, Any]:
-        """Get usage quota for identifier"""
         if not supabase:
             return {"request_count": 0, "is_registered": False}
         
         try:
-            response = supabase.table("usage_quotas")\
-                .select("*")\
-                .eq("identifier", identifier)\
-                .execute()
-            
+            response = supabase.table("usage_quotas").select("*").eq("identifier", identifier).execute()
             if response.data:
                 return response.data[0]
-            
             return {"request_count": 0, "is_registered": False}
-            
         except Exception as e:
             logger.error(f"[CRUD] Quota fetch error: {e}")
             return {"request_count": 0, "is_registered": False}
     
     @staticmethod
     def increment_quota(identifier: str, is_registered: bool = False) -> bool:
-        """
-        Increment usage quota with race-condition handling.
-        Solves error 23505 (Duplicate Key)
-        """
-        if not supabase:
-            return True 
+        if not supabase: return True
         
         try:
             current = QuotaCRUD.get_quota(identifier)
             new_count = current.get("request_count", 0) + 1
             
-            supabase.table("usage_quotas")\
-                .upsert({
-                    "identifier": identifier,
-                    "request_count": new_count,
-                    "is_registered": is_registered,
-                    "last_request_at": datetime.now(timezone.utc).isoformat()
-                }, on_conflict="identifier")\
-                .execute()
-            
+            supabase.table("usage_quotas").upsert({
+                "identifier": identifier,
+                "request_count": new_count,
+                "is_registered": is_registered,
+                "last_request_at": datetime.now(timezone.utc).isoformat()
+            }, on_conflict="identifier").execute()
             return True
-            
         except Exception as e:
-            
-            if "23505" in str(e) or "duplicate key" in str(e):
-                logger.warning(f"[CRUD] Race condition for {identifier}, retrying via UPDATE...")
-                try:
-                    supabase.table("usage_quotas")\
-                        .update({
-                            "request_count": new_count,
-                            "last_request_at": datetime.now(timezone.utc).isoformat()
-                        })\
-                        .eq("identifier", identifier)\
-                        .execute()
-                    return True
-                except Exception as retry_e:
-                    logger.error(f"[CRUD] Retry failed: {retry_e}")
-                    return False
-            
             logger.error(f"[CRUD] Quota increment error: {e}")
             return False
 
 get_or_create_user = UserCRUD.get_or_create_user
-save_refresh_token = UserCRUD.save_refresh_token
-get_refresh_token = UserCRUD.get_refresh_token
+create_user = UserCRUD.create_user
+authenticate_user = UserCRUD.authenticate_user
+increment_quota = QuotaCRUD.increment_quota
+get_quota = QuotaCRUD.get_quota
