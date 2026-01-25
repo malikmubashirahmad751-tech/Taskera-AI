@@ -1,8 +1,7 @@
 import os
 import re
 import shutil
-import weakref
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
@@ -39,12 +38,14 @@ def _get_sanitized_collection_name(user_id: str) -> str:
     
     return collection_name[:63]
 
-_chroma_cache = weakref.WeakValueDictionary()
+# FIXED: Use strong references with explicit cleanup instead of WeakValueDictionary
+# WeakValueDictionary can cause unexpected GC during active operations
+_chroma_cache: Dict[str, Chroma] = {}
 
 def _get_or_create_user_chroma(user_id: str) -> Chroma:
     """
     Get or create Chroma instance for user.
-    Uses WeakValueDictionary to allow garbage collection when not in use.
+    Uses explicit cache management for predictable behavior.
     """
     if user_id in _chroma_cache:
         return _chroma_cache[user_id]
@@ -115,8 +116,17 @@ async def search_documents(user_id: str, query: str, k: int = 4) -> List[Documen
 
 def delete_user_vectorstore(user_id: str):
     """Delete user's vector store and cached instance"""
+    # FIXED: Proper cleanup of cache entry
     if user_id in _chroma_cache:
-        del _chroma_cache[user_id]
+        try:
+            # Close connection if method exists
+            vs = _chroma_cache[user_id]
+            if hasattr(vs, '_client') and vs._client:
+                vs._client = None
+        except Exception as e:
+            logger.warning(f"[RAG] Error closing connection for {user_id}: {e}")
+        finally:
+            del _chroma_cache[user_id]
     
     user_chroma_path = os.path.join(CHROMA_PATH, user_id)
     
@@ -156,5 +166,12 @@ def get_vectorstore_stats(user_id: str) -> dict:
 def clear_cache():
     """Clear the entire cache (useful for testing or maintenance)"""
     global _chroma_cache
+    for user_id in list(_chroma_cache.keys()):
+        try:
+            vs = _chroma_cache[user_id]
+            if hasattr(vs, '_client') and vs._client:
+                vs._client = None
+        except Exception:
+            pass
     _chroma_cache.clear()
     logger.info("[RAG] Cache cleared")

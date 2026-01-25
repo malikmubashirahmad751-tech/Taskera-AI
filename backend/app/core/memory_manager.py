@@ -47,7 +47,7 @@ async def initialize_memory() -> AsyncPostgresSaver:
             _checkpointer = AsyncPostgresSaver(_pool)
             await _checkpointer.setup()
             
-            logger.info(" Supabase Postgres Memory initialized successfully")
+            logger.info("Supabase Postgres Memory initialized successfully")
             return _checkpointer
                 
         except asyncio.TimeoutError:
@@ -66,8 +66,8 @@ async def _cleanup_on_error():
     if _pool:
         try:
             await _pool.close()
-        except:
-            pass
+        except Exception as e:
+            logger.warning(f"Error during cleanup: {e}")
         _pool = None
     _checkpointer = None
 
@@ -112,6 +112,10 @@ async def shutdown_memory():
             logger.info("Database pool closed")
         except asyncio.TimeoutError:
             logger.warning("Pool shutdown timeout - forcing close")
+            try:
+                _pool._pool.close()
+            except Exception:
+                pass
         except Exception as e:
             logger.error(f"Shutdown error: {e}")
     

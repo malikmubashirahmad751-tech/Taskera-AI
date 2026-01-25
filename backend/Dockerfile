@@ -1,4 +1,3 @@
-
 FROM python:3.12-slim-bookworm as builder
 
 ENV PYTHONUNBUFFERED=1 \
@@ -20,22 +19,20 @@ ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /app
 
 COPY pyproject.toml poetry.lock ./
-
-
 RUN poetry install --no-root --no-ansi
-
 
 FROM python:3.12-slim-bookworm as runtime
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PATH="/app/.venv/bin:$PATH"
+    PATH="/app/.venv/bin:$PATH" \
+    PLAYWRIGHT_BROWSERS_PATH="/app/pw-browsers"
 
 WORKDIR /app
 
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    ffmpeg \
     tesseract-ocr \
     tesseract-ocr-eng \
     poppler-utils \
@@ -64,9 +61,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /app/.venv /app/.venv
 
-RUN playwright install chromium
-
 COPY . .
 
+RUN mkdir -p /app/temp_audio /app/logs /app/user_files /app/data /app/chroma_db /app/pw-browsers
+
+RUN playwright install chromium
+
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+
+USER appuser
+
 EXPOSE 7860
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:7860/health || exit 1
+
 CMD ["uvicorn", "app.mcp_server:app", "--host", "0.0.0.0", "--port", "7860"]
