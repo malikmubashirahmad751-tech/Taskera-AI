@@ -6,6 +6,11 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     """Production-ready configuration with validation"""
     
+    SUPABASE_DB_URL: str = Field(
+        ..., 
+        description="Transaction Pooler URL (Port 6543) for LangGraph Memory"
+    )
+
     GOOGLE_CLIENT_ID: str = Field(..., min_length=1)
     GOOGLE_CLIENT_SECRET: str = Field(..., min_length=1)
     

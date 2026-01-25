@@ -73,3 +73,11 @@ body {
     margin-bottom: 0.75rem;
     line-height: 1.6;
 }
+
+.prose a {
+    color: #d946ef;
+    text-decoration: underline;
+}
+.prose a:hover {
+    color: #f0abfc;
+}
