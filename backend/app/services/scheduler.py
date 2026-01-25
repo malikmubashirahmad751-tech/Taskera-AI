@@ -14,7 +14,7 @@ async def process_research_tasks():
     Executes search and updates description with results.
     """
     if not supabase:
-        logger.warning("[Scheduler] Supabase not available, skipping task processing")
+        logger.debug("[Scheduler] Supabase not available, skipping task processing")
         return
 
     try:
@@ -23,14 +23,18 @@ async def process_research_tasks():
         
         logger.debug(f"[Scheduler] Checking for tasks due before {now_iso}")
         
-        response = supabase.table("events")\
-            .select("*")\
-            .eq("status", "pending")\
-            .lte("start_time", now_iso)\
-            .ilike("title", "Research Task:%")\
-            .order("start_time", desc=False)\
-            .limit(10)\
+        loop = asyncio.get_running_loop()
+        response = await loop.run_in_executor(
+            None,
+            lambda: supabase.table("events")
+            .select("*")
+            .eq("status", "pending")
+            .lte("start_time", now_iso)
+            .ilike("title", "Research Task:%")
+            .order("start_time", desc=False)
+            .limit(10)
             .execute()
+        )
 
         tasks = response.data if response.data else []
         
@@ -50,25 +54,32 @@ async def process_research_tasks():
             if not query:
                 logger.warning(f"[Scheduler] Task {task_id} has empty query, skipping")
                 try:
-                    supabase.table("events").update({
-                        "status": "failed",
-                        "description": "Failed: Empty research query"
-                    }).eq("id", task_id).execute()
-                except:
-                    pass
+                    await loop.run_in_executor(
+                        None,
+                        lambda: supabase.table("events").update({
+                            "status": "failed",
+                            "description": "Failed: Empty research query"
+                        }).eq("id", task_id).execute()
+                    )
+                except Exception as e:
+                    logger.error(f"[Scheduler] Failed to update task {task_id}: {e}")
                 continue
             
             logger.info(f"[Scheduler] Processing task {task_id} for user {user_id}: '{query}'")
             
             try:
-                search_result = duckduckgo_search_wrapper(query)
+                search_result = await loop.run_in_executor(
+                    None,
+                    duckduckgo_search_wrapper,
+                    query
+                )
                 
                 if search_result and len(search_result) > 0:
                     summary = search_result[:2000]  
                     if len(search_result) > 2000:
                         summary += "\n\n[Results truncated for brevity]"
                     
-                    status_message = " Reearch completed successfully"
+                    status_message = "Research completed successfully"
                 else:
                     summary = "No results found for this query"
                     status_message = "Research completed but no results found"
@@ -87,10 +98,13 @@ async def process_research_tasks():
 Status: {status_message}
 """
                 
-                update_response = supabase.table("events").update({
-                    "description": new_description,
-                    "status": "completed"
-                }).eq("id", task_id).execute()
+                update_response = await loop.run_in_executor(
+                    None,
+                    lambda: supabase.table("events").update({
+                        "description": new_description,
+                        "status": "completed"
+                    }).eq("id", task_id).execute()
+                )
                 
                 if update_response.data:
                     logger.info(f"[Scheduler] Task {task_id} completed successfully")
@@ -102,10 +116,13 @@ Status: {status_message}
                 
                 try:
                     error_message = str(task_error)[:500]  
-                    supabase.table("events").update({
-                        "status": "failed",
-                        "description": f"Failed: {error_message}\n\nOriginal description:\n{task.get('description', '')}"
-                    }).eq("id", task_id).execute()
+                    await loop.run_in_executor(
+                        None,
+                        lambda: supabase.table("events").update({
+                            "status": "failed",
+                            "description": f"Failed: {error_message}\n\nOriginal description:\n{task.get('description', '')}"
+                        }).eq("id", task_id).execute()
+                    )
                     
                     logger.info(f"[Scheduler] Marked task {task_id} as failed")
                     
@@ -128,11 +145,15 @@ async def cleanup_old_completed_tasks():
     try:
         cutoff_date = (datetime.now(timezone.utc) - timedelta(days=30)).isoformat()
         
-        response = supabase.table("events")\
-            .delete()\
-            .in_("status", ["completed", "failed"])\
-            .lt("start_time", cutoff_date)\
+        loop = asyncio.get_running_loop()
+        response = await loop.run_in_executor(
+            None,
+            lambda: supabase.table("events")
+            .delete()
+            .in_("status", ["completed", "failed"])
+            .lt("start_time", cutoff_date)
             .execute()
+        )
         
         if response.data:
             logger.info(f"[Scheduler] Cleaned up {len(response.data)} old tasks")

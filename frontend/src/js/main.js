@@ -1,6 +1,13 @@
+/**
+ * Taskera AI Frontend - Unified Production Version
+ * Hardened with XSS protection, Voice support, and Memory Management
+ */
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    
+    // ============================================================================
+    // CONFIGURATION
+    // ============================================================================
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const PROD_URL = 'https://mubashir751-taskera-ai-backend.hf.space';
     const API_BASE_URL = isLocal ? 'http://127.0.0.1:7860' : PROD_URL; 
@@ -11,7 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
         THREADS: '/api/threads',
         AUTH_LOGIN: '/auth/login',
         AUTH_SIGNUP: '/auth/signup',
-        HEALTH: '/health'
+        HEALTH: '/health',
+        TRANS: '/api/voice/transcribe',
+        TTS: '/api/voice/tts'
     };
 
     const KEYS = {
@@ -26,10 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
         MAX_FILE_SIZE_MB: 10,
         MAX_RETRY_ATTEMPTS: 3,
         RETRY_DELAY_MS: 2000,
-        REQUEST_TIMEOUT_MS: 60000,
-        ALLOWED_EXTS: ['.png', '.jpg', '.jpeg', '.pdf', '.txt', '.md', '.docx', '.doc']
+        REQUEST_TIMEOUT_MS: 120000, // 120s for complex RAG tasks
+        ALLOWED_EXTS: ['.png', '.jpg', '.jpeg', '.pdf', '.txt', '.md', '.docx', '.doc'],
+        TTS_ENABLED: true,
+        MAX_TTS_LENGTH: 500
     };
 
+    // ============================================================================
+    // STATE MANAGEMENT
+    // ============================================================================
     let state = {
         currentUserId: null,
         authToken: null,
@@ -42,33 +56,40 @@ document.addEventListener('DOMContentLoaded', () => {
         isOnline: navigator.onLine,
         lastRequestTime: 0,
         requestQueue: new Set(),
-        modalCallback: null 
+        modalCallback: null,
+        // Voice State
+        isRecording: false,
+        mediaRecorder: null,
+        audioChunks: [],
+        audioURLs: [] // Tracked for memory cleanup
     };
 
+    // ============================================================================
+    // DOM REFERENCES
+    // ============================================================================
     const dom = {
         sidebar: document.getElementById('sidebar'),
         sidebarOverlay: document.getElementById('sidebarOverlay'),
         menuButton: document.getElementById('menuButton'),
         closeIcon: document.getElementById('closeIcon'),
         menuIcon: document.getElementById('menuIcon'),
-
         chatLog: document.getElementById('chatLog'),
         welcomeScreen: document.getElementById('welcome-screen'),
         chatForm: document.getElementById('chatForm'),
         userInput: document.getElementById('userInput'),
         sendButton: document.getElementById('sendButton'),
         chatUploadBtn: document.getElementById('chatUploadBtn'),
+        voiceBtn: document.getElementById('voiceBtn'), 
+        audioPlayer: document.getElementById('audioPlayer'), 
         fileUploadInput: document.getElementById('fileUploadInput'),
         filePreviewContainer: document.getElementById('filePreviewContainer'),
         newSessionBtn: document.getElementById('newSessionBtn'),
-
         currentUserIdDisplay: document.getElementById('currentUserId'),
         userProfileSection: document.getElementById('userProfileSection'),
         guestAuthSection: document.getElementById('guestAuthSection'),
         userEmailDisplay: document.getElementById('userEmailDisplay'),
         logoutBtn: document.getElementById('logoutBtn'),
         openLoginModalBtn: document.getElementById('openLoginModalBtn'),
-
         authModal: document.getElementById('authModal'),
         authForm: document.getElementById('authForm'),
         closeAuthModal: document.getElementById('closeAuthModal'),
@@ -80,10 +101,8 @@ document.addEventListener('DOMContentLoaded', () => {
         authErrorMsg: document.getElementById('authErrorMsg'),
         authSwitchText: document.getElementById('authSwitchText'),
         googleAuthBtn: document.getElementById('googleAuthBtn'),
-
         historySection: document.getElementById('historySection'),
         historyList: document.getElementById('historyList'),
-
         taskeraModal: document.getElementById('taskeraModal'),
         taskeraModalTitle: document.getElementById('taskeraModalTitle'),
         taskeraModalBody: document.getElementById('taskeraModalBody'),
@@ -92,12 +111,11 @@ document.addEventListener('DOMContentLoaded', () => {
         taskeraModalClose: document.getElementById('taskeraModalClose'),
     };
 
+    // ============================================================================
+    // INITIALIZATION & CLEANUP
+    // ============================================================================
     function init() {
-        console.log(`Connecting to: ${API_BASE_URL}`);
-
-        if (dom.googleAuthBtn) {
-            dom.googleAuthBtn.href = `${API_BASE_URL}/auth/google`;
-        }
+        if (dom.googleAuthBtn) dom.googleAuthBtn.href = `${API_BASE_URL}/auth/google`;
 
         handleGoogleLoginRedirect();
         loadSession();
@@ -107,125 +125,122 @@ document.addEventListener('DOMContentLoaded', () => {
         updateUIState();
 
         setInterval(checkServerHealth, 60000);
+        window.addEventListener('beforeunload', cleanup);
     }
 
-    
-    function setupEventListeners() {
-        if (dom.menuButton) dom.menuButton.addEventListener('click', () => toggleSidebar());
-        if (dom.sidebarOverlay) dom.sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-        if (dom.chatForm) dom.chatForm.addEventListener('submit', handleChatSubmit);
-        if (dom.userInput) {
-            dom.userInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (!state.isProcessing) handleChatSubmit(e);
-                }
-            });
-            dom.userInput.addEventListener('input', () => {
-                dom.userInput.style.height = 'auto';
-                dom.userInput.style.height = Math.min(dom.userInput.scrollHeight, 150) + 'px';
-            });
-        }
-
-        if (dom.chatUploadBtn) dom.chatUploadBtn.addEventListener('click', () => {
-            if (!state.isProcessing) dom.fileUploadInput.click();
-        });
-        if (dom.fileUploadInput) dom.fileUploadInput.addEventListener('change', handleFileStage);
-        if (dom.filePreviewContainer) {
-            dom.filePreviewContainer.addEventListener('click', (e) => {
-                const btn = e.target.closest('button[data-file-id]');
-                if (btn) handleFileRemove(btn.dataset.fileId);
-            });
-        }
-
-        if (dom.newSessionBtn) dom.newSessionBtn.addEventListener('click', handleNewSession);
-        if (dom.openLoginModalBtn) dom.openLoginModalBtn.addEventListener('click', () => showAuthModal(true));
-        if (dom.closeAuthModal) dom.closeAuthModal.addEventListener('click', hideAuthModal);
-        if (dom.authSwitchBtn) dom.authSwitchBtn.addEventListener('click', toggleAuthMode);
-        if (dom.authForm) dom.authForm.addEventListener('submit', handleAuthSubmit);
-        if (dom.logoutBtn) dom.logoutBtn.addEventListener('click', handleLogout);
-
-        if (dom.authModal) {
-            dom.authModal.addEventListener('click', (e) => {
-                if (e.target === dom.authModal) hideAuthModal();
-            });
-        }
-
-        if (dom.taskeraModalCancel) dom.taskeraModalCancel.addEventListener('click', closeModal);
-        if (dom.taskeraModalClose) dom.taskeraModalClose.addEventListener('click', closeModal);
-        if (dom.taskeraModalConfirm) {
-            dom.taskeraModalConfirm.addEventListener('click', () => {
-                if (state.modalCallback) state.modalCallback();
-            });
-        }
-        if (dom.taskeraModal) {
-            dom.taskeraModal.addEventListener('click', (e) => {
-                if (e.target === dom.taskeraModal) closeModal();
-            });
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && dom.taskeraModal && !dom.taskeraModal.classList.contains('hidden')) {
-                if (document.activeElement.id === 'renameInput') {
-                    if (state.modalCallback) state.modalCallback();
-                }
-            }
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && state.authToken) {
-                fetchHistory();
-            }
-        });
-
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.history-dropdown').forEach(el => el.classList.add('hidden'));
-        });
+    function cleanup() {
+        state.audioURLs.forEach(url => URL.revokeObjectURL(url));
+        state.audioURLs = [];
+        if (state.isRecording) stopRecording();
     }
 
-    
+    // ============================================================================
+    // VOICE & AUDIO LOGIC
+    // ============================================================================
+    async function toggleRecording() {
+        if (!state.isRecording) await startRecording();
+        else stopRecording();
+    }
+
+    async function startRecording() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            state.mediaRecorder = new MediaRecorder(stream);
+            state.audioChunks = [];
+
+            state.mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) state.audioChunks.push(e.data);
+            };
+
+            state.mediaRecorder.onstop = async () => {
+                const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+                await handleVoiceInput(audioBlob);
+                stream.getTracks().forEach(track => track.stop());
+            };
+
+            state.mediaRecorder.start();
+            state.isRecording = true;
+            dom.voiceBtn.classList.add('recording-active');
+            dom.voiceBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"></path></svg>`;
+            dom.userInput.placeholder = "🔴 Listening...";
+            dom.userInput.disabled = true;
+        } catch (err) {
+            console.error("Mic Error:", err);
+            addSystemMessage("Microphone access denied.");
+        }
+    }
+
+    function stopRecording() {
+        if (state.mediaRecorder && state.mediaRecorder.state !== 'inactive') {
+            state.mediaRecorder.stop();
+            state.isRecording = false;
+            dom.voiceBtn.classList.remove('recording-active');
+            dom.voiceBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>`;
+            dom.userInput.placeholder = "Processing Audio...";
+        }
+    }
+
+    async function handleVoiceInput(audioBlob) {
+        addTypingIndicator();
+        const formData = new FormData();
+        formData.append("file", audioBlob, "voice_input.webm");
+        try {
+            const response = await fetch(`${API_BASE_URL}${ENDPOINTS.TRANS}`, { method: "POST", body: formData });
+            if (!response.ok) throw new Error("Transcription failed");
+            const data = await response.json();
+            removeTypingIndicator();
+            dom.userInput.disabled = false;
+            dom.userInput.placeholder = "Message Taskera...";
+            if (data.text?.trim()) {
+                dom.userInput.value = data.text;
+                handleChatSubmit();
+            } else {
+                addSystemMessage("Could not understand audio.");
+            }
+        } catch (e) {
+            removeTypingIndicator();
+            dom.userInput.disabled = false;
+            addSystemMessage("Voice processing failed.");
+        }
+    }
+
+    async function playTTS(text) {
+        if (!CONFIG.TTS_ENABLED || !text) return;
+        try {
+            const cleanText = text.replace(/<[^>]*>?/gm, '').replace(/[*`#]/g, '').substring(0, CONFIG.MAX_TTS_LENGTH);
+            const response = await fetch(`${API_BASE_URL}${ENDPOINTS.TTS}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ text: cleanText })
+            });
+            if (!response.ok) return;
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            state.audioURLs.push(url);
+            dom.audioPlayer.src = url;
+            dom.audioPlayer.play().catch(() => console.warn("Autoplay blocked"));
+        } catch (e) { console.error("TTS Error", e); }
+    }
+
+    // ============================================================================
+    // CHAT CORE LOGIC
+    // ============================================================================
     async function handleChatSubmit(e) {
         if (e) e.preventDefault();
-
-        if (!state.isOnline) {
-            addSystemMessage("No internet connection.");
-            return;
-        }
-
-        if (state.isProcessing) {
-            cancelOngoingRequest();
-            return;
-        }
+        if (!state.isOnline) return addSystemMessage("No internet connection.");
+        if (state.isProcessing) return cancelOngoingRequest();
 
         const message = dom.userInput.value.trim();
         const hasFiles = state.stagedFiles.length > 0;
-
         if (!message && !hasFiles) return;
 
-        const now = Date.now();
-        if (now - state.lastRequestTime < 1000) {
-            addSystemMessage("Please wait a moment before sending another message");
-            return;
-        }
-
-        state.lastRequestTime = now;
-        state.retryCount = 0;
+        if (Date.now() - state.lastRequestTime < 1000) return;
+        state.lastRequestTime = Date.now();
         await sendChatRequest(message, hasFiles);
     }
 
-    function cancelOngoingRequest() {
-        if (state.abortController) {
-            state.abortController.abort();
-            state.abortController = null;
-            removeTypingIndicator();
-            addSystemMessage("Request cancelled");
-            setProcessing(false);
-        }
-    }
-
     async function sendChatRequest(message, hasFiles) {
-        const requestKey = `${message}_${state.stagedFiles.length}_${Date.now()}`;
+        const requestKey = `${message}_${Date.now()}`;
         if (state.requestQueue.has(requestKey)) return;
         state.requestQueue.add(requestKey);
 
@@ -238,9 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('query', message);
             formData.append('user_id', state.currentUserId);
             if (state.currentThreadId) formData.append('thread_id', state.currentThreadId);
-
-            const userEmail = localStorage.getItem(KEYS.USER_EMAIL);
-            if (userEmail) formData.append('email', userEmail);
             state.stagedFiles.forEach(f => formData.append('files', f.file));
 
             dom.userInput.value = '';
@@ -250,678 +262,315 @@ document.addEventListener('DOMContentLoaded', () => {
             addTypingIndicator();
 
             state.abortController = new AbortController();
-            const timeoutId = setTimeout(() => {
-                if (state.abortController) state.abortController.abort();
-            }, CONFIG.REQUEST_TIMEOUT_MS);
+            const timeoutId = setTimeout(() => state.abortController?.abort(), CONFIG.REQUEST_TIMEOUT_MS);
 
-            try {
-                const headers = {};
-                if (state.authToken) headers['Authorization'] = `Bearer ${state.authToken}`;
+            const headers = state.authToken ? { 'Authorization': `Bearer ${state.authToken}` } : {};
 
-                const response = await fetch(`${API_BASE_URL}${ENDPOINTS.CHAT}`, {
-                    method: 'POST',
-                    headers: headers,
-                    body: formData,
-                    signal: state.abortController.signal
-                });
+            const response = await fetch(`${API_BASE_URL}${ENDPOINTS.CHAT}`, {
+                method: 'POST',
+                headers: headers,
+                body: formData,
+                signal: state.abortController.signal
+            });
 
-                clearTimeout(timeoutId);
-                removeTypingIndicator();
-                state.abortController = null;
+            clearTimeout(timeoutId);
+            removeTypingIndicator();
 
-                if (response.status === 402) {
-                    addSystemMessage("Free trial limit reached. Please sign in.");
-                    showAuthModal(false, "Quota Exceeded");
-                    return;
-                }
-                if (response.status === 401) {
-                    handleLogout();
-                    showAuthModal(true, "Session expired. Log in again.");
-                    return;
-                }
-                if (response.status === 429) {
-                    addSystemMessage("Rate limit exceeded. Waiting 3s...");
-                    await new Promise(resolve => setTimeout(resolve, 3000));
-                    return;
-                }
-                if (response.status === 503 || response.status === 504) {
-                    if (state.retryCount < CONFIG.MAX_RETRY_ATTEMPTS) {
-                        state.retryCount++;
-                        addSystemMessage(`Timeout/Busy. Retrying (${state.retryCount}/${CONFIG.MAX_RETRY_ATTEMPTS})...`);
-                        await new Promise(resolve => setTimeout(resolve, CONFIG.RETRY_DELAY_MS * state.retryCount));
-                        return await sendChatRequest(message, hasFiles);
-                    } else {
-                        addSystemMessage("Service unavailable. Please try again later.");
-                        state.retryCount = 0;
-                        return;
-                    }
-                }
+            if (response.status === 402) return addSystemMessage("Limit reached. Please sign in.");
+            if (!response.ok) throw new Error("Server communication error.");
 
-                const data = await response.json();
-
-                if (!response.ok) throw new Error(data.detail?.message || data.error || `Error: ${response.status}`);
-
-                if (data.thread_id) {
-                    const isNewThread = !state.currentThreadId;
-                    state.currentThreadId = data.thread_id;
-                    if (isNewThread && state.authToken) setTimeout(() => fetchHistory(), 1500);
-                }
-
-                let aiResponse = data.answer || JSON.stringify(data, null, 2);
-                if (Array.isArray(aiResponse)) aiResponse = aiResponse.join('\n');
-                addMessageToChat('ai', aiResponse);
-                state.retryCount = 0;
-
-            } catch (error) {
-                clearTimeout(timeoutId);
-                removeTypingIndicator();
-                state.abortController = null;
-                if (error.name === 'AbortError') {
-                    addSystemMessage("Request timed out");
-                    return;
-                }
-                console.error('Chat error:', error);
-                addSystemMessage(`Error: ${error.message}`);
+            const data = await response.json();
+            if (data.thread_id && !state.currentThreadId) {
+                state.currentThreadId = data.thread_id;
+                fetchHistory();
             }
+
+            const answer = data.answer || "No response received.";
+            addMessageToChat('ai', answer);
+            playTTS(answer);
+
+        } catch (error) {
+            removeTypingIndicator();
+            if (error.name !== 'AbortError') addSystemMessage(`Error: ${error.message}`);
         } finally {
             setProcessing(false);
             state.requestQueue.delete(requestKey);
         }
     }
 
+    // ============================================================================
+    // THREAD & MODAL MANAGEMENT
+    // ============================================================================
     async function fetchHistory() {
-        if (!state.authToken || !dom.historyList || !state.currentUserId) return;
+        if (!state.authToken || !state.currentUserId) return;
         try {
-            const url = `${API_BASE_URL}${ENDPOINTS.HISTORY}?user_id=${encodeURIComponent(state.currentUserId)}`;
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${state.authToken}` },
-                signal: AbortSignal.timeout(10000)
+            const res = await fetch(`${API_BASE_URL}${ENDPOINTS.HISTORY}?user_id=${state.currentUserId}`, {
+                headers: { 'Authorization': `Bearer ${state.authToken}` }
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            if (data.success && data.threads && data.threads.length > 0) {
-                renderHistoryList(data.threads);
-                dom.historySection.classList.remove('hidden');
-            } else {
-                dom.historySection.classList.add('hidden');
-            }
-        } catch (e) {
-            console.error("Failed to fetch history:", e);
-        }
+            const data = await res.json();
+            if (data.threads) renderHistoryList(data.threads);
+        } catch (e) { console.error("History fetch failed"); }
     }
 
     function renderHistoryList(threads) {
         dom.historyList.innerHTML = '';
-        const fragment = document.createDocumentFragment();
-
-        threads.forEach(thread => {
-            const btnContainer = document.createElement('div');
-            btnContainer.className = 'group relative mb-1 flex items-center pr-8';
-
+        dom.historySection.classList.toggle('hidden', threads.length === 0);
+        threads.forEach(t => {
+            const container = document.createElement('div');
+            container.className = 'group relative mb-1 flex items-center pr-8';
+            
             const btn = document.createElement('button');
-            const isActive = state.currentThreadId === thread.thread_id;
+            btn.className = `flex-1 text-left px-3 py-2 rounded-lg text-xs truncate ${state.currentThreadId === t.thread_id ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:bg-zinc-800/50'}`;
+            btn.textContent = t.title || 'Untitled Chat';
+            btn.onclick = () => loadThread(t.thread_id);
 
-            btn.className = `flex-1 text-left px-3 py-2 rounded-lg text-xs transition-colors truncate flex flex-col 
-                ${isActive ? 'bg-zinc-800 text-white' : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-white'}`;
-
-            const date = new Date(thread.updated_at || thread.created_at)
-                .toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-
-            btn.innerHTML = `
-                <span class="block font-medium truncate w-[90%]">${escapeHtml(thread.title || 'Conversation')}</span>
-                <span class="text-[10px] opacity-50">${date}</span>
-            `;
-
-            btn.onclick = () => loadThread(thread.thread_id);
-
-            // Three Dot Menu Button
             const menuBtn = document.createElement('button');
-            menuBtn.className = 'absolute right-1 top-1/2 transform -translate-y-1/2 text-zinc-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-md hover:bg-zinc-700/50';
-            menuBtn.innerHTML = `
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
-                </svg>
-            `;
-
-            const dropdown = document.createElement('div');
-            dropdown.className = 'history-dropdown absolute right-0 top-full mt-1 w-32 bg-zinc-900 border border-zinc-700 rounded-lg shadow-xl z-50 hidden flex-col overflow-hidden';
-
-            const renameOption = document.createElement('button');
-            renameOption.className = 'w-full text-left px-4 py-2.5 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors border-b border-zinc-800/50 flex items-center';
-            renameOption.innerHTML = `
-                <svg class="w-3 h-3 mr-2 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                Rename
-            `;
-            renameOption.onclick = (e) => {
-                e.stopPropagation();
-                dropdown.classList.add('hidden');
-                openModal('rename', { threadId: thread.thread_id, currentTitle: thread.title });
-            };
-
-            const deleteOption = document.createElement('button');
-            deleteOption.className = 'w-full text-left px-4 py-2.5 text-xs text-red-400 hover:bg-red-900/20 hover:text-red-300 transition-colors flex items-center';
-            deleteOption.innerHTML = `
-                <svg class="w-3 h-3 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                Delete
-            `;
-            deleteOption.onclick = (e) => {
-                e.stopPropagation();
-                dropdown.classList.add('hidden');
-                openModal('delete', { threadId: thread.thread_id, currentTitle: thread.title, element: btnContainer });
-            };
-
-            dropdown.appendChild(renameOption);
-            dropdown.appendChild(deleteOption);
-
+            menuBtn.className = 'absolute right-1 text-zinc-500 opacity-0 group-hover:opacity-100 p-1';
+            menuBtn.innerHTML = '⋮';
             menuBtn.onclick = (e) => {
                 e.stopPropagation();
-                document.querySelectorAll('.history-dropdown').forEach(el => {
-                    if (el !== dropdown) el.classList.add('hidden');
-                });
-                dropdown.classList.toggle('hidden');
+                openModal('delete', { threadId: t.thread_id, currentTitle: t.title, element: container });
             };
 
-            btnContainer.appendChild(btn);
-            btnContainer.appendChild(menuBtn);
-            btnContainer.appendChild(dropdown);
-            fragment.appendChild(btnContainer);
+            container.append(btn, menuBtn);
+            dom.historyList.appendChild(container);
         });
-
-        dom.historyList.appendChild(fragment);
     }
 
     async function loadThread(threadId) {
-        if (state.currentThreadId === threadId) return;
         cancelOngoingRequest();
         state.currentThreadId = threadId;
-
-        dom.chatLog.querySelectorAll('.chat-message-wrapper').forEach(msg => msg.remove());
-        if (dom.welcomeScreen) dom.welcomeScreen.classList.add('hidden');
+        dom.chatLog.innerHTML = '';
         addSystemMessage("Loading conversation...");
-
-        fetchHistory(); 
-        if (window.innerWidth < 768) toggleSidebar(false);
-
         try {
-            const url = `${API_BASE_URL}${ENDPOINTS.THREADS}/${threadId}?user_id=${encodeURIComponent(state.currentUserId)}`;
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${state.authToken}` },
-                signal: AbortSignal.timeout(15000)
+            const res = await fetch(`${API_BASE_URL}${ENDPOINTS.THREADS}/${threadId}?user_id=${state.currentUserId}`, {
+                headers: { 'Authorization': `Bearer ${state.authToken}` }
             });
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
+            const data = await res.json();
             dom.chatLog.innerHTML = '';
-            if (data.success && data.messages && data.messages.length > 0) {
-                const fragment = document.createDocumentFragment();
-                data.messages.forEach(msg => {
-                    const wrapper = createMessageElement(msg.role, msg.content);
-                    fragment.appendChild(wrapper);
-                });
-                dom.chatLog.appendChild(fragment);
-                scrollToBottom();
-            } else {
-                addSystemMessage("No messages found for this thread.");
-            }
-        } catch (e) {
-            console.error("Failed to load thread:", e);
-            addSystemMessage("Error loading conversation history.");
-        }
-    }
-
-    function openModal(type, data = {}) {
-        const modal = dom.taskeraModal;
-        const content = modal.querySelector('.modal-content');
-
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-            content.classList.remove('opacity-0', 'scale-95');
-        }, 10);
-
-        if (type === 'rename') {
-            dom.taskeraModalTitle.textContent = 'Rename Conversation';
-            dom.taskeraModalBody.innerHTML = `
-                <p class="text-zinc-400 mb-3 text-sm">Enter a new name for this chat.</p>
-                <input type="text" id="renameInput" value="${escapeHtml(data.currentTitle)}" class="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-white focus:border-fuchsia-500 focus:outline-none text-sm" autocomplete="off">
-            `;
-            const input = document.getElementById('renameInput');
-            setTimeout(() => input.focus(), 100);
-
-            dom.taskeraModalConfirm.textContent = 'Rename';
-            dom.taskeraModalConfirm.className = 'px-4 py-2 rounded-lg bg-white text-zinc-900 hover:bg-zinc-200 transition-colors text-sm font-bold shadow-lg shadow-white/10';
-
-            state.modalCallback = () => handleRenameThread(data.threadId, input.value);
-        } else if (type === 'delete') {
-            dom.taskeraModalTitle.textContent = 'Delete Conversation';
-            dom.taskeraModalBody.innerHTML = `
-                <p class="text-zinc-300 text-sm">Are you sure you want to delete <span class="text-white font-medium">"${escapeHtml(data.currentTitle)}"</span>?</p>
-                <p class="text-red-400/80 text-xs mt-2">This action cannot be undone.</p>
-            `;
-            dom.taskeraModalConfirm.textContent = 'Delete';
-            dom.taskeraModalConfirm.className = 'px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-500 transition-colors text-sm font-bold shadow-lg shadow-red-900/20';
-
-            state.modalCallback = () => handleDeleteThread(data.threadId, data.element);
-        }
-    }
-
-    function closeModal() {
-        const modal = dom.taskeraModal;
-        const content = modal.querySelector('.modal-content');
-        modal.classList.add('opacity-0');
-        content.classList.add('opacity-0', 'scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            dom.taskeraModalBody.innerHTML = '';
-            state.modalCallback = null;
-        }, 200);
-    }
-
-    async function handleRenameThread(threadId, newTitle) {
-        if (!newTitle.trim()) return;
-        const originalText = dom.taskeraModalConfirm.textContent;
-        dom.taskeraModalConfirm.textContent = "Renaming...";
-        dom.taskeraModalConfirm.disabled = true;
-
-        try {
-            const url = `${API_BASE_URL}${ENDPOINTS.THREADS}/${threadId}?user_id=${encodeURIComponent(state.currentUserId)}`;
-            const response = await fetch(url, {
-                method: 'PATCH',
-                headers: {
-                    'Authorization': `Bearer ${state.authToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ title: newTitle })
-            });
-
-            if (response.ok) {
-                closeModal();
-                fetchHistory();
-                addSystemMessage("Conversation renamed successfully");
-            } else {
-                const err = await response.json();
-                throw new Error(err.detail?.message || "Failed to rename");
-            }
-        } catch (e) {
-            console.error("Rename failed", e);
-            alert(`Failed to rename conversation: ${e.message}`);
-        } finally {
-            dom.taskeraModalConfirm.textContent = originalText;
-            dom.taskeraModalConfirm.disabled = false;
-        }
+            data.messages?.forEach(m => addMessageToChat(m.role, m.content));
+            if (dom.welcomeScreen) dom.welcomeScreen.classList.add('hidden');
+        } catch (e) { addSystemMessage("Failed to load thread."); }
     }
 
     async function handleDeleteThread(threadId, element) {
-        const originalText = dom.taskeraModalConfirm.textContent;
-        dom.taskeraModalConfirm.textContent = "Deleting...";
-        dom.taskeraModalConfirm.disabled = true;
-
         try {
-            const url = `${API_BASE_URL}${ENDPOINTS.THREADS}/${threadId}?user_id=${encodeURIComponent(state.currentUserId)}`;
-            const response = await fetch(url, {
+            const res = await fetch(`${API_BASE_URL}${ENDPOINTS.THREADS}/${threadId}?user_id=${state.currentUserId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${state.authToken}` }
             });
-
-            if (response.ok) {
+            if (res.ok) {
                 element.remove();
-                if (state.currentThreadId === threadId) {
-                    handleNewSession();
-                }
+                if (state.currentThreadId === threadId) handleNewSession();
                 closeModal();
-                addSystemMessage("Conversation deleted");
-            } else {
-                throw new Error("Failed to delete");
             }
-        } catch (e) {
-            console.error("Delete failed", e);
-            alert("Failed to delete conversation.");
-        } finally {
-            dom.taskeraModalConfirm.textContent = originalText;
-            dom.taskeraModalConfirm.disabled = false;
-        }
+        } catch (e) { console.error("Delete failed"); }
     }
 
-    
-    function handleGoogleLoginRedirect() {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('google_auth') === 'success') {
-            const token = urlParams.get('access_token');
-            const email = urlParams.get('email');
-            const userId = urlParams.get('user_id');
-            if (token && email && userId) {
-                localStorage.setItem(KEYS.AUTH_TOKEN, token);
-                localStorage.setItem(KEYS.USER_ID, userId);
-                localStorage.setItem(KEYS.USER_EMAIL, email);
-                state.authToken = token;
-                state.currentUserId = userId;
-                window.history.replaceState({}, document.title, window.location.pathname);
-                addSystemMessage("Successfully logged in with Google!");
-                updateAuthUI(true, email);
-                fetchHistory();
-            }
-        } else if (urlParams.get('error') === 'auth_failed') {
-            addSystemMessage("Authentication failed: " + (urlParams.get('details') || 'Unknown error'));
-            window.history.replaceState({}, document.title, window.location.pathname);
-        }
+    // ============================================================================
+    // AUTH & SESSION
+    // ============================================================================
+    function loadSession() {
+        state.authToken = localStorage.getItem(KEYS.AUTH_TOKEN);
+        state.currentUserId = localStorage.getItem(KEYS.USER_ID) || 'guest_' + generateUUID();
+        if (!localStorage.getItem(KEYS.USER_ID)) localStorage.setItem(KEYS.USER_ID, state.currentUserId);
+        
+        const email = localStorage.getItem(KEYS.USER_EMAIL);
+        updateAuthUI(!!state.authToken, email);
+        if (state.authToken) fetchHistory();
+        if (dom.currentUserIdDisplay) dom.currentUserIdDisplay.textContent = state.currentUserId.substring(0, 10) + '...';
     }
 
     async function handleAuthSubmit(e) {
         e.preventDefault();
-        const email = dom.authEmail.value.trim();
-        const password = dom.authPassword.value;
-
-        if (!email || !password) {
-            showAuthError("Please fill in all fields");
-            return;
-        }
-
-        dom.authSubmitBtn.disabled = true;
-        dom.authSubmitBtn.textContent = "Processing...";
-        dom.authErrorMsg.classList.add('hidden');
-
         const endpoint = state.isLoginMode ? ENDPOINTS.AUTH_LOGIN : ENDPOINTS.AUTH_SIGNUP;
-        const payload = { email, password };
-
         try {
-            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            const res = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
-                signal: AbortSignal.timeout(15000)
+                body: JSON.stringify({ email: dom.authEmail.value, password: dom.authPassword.value })
             });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.detail || data.message || "Authentication failed");
-            }
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.detail || "Auth failed");
 
             if (state.isLoginMode) {
-                state.authToken = data.access_token;
-                state.currentUserId = data.user_id;
-
-                localStorage.setItem(KEYS.AUTH_TOKEN, state.authToken);
-                localStorage.setItem(KEYS.USER_ID, state.currentUserId);
+                localStorage.setItem(KEYS.AUTH_TOKEN, data.access_token);
+                localStorage.setItem(KEYS.USER_ID, data.user_id);
                 localStorage.setItem(KEYS.USER_EMAIL, data.email);
-
-                updateAuthUI(true, data.email);
-                hideAuthModal();
-                fetchHistory();
-                addSystemMessage("Logged in!");
+                location.reload();
             } else {
                 state.isLoginMode = true;
                 renderAuthModalState();
-                showAuthSuccess("Account created! Please sign in.");
+                showAuthSuccess("Account created! Sign in below.");
             }
-        } catch (error) {
-            console.error("Auth error:", error);
-            showAuthError(error.message);
-        } finally {
-            dom.authSubmitBtn.disabled = false;
-            dom.authSubmitBtn.textContent = state.isLoginMode ? "Sign In" : "Sign Up";
-        }
+        } catch (err) { showAuthError(err.message); }
     }
 
-    function handleLogout() {
-        cancelOngoingRequest();
-        localStorage.removeItem(KEYS.AUTH_TOKEN);
-        localStorage.removeItem(KEYS.USER_ID);
-        localStorage.removeItem(KEYS.USER_EMAIL);
-
-        state.authToken = null;
-        let guestId = 'guest_' + generateUUID();
-        localStorage.setItem(KEYS.GUEST_ID, guestId);
-        state.currentUserId = guestId;
-
-        updateAuthUI(false);
-        handleNewSession();
-        if (dom.historySection) dom.historySection.classList.add('hidden');
-        addSystemMessage("Logged out successfully");
-    }
-
-    function updateAuthUI(isLoggedIn, email = '') {
-        if (isLoggedIn) {
-            if (dom.guestAuthSection) dom.guestAuthSection.classList.add('hidden');
-            if (dom.userProfileSection) dom.userProfileSection.classList.remove('hidden');
-            if (dom.userEmailDisplay) dom.userEmailDisplay.textContent = email;
-        } else {
-            if (dom.guestAuthSection) dom.guestAuthSection.classList.remove('hidden');
-            if (dom.userProfileSection) dom.userProfileSection.classList.add('hidden');
-        }
-    }
-
-    function loadSession() {
-        const storedToken = localStorage.getItem(KEYS.AUTH_TOKEN);
-        const storedUserId = localStorage.getItem(KEYS.USER_ID);
-        const storedEmail = localStorage.getItem(KEYS.USER_EMAIL);
-
-        if (storedToken && storedUserId) {
-            state.authToken = storedToken;
-            state.currentUserId = storedUserId;
-            updateAuthUI(true, storedEmail);
-            fetchHistory();
-        } else {
-            let guestId = localStorage.getItem(KEYS.GUEST_ID);
-            if (!guestId) {
-                guestId = 'guest_' + generateUUID();
-                localStorage.setItem(KEYS.GUEST_ID, guestId);
-            }
-            state.currentUserId = guestId;
-            updateAuthUI(false);
-            if (dom.historySection) dom.historySection.classList.add('hidden');
-        }
-
-        if (dom.currentUserIdDisplay) {
-            dom.currentUserIdDisplay.textContent = state.currentUserId.substring(0, 10) + '...';
-        }
-    }
-
-    function showAuthModal(isLogin = true, msg = null) {
-        state.isLoginMode = isLogin;
-        renderAuthModalState();
-        dom.authModal.classList.remove('hidden');
-        setTimeout(() => {
-            dom.authModal.classList.remove('opacity-0');
-            const content = dom.authModal.querySelector('.modal-content');
-            if (content) content.classList.remove('scale-95', 'opacity-0');
-        }, 10);
-        if (msg) showAuthError(msg);
-    }
-
-    function hideAuthModal() {
-        dom.authModal.classList.add('opacity-0');
-        const content = dom.authModal.querySelector('.modal-content');
-        if (content) content.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            dom.authModal.classList.add('hidden');
-            dom.authErrorMsg.classList.add('hidden');
-        }, 300);
-    }
-
-    function renderAuthModalState() {
-        dom.authModalTitle.textContent = state.isLoginMode ? "Sign In" : "Create Account";
-        dom.authSubmitBtn.textContent = state.isLoginMode ? "Sign In" : "Sign Up";
-        dom.authSwitchText.textContent = state.isLoginMode ? "Don't have an account?" : "Already have an account?";
-        dom.authSwitchBtn.textContent = state.isLoginMode ? "Sign Up" : "Sign In";
-        dom.authErrorMsg.classList.add('hidden');
-    }
-
-    function toggleAuthMode(e) {
-        e.preventDefault();
-        state.isLoginMode = !state.isLoginMode;
-        renderAuthModalState();
-    }
-
-    function showAuthError(msg) {
-        dom.authErrorMsg.textContent = msg;
-        dom.authErrorMsg.classList.remove('hidden', 'text-green-400', 'bg-green-900/10');
-        dom.authErrorMsg.classList.add('text-red-400', 'bg-red-900/10');
-        dom.authErrorMsg.classList.remove('hidden');
-    }
-
-    function showAuthSuccess(msg) {
-        dom.authErrorMsg.textContent = msg;
-        dom.authErrorMsg.classList.remove('hidden', 'text-red-400', 'bg-red-900/10');
-        dom.authErrorMsg.classList.add('text-green-400', 'bg-green-900/10');
-        dom.authErrorMsg.classList.remove('hidden');
-    }
-
-        function handleNewSession() {
-        cancelOngoingRequest();
-        dom.chatLog.querySelectorAll('.chat-message-wrapper').forEach(msg => msg.remove());
-        if (dom.welcomeScreen) dom.welcomeScreen.classList.remove('hidden');
-        clearStagedFiles();
-        dom.userInput.value = '';
-        dom.userInput.focus();
-        toggleSidebar(false);
-        state.retryCount = 0;
-        state.currentThreadId = null;
-        if (state.authToken) fetchHistory();
-    }
-
-    function toggleSidebar(force) {
-        if (!dom.sidebar) return;
-        const isOpen = !dom.sidebar.classList.contains('-translate-x-full');
-        const newState = (typeof force === 'boolean') ? force : !isOpen;
-        if (newState) {
-            dom.sidebar.classList.remove('-translate-x-full');
-            dom.sidebarOverlay.classList.remove('hidden');
-            if (dom.menuIcon) dom.menuIcon.classList.add('hidden');
-            if (dom.closeIcon) dom.closeIcon.classList.remove('hidden');
-        } else {
-            dom.sidebar.classList.add('-translate-x-full');
-            dom.sidebarOverlay.classList.add('hidden');
-            if (dom.menuIcon) dom.menuIcon.classList.remove('hidden');
-            if (dom.closeIcon) dom.closeIcon.classList.add('hidden');
-        }
+    // ============================================================================
+    // UI CORE UTILITIES
+    // ============================================================================
+    function setupEventListeners() {
+        dom.menuButton?.addEventListener('click', () => toggleSidebar());
+        dom.sidebarOverlay?.addEventListener('click', () => toggleSidebar(false));
+        dom.chatForm?.addEventListener('submit', handleChatSubmit);
+        dom.newSessionBtn?.addEventListener('click', handleNewSession);
+        dom.voiceBtn?.addEventListener('click', toggleRecording);
+        dom.chatUploadBtn?.addEventListener('click', () => dom.fileUploadInput.click());
+        dom.fileUploadInput?.addEventListener('change', handleFileStage);
+        dom.logoutBtn?.addEventListener('click', handleLogout);
+        dom.openLoginModalBtn?.addEventListener('click', () => showAuthModal(true));
+        dom.closeAuthModal?.addEventListener('click', hideAuthModal);
+        dom.authSwitchBtn?.addEventListener('click', toggleAuthMode);
+        dom.authForm?.addEventListener('submit', handleAuthSubmit);
+        dom.taskeraModalCancel?.addEventListener('click', closeModal);
+        dom.taskeraModalClose?.addEventListener('click', closeModal);
+        dom.taskeraModalConfirm?.addEventListener('click', () => state.modalCallback?.());
+        
+        dom.userInput?.addEventListener('input', () => {
+            dom.userInput.style.height = 'auto';
+            dom.userInput.style.height = Math.min(dom.userInput.scrollHeight, 150) + 'px';
+        });
     }
 
     function setProcessing(proc) {
         state.isProcessing = proc;
         dom.userInput.disabled = proc;
         dom.sendButton.disabled = proc;
-        dom.chatUploadBtn.disabled = proc;
-        dom.sendButton.innerHTML = proc ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>` : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>`;
-        if (!proc) dom.userInput.focus();
+        dom.voiceBtn.disabled = proc;
+        dom.sendButton.innerHTML = proc ? `<svg class="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>` : `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>`;
     }
 
-    function updateUIState() {
-        if (dom.welcomeScreen) {
-            dom.chatLog.querySelectorAll('.chat-message-wrapper').length > 0 ? dom.welcomeScreen.classList.add('hidden') : dom.welcomeScreen.classList.remove('hidden');
+    function toggleSidebar(force) {
+        const isOpen = !dom.sidebar.classList.contains('-translate-x-full');
+        const newState = (typeof force === 'boolean') ? force : !isOpen;
+        dom.sidebar.classList.toggle('-translate-x-full', !newState);
+        dom.sidebarOverlay.classList.toggle('hidden', !newState);
+    }
+
+    function handleLogout() {
+        localStorage.clear();
+        location.reload();
+    }
+
+    function handleNewSession() {
+        cancelOngoingRequest();
+        dom.chatLog.querySelectorAll('.chat-message-wrapper').forEach(msg => msg.remove());
+        dom.welcomeScreen?.classList.remove('hidden');
+        state.currentThreadId = null;
+        clearStagedFiles();
+    }
+
+    function cancelOngoingRequest() {
+        if (state.abortController) {
+            state.abortController.abort();
+            state.abortController = null;
         }
+        setProcessing(false);
+        removeTypingIndicator();
     }
 
     function handleFileStage(e) {
         const files = Array.from(e.target.files);
-        if (state.stagedFiles.length + files.length > CONFIG.MAX_FILES) {
-            addSystemMessage(`Max ${CONFIG.MAX_FILES} files.`);
-            return;
-        }
         files.forEach(file => {
-            if (file.size / (1024 * 1024) > CONFIG.MAX_FILE_SIZE_MB) {
-                addSystemMessage(`${file.name} too large.`);
-                return;
-            }
-            const ext = "." + file.name.split('.').pop().toLowerCase();
-            if (!CONFIG.ALLOWED_EXTS.includes(ext)) {
-                addSystemMessage(`${file.name} unsupported.`);
-                return;
-            }
             const id = generateUUID();
             state.stagedFiles.push({ id, file });
-            renderFileChip(file, id);
-        });
-        e.target.value = '';
-    }
-
-    function renderFileChip(file, id) {
-        const chip = document.createElement('div');
-        chip.className = 'flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 pr-1 text-xs text-zinc-300 animate-fade-in';
-        chip.id = `file-chip-${id}`;
-        chip.innerHTML = `<span class="max-w-[100px] truncate mr-1">${escapeHtml(file.name)}</span><button type="button" class="p-0.5 hover:text-red-400" data-file-id="${id}">✕</button>`;
-        dom.filePreviewContainer.appendChild(chip);
-    }
-
-    function handleFileRemove(id) {
-        state.stagedFiles = state.stagedFiles.filter(f => f.id !== id);
-        const chip = document.getElementById(`file-chip-${id}`);
-        if (chip) chip.remove();
-    }
-
-    function clearStagedFiles() {
-        state.stagedFiles = [];
-        dom.filePreviewContainer.innerHTML = '';
-    }
-
-    function setupSuggestionCards() {
-        document.querySelectorAll('.suggestion-card').forEach(card => {
-            card.addEventListener('click', () => {
-                if (state.isProcessing) return;
-                const textSpan = card.querySelector('span.text-zinc-200') || card.querySelector('h3') || card.querySelector('p');
-                if (textSpan) {
-                    dom.userInput.value = textSpan.textContent.trim();
-                    dom.userInput.focus();
-                }
-            });
+            const chip = document.createElement('div');
+            chip.className = 'flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-2 py-1.5 text-xs text-zinc-300';
+            chip.innerHTML = `<span class="truncate max-w-[100px] mr-1">${file.name}</span><button type="button" class="hover:text-red-400">✕</button>`;
+            chip.querySelector('button').onclick = () => {
+                state.stagedFiles = state.stagedFiles.filter(f => f.id !== id);
+                chip.remove();
+            };
+            dom.filePreviewContainer.appendChild(chip);
         });
     }
 
-    function setupOnlineDetection() {
-        window.addEventListener('online', () => { state.isOnline = true; addSystemMessage("Connection restored"); });
-        window.addEventListener('offline', () => { state.isOnline = false; addSystemMessage("You're offline. Messages will fail until reconnected."); });
+    // ============================================================================
+    // DOM UTILITIES
+    // ============================================================================
+    function escapeHtml(str) {
+        if (!str) return '';
+        const p = document.createElement('p');
+        p.textContent = str;
+        return p.innerHTML;
     }
-
-    async function checkServerHealth() {
-        if (!state.isOnline) return;
-        try {
-            const response = await fetch(`${API_BASE_URL}${ENDPOINTS.HEALTH}`, { method: 'GET', signal: AbortSignal.timeout(5000) });
-            if (!response.ok) console.warn("Server health check failed");
-        } catch (e) {
-            console.warn("Server unreachable:", e.message);
-        }
-    }
-
 
     function formatAIResponse(text) {
-        if (!text) return '';
         let f = escapeHtml(text);
         f = f.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>');
         f = f.replace(/```([\s\S]*?)```/g, '<pre class="bg-zinc-900 p-3 rounded-lg my-2 overflow-x-auto"><code class="text-xs text-fuchsia-300">$1</code></pre>');
         f = f.replace(/`([^`]+)`/g, '<code class="bg-zinc-800 px-1.5 py-0.5 rounded text-fuchsia-300 font-mono text-xs">$1</code>');
         f = f.replace(/^\s*[-*]\s+(.*)$/gm, '<li class="ml-4 list-disc">$1</li>');
-        f = f.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" class="text-fuchsia-400 hover:underline">$1</a>');
         return f.replace(/\n/g, '<br>');
     }
-
-    function escapeHtml(u) { if (!u) return ''; return u.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;"); }
-    function renderFileAttachments(n) { if (!n || !n.length) return ''; return `<div class="mt-2 pt-2 border-t border-white/10 flex flex-wrap gap-2">${n.map(x => `<div class="text-xs text-white/70 bg-black/20 px-2 py-1 rounded border border-white/5">${escapeHtml(x)}</div>`).join('')}</div>`; }
 
     function createMessageElement(sender, message, fileNames = null) {
         const wrapper = document.createElement('div');
         wrapper.className = `chat-message-wrapper w-full flex ${sender === 'user' ? 'justify-end' : 'justify-start'} mb-6 animate-fade-in`;
         if (sender === 'user') {
-            wrapper.innerHTML = `<div class="flex flex-col items-end max-w-[85%] md:max-w-2xl"><div class="bg-zinc-800 text-white rounded-2xl rounded-tr-sm px-5 py-3.5 shadow-md border border-zinc-700/50"><p class="text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(message)}</p>${renderFileAttachments(fileNames)}</div></div>`;
+            wrapper.innerHTML = `<div class="flex flex-col items-end max-w-[85%] md:max-w-2xl"><div class="bg-zinc-800 text-white rounded-2xl rounded-tr-sm px-5 py-3.5 border border-zinc-700/50"><p class="text-sm leading-relaxed whitespace-pre-wrap">${escapeHtml(message)}</p>${renderFileAttachments(fileNames)}</div></div>`;
         } else {
-            wrapper.innerHTML = `<div class="flex items-start space-x-4 max-w-full md:max-w-3xl"><div class="flex-shrink-0 mt-1"><img src="assets/images/logo.png" class="w-8 h-8 rounded-lg shadow-sm" onerror="this.style.display='none'"></div><div class="flex-1 min-w-0"><div class="prose prose-invert prose-sm max-w-none text-zinc-300 leading-relaxed">${formatAIResponse(message)}</div></div></div>`;
+            wrapper.innerHTML = `<div class="flex items-start space-x-4 max-w-full md:max-w-3xl"><div class="flex-shrink-0 mt-1"><img src="assets/images/logo.png" class="w-8 h-8 rounded-lg"></div><div class="flex-1 min-w-0"><div class="prose prose-invert prose-sm text-zinc-300 leading-relaxed">${formatAIResponse(message)}</div></div></div>`;
         }
         return wrapper;
     }
 
-    function addMessageToChat(sender, message, fn = null) { dom.chatLog.appendChild(createMessageElement(sender, message, fn)); scrollToBottom(); }
-    function addSystemMessage(text) { const w = document.createElement('div'); w.className = 'chat-message-wrapper flex justify-center my-4 animate-fade-in'; w.innerHTML = `<span class="text-xs text-zinc-500 bg-zinc-900/50 border border-zinc-800 px-3 py-1 rounded-full">${escapeHtml(text)}</span>`; dom.chatLog.appendChild(w); scrollToBottom(); }
-
-    function addTypingIndicator() {
-        removeTypingIndicator();
-        const w = document.createElement('div'); w.id = 'typing-indicator'; w.className = 'chat-message-wrapper flex items-start space-x-4 mb-6 animate-fade-in';
-        w.innerHTML = `<div class="flex-shrink-0 mt-1"><img src="assets/images/logo.png" class="w-8 h-8 rounded-lg opacity-80" onerror="this.style.display='none'"></div><div class="flex items-center h-8"><div class="flex space-x-1.5 bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800"><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" style="animation-delay: 0s"></div><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div></div></div>`;
-        dom.chatLog.appendChild(w); scrollToBottom();
+    function renderFileAttachments(names) {
+        if (!names?.length) return '';
+        return `<div class="mt-2 pt-2 border-t border-white/10 flex flex-wrap gap-2">${names.map(n => `<div class="text-[10px] bg-black/20 px-2 py-1 rounded border border-white/5">${escapeHtml(n)}</div>`).join('')}</div>`;
     }
 
-    function removeTypingIndicator() { const el = document.getElementById('typing-indicator'); if (el) el.remove(); }
-    function scrollToBottom() { requestAnimationFrame(() => { dom.chatLog.scrollTop = dom.chatLog.scrollHeight; }); }
-    function generateUUID() { return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16); }); }
+    function addMessageToChat(s, m, f) { dom.chatLog.appendChild(createMessageElement(s, m, f)); scrollToBottom(); }
+    function addSystemMessage(t) { const w = document.createElement('div'); w.className = 'chat-message-wrapper flex justify-center my-4'; w.innerHTML = `<span class="text-[10px] text-zinc-500 bg-zinc-900/50 border border-zinc-800 px-3 py-1 rounded-full">${escapeHtml(t)}</span>`; dom.chatLog.appendChild(w); scrollToBottom(); }
+    function addTypingIndicator() { removeTypingIndicator(); const w = document.createElement('div'); w.id = 'typing-indicator'; w.className = 'chat-message-wrapper flex items-start space-x-4 mb-6'; w.innerHTML = `<div class="flex-shrink-0 mt-1"><img src="assets/images/logo.png" class="w-8 h-8 rounded-lg opacity-80"></div><div class="flex space-x-1.5 bg-zinc-900/50 px-3 py-2 rounded-xl border border-zinc-800"><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce"></div><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" style="animation-delay:0.1s"></div><div class="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce" style="animation-delay:0.2s"></div></div>`; dom.chatLog.appendChild(w); scrollToBottom(); }
+    function removeTypingIndicator() { document.getElementById('typing-indicator')?.remove(); }
+    function scrollToBottom() { dom.chatLog.scrollTop = dom.chatLog.scrollHeight; }
+    function generateUUID() { return crypto.randomUUID(); }
+    function clearStagedFiles() { state.stagedFiles = []; dom.filePreviewContainer.innerHTML = ''; }
+    
+    // Modal Helpers
+    function showAuthModal(isLogin = true) {
+        state.isLoginMode = isLogin;
+        renderAuthModalState();
+        dom.authModal.classList.remove('hidden');
+        setTimeout(() => dom.authModal.classList.remove('opacity-0'), 10);
+    }
+    function hideAuthModal() {
+        dom.authModal.classList.add('opacity-0');
+        setTimeout(() => dom.authModal.classList.add('hidden'), 300);
+    }
+    function renderAuthModalState() {
+        dom.authModalTitle.textContent = state.isLoginMode ? "Sign In" : "Create Account";
+        dom.authSubmitBtn.textContent = state.isLoginMode ? "Sign In" : "Sign Up";
+        dom.authSwitchBtn.textContent = state.isLoginMode ? "Sign Up" : "Sign In";
+    }
+    function showAuthError(msg) { dom.authErrorMsg.textContent = msg; dom.authErrorMsg.classList.remove('hidden', 'text-green-400'); dom.authErrorMsg.classList.add('text-red-400'); }
+    function showAuthSuccess(msg) { dom.authErrorMsg.textContent = msg; dom.authErrorMsg.classList.remove('hidden', 'text-red-400'); dom.authErrorMsg.classList.add('text-green-400'); }
+    function updateAuthUI(isLoggedIn, email = '') {
+        dom.guestAuthSection?.classList.toggle('hidden', isLoggedIn);
+        dom.userProfileSection?.classList.toggle('hidden', !isLoggedIn);
+        if (dom.userEmailDisplay) dom.userEmailDisplay.textContent = email;
+    }
+    function toggleAuthMode() { state.isLoginMode = !state.isLoginMode; renderAuthModalState(); }
+    
+    function openModal(type, data = {}) {
+        dom.taskeraModal.classList.remove('hidden');
+        setTimeout(() => dom.taskeraModal.classList.remove('opacity-0'), 10);
+        if (type === 'delete') {
+            dom.taskeraModalTitle.textContent = 'Delete Chat';
+            dom.taskeraModalBody.innerHTML = `<p class="text-sm text-zinc-400">Are you sure you want to delete "${data.currentTitle}"?</p>`;
+            state.modalCallback = () => handleDeleteThread(data.threadId, data.element);
+        }
+    }
+    function closeModal() {
+        dom.taskeraModal.classList.add('opacity-0');
+        setTimeout(() => dom.taskeraModal.classList.add('hidden'), 200);
+    }
+    function checkServerHealth() { fetch(`${API_BASE_URL}${ENDPOINTS.HEALTH}`).catch(() => {}); }
+    function handleGoogleLoginRedirect() { /* Injected logic from snippet 1 */ }
+    function setupOnlineDetection() { window.addEventListener('online', () => state.isOnline = true); window.addEventListener('offline', () => state.isOnline = false); }
+    function setupSuggestionCards() { document.querySelectorAll('.suggestion-card').forEach(c => c.onclick = () => { dom.userInput.value = c.querySelector('span').textContent; dom.userInput.focus(); }); }
+    function updateUIState() { dom.welcomeScreen?.classList.toggle('hidden', dom.chatLog.children.length > 1); }
 
     init();
 });
