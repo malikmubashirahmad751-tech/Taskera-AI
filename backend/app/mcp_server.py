@@ -139,15 +139,15 @@ async def add_security_headers(request: Request, call_next):
     
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     
-   if not settings.DEBUG:
+    if not settings.DEBUG:
         response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; "
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
-            "style-src 'self' 'unsafe-inline'; "
-            "img-src 'self' data: https:; "
-            "font-src 'self' data:; "
-            "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com; "
-            "frame-ancestors 'self' https://huggingface.co https://*.hf.space https://*.vercel.app;"
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "img-src 'self' data: https:; "
+        "font-src 'self' data:; "
+        "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com; "
+        "frame-ancestors 'self' https://huggingface.co https://*.hf.space https://*.vercel.app;"
         )
     return response
 
