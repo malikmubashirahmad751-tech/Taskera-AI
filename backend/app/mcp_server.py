@@ -134,24 +134,21 @@ async def add_security_headers(request: Request, call_next):
     """
     response = await call_next(request)
     
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    
-    response.headers["X-Frame-Options"] = "DENY"
-    
+    response.headers["X-Content-Type-Options"] = "nosniff"    
     response.headers["X-XSS-Protection"] = "1; mode=block"
     
     response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     
-    if not settings.DEBUG:
+   if not settings.DEBUG:
         response.headers["Content-Security-Policy"] = (
             "default-src 'self'; "
             "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
             "style-src 'self' 'unsafe-inline'; "
             "img-src 'self' data: https:; "
             "font-src 'self' data:; "
-            "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com"
+            "connect-src 'self' https://*.supabase.co https://*.google.com https://*.googleapis.com; "
+            "frame-ancestors 'self' https://huggingface.co https://*.hf.space https://*.vercel.app;"
         )
-    
     return response
 
 app.add_middleware(
@@ -336,6 +333,14 @@ async def handle_file_uploads(user_id: str, files: List[UploadFile]) -> str:
             context_notes += f"\n[Error] Failed to process {file.filename}: {str(e)[:100]}"
             
     return context_notes
+
+@app.get("/", include_in_schema=False)
+async def root_redirect():
+    """
+    Redirects the root URL to the Swagger documentation.
+    This provides a valid UI for the Hugging Face Space iframe instead of a 404.
+    """
+    return RedirectResponse(url="/docs")
 
 @app.get("/health")
 async def health_check():
