@@ -63,6 +63,25 @@ class Settings(BaseSettings):
     DATA_PATH: str = Field(default="data")
     CHROMA_PATH: str = Field(default="chroma_db")
     LOG_PATH: str = Field(default="logs")
+
+    @validator("SUPABASE_DB_URL")
+    def validate_supabase_pooler_url(cls, v):
+        """
+        Prevents the 'FATAL: Tenant or user not found' error by ensuring
+        the connection string is properly formatted for Supavisor (Port 6543).
+        """
+        if v and "6543" in v and "pooler.supabase.com" in v:
+            try:
+                # Extract username from postgresql://username:password@host...
+                username = v.split("://")[1].split(":")[0]
+                if "." not in username:
+                    raise ValueError(
+                        "CRITICAL: Supabase pooler URL on port 6543 requires the "
+                        "project reference in the username (e.g., 'postgres.[project-ref]')."
+                    )
+            except IndexError:
+                pass # Fallback if URL structure is completely malformed (caught by engine later)
+        return v
     
     @validator("GOOGLE_API_KEY")
     def validate_api_key(cls, v):
