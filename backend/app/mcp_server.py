@@ -116,7 +116,7 @@ app = FastAPI(
     description="Production-Ready AI Agent API with Multi-Tool Capabilities",
     version="3.0.0",
     lifespan=lifespan,
-    docs_url="/docs" if settings.DEBUG else None,
+    docs_url="/docs",
     redoc_url="/redoc" if settings.DEBUG else None
 )
 
