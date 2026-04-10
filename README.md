@@ -64,7 +64,7 @@ MCP_SERVER_URL=http://127.0.0.1:7860/mcp
 
 1. **Install Dependencies**:
    ```bash
-   pip install -r requirements.txt
+   poetry install
    ```
 
 2. **Start the Backend**:
