@@ -63,6 +63,7 @@ MCP_SERVER_URL=http://127.0.0.1:7860/mcp
 ### Running the Application
 
 1. **Install Dependencies**:
+    Use the potery for that
    ```bash
    poetry install
    ```
