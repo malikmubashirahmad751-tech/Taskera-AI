@@ -4,7 +4,7 @@
   <em>A powerful, stateful AI agent built with FastAPI, LangGraph, and Gemini.</em>
 </p>
 
-Taskera AI is a production-ready, multi-modal AI assistant capable of processing complex queries autonomously. By utilizing persistent user sessions, dynamic tool usage, and an event-driven architecture, Taskera AI acts as a comprehensive personal assistant. It handles text, voice, documents, and images—all while seamlessly scheduling your life and securely managing your data.
+Taskera AI is a multi-modal AI assistant capable of processing complex queries autonomously. By utilizing persistent user sessions, dynamic tool usage, and an event-driven architecture, Taskera AI acts as a comprehensive personal assistant. It handles text, voice, documents, and images—all while seamlessly scheduling your life and securely managing your data.
 
 ---
 
