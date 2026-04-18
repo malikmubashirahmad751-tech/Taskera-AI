@@ -1,8 +1,3 @@
-/**
- * Taskera AI Frontend - Unified Production Version
- * Hardened with XSS protection, Voice support, and Memory Management
- */
-
 document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================================================
@@ -61,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isRecording: false,
         mediaRecorder: null,
         audioChunks: [],
-        audioURLs: [] // Tracked for memory cleanup
+        audioURLs: [] 
     };
 
     // ============================================================================
@@ -91,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn: document.getElementById('logoutBtn'),
         openLoginModalBtn: document.getElementById('openLoginModalBtn'),
         authModal: document.getElementById('authModal'),
+        authModalContent: document.querySelector('#authModal .modal-content'), 
         authForm: document.getElementById('authForm'),
         closeAuthModal: document.getElementById('closeAuthModal'),
         authEmail: document.getElementById('authEmail'),
@@ -104,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         historySection: document.getElementById('historySection'),
         historyList: document.getElementById('historyList'),
         taskeraModal: document.getElementById('taskeraModal'),
+        taskeraModalContent: document.querySelector('#taskeraModal .modal-content'), 
         taskeraModalTitle: document.getElementById('taskeraModalTitle'),
         taskeraModalBody: document.getElementById('taskeraModalBody'),
         taskeraModalConfirm: document.getElementById('taskeraModalConfirm'),
@@ -162,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.isRecording = true;
             dom.voiceBtn.classList.add('recording-active');
             dom.voiceBtn.innerHTML = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h12v12H6z"></path></svg>`;
-            dom.userInput.placeholder = "🔴 Listening...";
+            dom.userInput.placeholder = "Listening...";
             dom.userInput.disabled = true;
         } catch (err) {
             console.error("Mic Error:", err);
@@ -418,9 +415,18 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.chatUploadBtn?.addEventListener('click', () => dom.fileUploadInput.click());
         dom.fileUploadInput?.addEventListener('change', handleFileStage);
         dom.logoutBtn?.addEventListener('click', handleLogout);
-        dom.openLoginModalBtn?.addEventListener('click', () => showAuthModal(true));
-        dom.closeAuthModal?.addEventListener('click', hideAuthModal);
-        dom.authSwitchBtn?.addEventListener('click', toggleAuthMode);
+        dom.openLoginModalBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            showAuthModal(true);
+        });
+        dom.closeAuthModal?.addEventListener('click', (e) => {
+            e.preventDefault();
+            hideAuthModal();
+        });
+        dom.authSwitchBtn?.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleAuthMode();
+        });
         dom.authForm?.addEventListener('submit', handleAuthSubmit);
         dom.taskeraModalCancel?.addEventListener('click', closeModal);
         dom.taskeraModalClose?.addEventListener('click', closeModal);
@@ -532,42 +538,90 @@ document.addEventListener('DOMContentLoaded', () => {
     function showAuthModal(isLogin = true) {
         state.isLoginMode = isLogin;
         renderAuthModalState();
-        dom.authModal.classList.remove('hidden');
-        setTimeout(() => dom.authModal.classList.remove('opacity-0'), 10);
+        dom.authModal?.classList.remove('hidden');
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                dom.authModal?.classList.remove('opacity-0');
+                dom.authModalContent?.classList.remove('opacity-0', 'scale-95');
+                dom.authModalContent?.classList.add('opacity-100', 'scale-100');
+            });
+        });
     }
+
     function hideAuthModal() {
-        dom.authModal.classList.add('opacity-0');
-        setTimeout(() => dom.authModal.classList.add('hidden'), 300);
+        dom.authModal?.classList.add('opacity-0');
+        dom.authModalContent?.classList.remove('opacity-100', 'scale-100');
+        dom.authModalContent?.classList.add('opacity-0', 'scale-95');
+        
+        setTimeout(() => dom.authModal?.classList.add('hidden'), 300);
     }
+
     function renderAuthModalState() {
-        dom.authModalTitle.textContent = state.isLoginMode ? "Sign In" : "Create Account";
-        dom.authSubmitBtn.textContent = state.isLoginMode ? "Sign In" : "Sign Up";
-        dom.authSwitchBtn.textContent = state.isLoginMode ? "Sign Up" : "Sign In";
+        if (dom.authModalTitle) dom.authModalTitle.textContent = state.isLoginMode ? "Sign In" : "Create Account";
+        if (dom.authSubmitBtn) dom.authSubmitBtn.textContent = state.isLoginMode ? "Sign In" : "Sign Up";
+        if (dom.authSwitchBtn) dom.authSwitchBtn.textContent = state.isLoginMode ? "Sign Up" : "Sign In";
     }
+
     function showAuthError(msg) { dom.authErrorMsg.textContent = msg; dom.authErrorMsg.classList.remove('hidden', 'text-green-400'); dom.authErrorMsg.classList.add('text-red-400'); }
     function showAuthSuccess(msg) { dom.authErrorMsg.textContent = msg; dom.authErrorMsg.classList.remove('hidden', 'text-red-400'); dom.authErrorMsg.classList.add('text-green-400'); }
+    
     function updateAuthUI(isLoggedIn, email = '') {
         dom.guestAuthSection?.classList.toggle('hidden', isLoggedIn);
         dom.userProfileSection?.classList.toggle('hidden', !isLoggedIn);
         if (dom.userEmailDisplay) dom.userEmailDisplay.textContent = email;
     }
+
     function toggleAuthMode() { state.isLoginMode = !state.isLoginMode; renderAuthModalState(); }
     
     function openModal(type, data = {}) {
         dom.taskeraModal.classList.remove('hidden');
-        setTimeout(() => dom.taskeraModal.classList.remove('opacity-0'), 10);
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                dom.taskeraModal.classList.remove('opacity-0');
+                dom.taskeraModalContent?.classList.remove('opacity-0', 'scale-95');
+                dom.taskeraModalContent?.classList.add('opacity-100', 'scale-100');
+            });
+        });
+
         if (type === 'delete') {
             dom.taskeraModalTitle.textContent = 'Delete Chat';
             dom.taskeraModalBody.innerHTML = `<p class="text-sm text-zinc-400">Are you sure you want to delete "${data.currentTitle}"?</p>`;
             state.modalCallback = () => handleDeleteThread(data.threadId, data.element);
         }
     }
+
     function closeModal() {
         dom.taskeraModal.classList.add('opacity-0');
+        dom.taskeraModalContent?.classList.remove('opacity-100', 'scale-100');
+        dom.taskeraModalContent?.classList.add('opacity-0', 'scale-95');
+        
         setTimeout(() => dom.taskeraModal.classList.add('hidden'), 200);
     }
+
     function checkServerHealth() { fetch(`${API_BASE_URL}${ENDPOINTS.HEALTH}`).catch(() => {}); }
-    function handleGoogleLoginRedirect() { /* Injected logic from snippet 1 */ }
+    function handleGoogleLoginRedirect() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const authStatus = urlParams.get('google_auth');
+        const accessToken = urlParams.get('access_token');
+        
+        // Extract optional parameters if your backend sends them
+        const userId = urlParams.get('user_id');
+        const email = urlParams.get('email');
+
+        if (authStatus === 'success' && accessToken) {
+            // 1. Save the token to local storage so loadSession() can find it
+            localStorage.setItem(KEYS.AUTH_TOKEN, accessToken);
+            
+            // 2. Save user details if they exist in the URL
+            if (userId) localStorage.setItem(KEYS.USER_ID, userId);
+            if (email) localStorage.setItem(KEYS.USER_EMAIL, email);
+
+            // 3. Clean the URL to remove the token from the browser address bar (Security best practice)
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
     function setupOnlineDetection() { window.addEventListener('online', () => state.isOnline = true); window.addEventListener('offline', () => state.isOnline = false); }
     function setupSuggestionCards() { document.querySelectorAll('.suggestion-card').forEach(c => c.onclick = () => { dom.userInput.value = c.querySelector('span').textContent; dom.userInput.focus(); }); }
     function updateUIState() { dom.welcomeScreen?.classList.toggle('hidden', dom.chatLog.children.length > 1); }
